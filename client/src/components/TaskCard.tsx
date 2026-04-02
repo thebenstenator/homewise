@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { ExternalLink, Clock, CheckCircle, ChevronDown, X, ShoppingCart, CalendarClock } from 'lucide-react'
+import { Clock, CheckCircle, ChevronDown, X, CalendarClock, BookOpen } from 'lucide-react'
 import type { Schedule } from '../types/appliance'
 import { schedulesApi, daysUntilDue } from '../lib/schedules'
 import { thumbtackUrl, angiUrl, openAffiliate } from '../lib/affiliateLinks'
 import { useAuth } from '../context/AuthContext'
 import { LogTaskModal } from './LogTaskModal'
+import { DiyGuideModal } from './DiyGuideModal'
 
 interface Props {
   schedule: Schedule
@@ -16,6 +17,7 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
   const { user } = useAuth()
   const [showLog, setShowLog] = useState(false)
   const [showPro, setShowPro] = useState(false)
+  const [showDiy, setShowDiy] = useState(false)
   const [showSnooze, setShowSnooze] = useState(false)
   const [snoozing, setSnoozing] = useState(false)
   const [schedulingNow, setSchedulingNow] = useState(false)
@@ -76,8 +78,6 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
 
   if (isSnoozed) return null
 
-  const products = schedule.task?.products ?? []
-
   return (
     <>
       <div className={`border rounded-xl p-4 ${urgencyColor}`}>
@@ -105,14 +105,12 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
           </button>
 
           {schedule.task?.diyUrl && (
-            <a
-              href={schedule.task.diyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 text-slate-600 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors"
+            <button
+              onClick={() => setShowDiy(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 text-slate-600 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors cursor-pointer"
             >
-              <ExternalLink size={13} /> DIY Guide
-            </a>
+              <BookOpen size={13} /> DIY Guide
+            </button>
           )}
 
           <button
@@ -157,31 +155,6 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
             </div>
           )}
         </div>
-
-        {/* Tools & Parts */}
-        {products.length > 0 && (
-          <div className="mt-3 pt-3 border-t border-slate-200">
-            <p className="text-xs font-medium text-slate-500 mb-2 flex items-center gap-1">
-              <ShoppingCart size={12} /> Tools & Parts
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {products.map((p, i) => (
-                <a
-                  key={i}
-                  href={p.searchUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs px-2.5 py-1 bg-amber-50 border border-amber-200 text-amber-800 rounded-full hover:bg-amber-100 transition-colors"
-                >
-                  {p.label} →
-                </a>
-              ))}
-            </div>
-            <p className="text-xs text-slate-400 mt-1.5">
-              Amazon links · HomeWise may earn a small commission
-            </p>
-          </div>
-        )}
 
         {showInterval && (
           <div className="mt-3 pt-3 border-t border-slate-200 flex items-center gap-2">
@@ -251,10 +224,18 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
               </button>
             </div>
             <p className="text-xs text-slate-400 mt-4 text-center">
-              HomeWise may earn a referral fee at no cost to you.
+              HomeWise may earn a referral fee at no additional cost to you.
             </p>
           </div>
         </div>
+      )}
+
+      {showDiy && schedule.task && (
+        <DiyGuideModal
+          task={schedule.task}
+          applianceName={schedule.appliance?.name ?? ''}
+          onClose={() => setShowDiy(false)}
+        />
       )}
 
       {showLog && (
