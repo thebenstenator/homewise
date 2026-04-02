@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useLocation, Link } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 import { AppLayout } from '../components/AppLayout'
 import { ApplianceCard } from '../components/ApplianceCard'
@@ -14,13 +15,14 @@ import { historyApi } from '../lib/history'
 type Tab = 'due' | 'appliances'
 
 export function DashboardPage() {
+  const location = useLocation()
   const [appliances, setAppliances] = useState<Appliance[]>([])
   const [schedules, setSchedules] = useState<Schedule[]>([])
   const [stats, setStats] = useState<HomeHealthStats | null>(null)
   const [loadingAppliances, setLoadingAppliances] = useState(true)
   const [loadingSchedules, setLoadingSchedules] = useState(true)
   const [loadingStats, setLoadingStats] = useState(true)
-  const [tab, setTab] = useState<Tab>('due')
+  const [tab, setTab] = useState<Tab>((location.state as { tab?: Tab })?.tab ?? 'due')
   const [showAdd, setShowAdd] = useState(false)
   const [editing, setEditing] = useState<Appliance | null>(null)
 
@@ -74,19 +76,27 @@ export function DashboardPage() {
       {/* Stat bar */}
       {stats && (
         <div className="grid grid-cols-3 gap-3 mb-6">
-          {[
-            { label: 'Appliances', value: stats.totalAppliances },
-            { label: 'Tasks Due', value: stats.overdueCount + stats.dueSoonCount },
-            { label: 'Done This Month', value: stats.completedLast30 },
-          ].map(({ label, value }) => (
-            <div
-              key={label}
-              className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-center"
-            >
-              <div className="text-2xl font-bold text-slate-800">{value}</div>
-              <div className="text-xs text-slate-500 mt-0.5">{label}</div>
-            </div>
-          ))}
+          <button
+            onClick={() => setTab('appliances')}
+            className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-center hover:border-green-400 hover:bg-green-50 transition-colors cursor-pointer"
+          >
+            <div className="text-2xl font-bold text-slate-800">{stats.totalAppliances}</div>
+            <div className="text-xs text-slate-500 mt-0.5">Appliances</div>
+          </button>
+          <button
+            onClick={() => setTab('due')}
+            className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-center hover:border-green-400 hover:bg-green-50 transition-colors cursor-pointer"
+          >
+            <div className="text-2xl font-bold text-slate-800">{stats.overdueCount + stats.dueSoonCount}</div>
+            <div className="text-xs text-slate-500 mt-0.5">Tasks Due</div>
+          </button>
+          <Link
+            to="/history"
+            className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-center hover:border-green-400 hover:bg-green-50 transition-colors cursor-pointer"
+          >
+            <div className="text-2xl font-bold text-slate-800">{stats.completedLast30}</div>
+            <div className="text-xs text-slate-500 mt-0.5">Done This Month</div>
+          </Link>
         </div>
       )}
 

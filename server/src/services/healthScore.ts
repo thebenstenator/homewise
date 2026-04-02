@@ -23,7 +23,7 @@ function getGrade(score: number): 'A' | 'B' | 'C' | 'D' | 'F' {
 
 export async function computeHealthScore(userId: string): Promise<HomeHealthStats> {
   const now = new Date()
-  const in30Days = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+  const in30Days = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
   const ago30Days = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
   const userObjectId = new Types.ObjectId(userId)
 
