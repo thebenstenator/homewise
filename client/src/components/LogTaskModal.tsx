@@ -18,6 +18,7 @@ export function LogTaskModal({ schedule, onClose, onCompleted }: Props) {
     cost: '',
   })
   const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
 
   function set(field: string) {
@@ -37,7 +38,8 @@ export function LogTaskModal({ schedule, onClose, onCompleted }: Props) {
         cost: form.cost ? parseFloat(form.cost) : undefined,
       })
       onCompleted(updated)
-      onClose()
+      setSuccess(true)
+      setTimeout(onClose, 1200)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to log task')
     } finally {
@@ -134,10 +136,14 @@ export function LogTaskModal({ schedule, onClose, onCompleted }: Props) {
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-green-600 text-white rounded-lg py-2.5 text-sm font-medium hover:bg-green-700 disabled:opacity-50 transition-colors"
+            disabled={loading || success}
+            className={`w-full rounded-lg py-2.5 text-sm font-medium transition-colors ${
+              success
+                ? 'bg-green-100 text-green-700'
+                : 'bg-green-600 text-white hover:bg-green-700 disabled:opacity-50'
+            }`}
           >
-            {loading ? 'Saving…' : 'Mark as Done'}
+            {success ? '✓ Logged!' : loading ? 'Saving…' : 'Mark as Done'}
           </button>
         </form>
       </div>

@@ -45,7 +45,13 @@ export function DashboardPage() {
   }
 
   function handleScheduleUpdated(updated: Schedule) {
-    setSchedules((prev) => prev.map((s) => (s._id === updated._id ? updated : s)))
+    const in30Days = Date.now() + 30 * 24 * 60 * 60 * 1000
+    const stillDue = new Date(updated.nextDueAt).getTime() <= in30Days
+    setSchedules((prev) =>
+      stillDue
+        ? prev.map((s) => (s._id === updated._id ? updated : s))
+        : prev.filter((s) => s._id !== updated._id)
+    )
   }
 
   const dueCount = schedules.length
