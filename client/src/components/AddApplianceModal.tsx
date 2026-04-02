@@ -1,8 +1,8 @@
 import { useState, FormEvent } from 'react'
 import { X, ChevronLeft } from 'lucide-react'
 import { ApplianceTypePicker } from './ApplianceTypePicker'
-import { ApplianceType } from '../hooks/useApplianceTypes'
-import { appliancesApi, Appliance } from '../lib/appliances'
+import type { ApplianceType, Appliance } from '../types/appliance'
+import { appliancesApi } from '../lib/appliances'
 
 interface Props {
   onClose: () => void

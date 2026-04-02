@@ -3,7 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Pencil, Trash2, ChevronLeft, Home } from 'lucide-react'
 import { AppLayout } from '../components/AppLayout'
 import { EditApplianceModal } from '../components/EditApplianceModal'
-import { appliancesApi, Appliance } from '../lib/appliances'
+import type { Appliance } from '../types/appliance'
+import { appliancesApi } from '../lib/appliances'
 
 export function ApplianceDetailPage() {
   const { id } = useParams<{ id: string }>()

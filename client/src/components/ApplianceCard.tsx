@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Pencil, Trash2, Home, Thermometer, Wind, Flame, Zap, Refrigerator, Droplets, Waves, AlertTriangle, ShieldAlert, GitBranch, Droplet, CircleSlash } from 'lucide-react'
-import { Appliance } from '../lib/appliances'
+import { Pencil, Trash2, Home, Thermometer, Wind, Flame, Zap, Refrigerator, Droplets, Waves, AlertTriangle, ShieldAlert, GitBranch, Droplet, CircleSlash, Filter } from 'lucide-react'
+import type { Appliance } from '../types/appliance'
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   thermometer: Thermometer,
@@ -17,6 +17,7 @@ const iconMap: Record<string, React.ComponentType<{ size?: number; className?: s
   'git-branch': GitBranch,
   droplet: Droplet,
   'circle-slash': CircleSlash,
+  filter: Filter,
 }
 
 const categoryColors: Record<string, string> = {

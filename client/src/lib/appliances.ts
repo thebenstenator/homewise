@@ -1,27 +1,7 @@
 import { api } from './api'
-import { ApplianceType } from '../hooks/useApplianceTypes'
+import type { Appliance, ApplianceFormData } from '../types/appliance'
 
-export interface Appliance {
-  _id: string
-  userId: string
-  typeId: string
-  name: string
-  brand?: string
-  model?: string
-  installYear?: number
-  notes?: string
-  createdAt: string
-  applianceType: ApplianceType | null
-}
-
-export interface ApplianceFormData {
-  typeId: string
-  name: string
-  brand?: string
-  model?: string
-  installYear?: number
-  notes?: string
-}
+export type { Appliance, ApplianceFormData }
 
 export const appliancesApi = {
   getAll: () => api.get<Appliance[]>('/api/appliances'),

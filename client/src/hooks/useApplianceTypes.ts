@@ -1,24 +1,8 @@
 import { useState, useEffect } from 'react'
 import { api } from '../lib/api'
+import type { ApplianceType } from '../types/appliance'
 
-export interface ApplianceTask {
-  taskId: string
-  label: string
-  intervalDays: number
-  diyUrl: string
-  thumbtackCategory: string
-  angiCategory: string
-  priority: 'high' | 'medium' | 'low'
-  notes?: string
-}
-
-export interface ApplianceType {
-  _id: string
-  label: string
-  category: 'hvac' | 'plumbing' | 'electrical' | 'kitchen' | 'exterior' | 'safety'
-  iconSlug: string
-  tasks: ApplianceTask[]
-}
+export type { ApplianceType }
 
 // Module-level cache — this data never changes
 let cachedTypes: ApplianceType[] | null = null

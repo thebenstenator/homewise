@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import {
   Thermometer, Wind, Flame, Zap, Refrigerator, Droplets, Waves,
-  AlertTriangle, ShieldAlert, Home, GitBranch, Droplet, CircleSlash,
+  AlertTriangle, ShieldAlert, Home, GitBranch, Droplet, CircleSlash, Filter,
 } from 'lucide-react'
-import { useApplianceTypes, ApplianceType } from '../hooks/useApplianceTypes'
+import { useApplianceTypes } from '../hooks/useApplianceTypes'
+import type { ApplianceType } from '../types/appliance'
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   thermometer: Thermometer,
@@ -19,6 +20,7 @@ const iconMap: Record<string, React.ComponentType<{ size?: number; className?: s
   'git-branch': GitBranch,
   droplet: Droplet,
   'circle-slash': CircleSlash,
+  filter: Filter,
 }
 
 const categoryLabels: Record<string, string> = {

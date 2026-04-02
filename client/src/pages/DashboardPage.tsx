@@ -4,7 +4,8 @@ import { AppLayout } from '../components/AppLayout'
 import { ApplianceCard } from '../components/ApplianceCard'
 import { AddApplianceModal } from '../components/AddApplianceModal'
 import { EditApplianceModal } from '../components/EditApplianceModal'
-import { appliancesApi, Appliance } from '../lib/appliances'
+import type { Appliance } from '../types/appliance'
+import { appliancesApi } from '../lib/appliances'
 
 export function DashboardPage() {
   const [appliances, setAppliances] = useState<Appliance[]>([])

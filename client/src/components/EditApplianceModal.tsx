@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react'
 import { X } from 'lucide-react'
-import { appliancesApi, Appliance } from '../lib/appliances'
+import type { Appliance } from '../types/appliance'
+import { appliancesApi } from '../lib/appliances'
 
 interface Props {
   appliance: Appliance
