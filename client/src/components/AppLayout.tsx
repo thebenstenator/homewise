@@ -18,6 +18,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             HomeWise
           </Link>
           <div className="flex items-center gap-4">
+            <Link to="/history" className="text-sm text-slate-300 hover:text-white transition-colors">
+              History
+            </Link>
             <Link to="/profile" className="text-sm text-slate-300 hover:text-white transition-colors">
               {user?.name}
             </Link>

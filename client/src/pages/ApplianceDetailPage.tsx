@@ -4,16 +4,22 @@ import { Pencil, Trash2, ChevronLeft, Home } from 'lucide-react'
 import { AppLayout } from '../components/AppLayout'
 import { EditApplianceModal } from '../components/EditApplianceModal'
 import { TaskCard } from '../components/TaskCard'
-import type { Appliance, Schedule } from '../types/appliance'
+import type { Appliance, Schedule, MaintenanceLog } from '../types/appliance'
 import { appliancesApi } from '../lib/appliances'
 import { schedulesApi } from '../lib/schedules'
+import { historyApi } from '../lib/history'
+
+type DetailTab = 'tasks' | 'history'
 
 export function ApplianceDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [appliance, setAppliance] = useState<Appliance | null>(null)
   const [schedules, setSchedules] = useState<Schedule[]>([])
+  const [logs, setLogs] = useState<MaintenanceLog[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadingLogs, setLoadingLogs] = useState(false)
+  const [tab, setTab] = useState<DetailTab>('tasks')
   const [editing, setEditing] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
@@ -25,6 +31,12 @@ export function ApplianceDetailPage() {
       })
       .finally(() => setLoading(false))
   }, [id])
+
+  useEffect(() => {
+    if (tab !== 'history' || !id) return
+    setLoadingLogs(true)
+    historyApi.getAll(id).then(setLogs).finally(() => setLoadingLogs(false))
+  }, [tab, id])
 
   function handleScheduleUpdated(updated: Schedule) {
     setSchedules((prev) => prev.map((s) => (s._id === updated._id ? updated : s)))
@@ -103,24 +115,95 @@ export function ApplianceDetailPage() {
         )}
       </div>
 
-      {/* Maintenance tasks */}
-      <div>
-        <h2 className="font-semibold text-slate-800 mb-4">Maintenance Tasks</h2>
-        {schedules.length === 0 ? (
-          <p className="text-sm text-slate-400">No maintenance tasks found.</p>
-        ) : (
-          <div className="flex flex-col gap-3">
-            {schedules.map((s) => (
-              <TaskCard
-                key={s._id}
-                schedule={s}
-                onUpdated={handleScheduleUpdated}
-                showInterval
-              />
-            ))}
-          </div>
-        )}
+      {/* Tabs */}
+      <div className="flex gap-1 bg-slate-100 rounded-lg p-1 mb-6 w-fit">
+        <button
+          onClick={() => setTab('tasks')}
+          className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+            tab === 'tasks' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+          }`}
+        >
+          Maintenance Tasks
+        </button>
+        <button
+          onClick={() => setTab('history')}
+          className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+            tab === 'history' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+          }`}
+        >
+          History
+        </button>
       </div>
+
+      {/* Tasks tab */}
+      {tab === 'tasks' && (
+        <>
+          {schedules.length === 0 ? (
+            <p className="text-sm text-slate-400">No maintenance tasks found.</p>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {schedules.map((s) => (
+                <TaskCard
+                  key={s._id}
+                  schedule={s}
+                  onUpdated={handleScheduleUpdated}
+                  showInterval
+                />
+              ))}
+            </div>
+          )}
+        </>
+      )}
+
+      {/* History tab */}
+      {tab === 'history' && (
+        <>
+          {loadingLogs ? (
+            <div className="flex justify-center py-16">
+              <div className="w-6 h-6 border-2 border-green-600 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : logs.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-slate-500 text-sm">No maintenance logged yet for this appliance.</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {logs.map((log) => {
+                const date = new Date(log.completedAt).toLocaleDateString('default', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                })
+                return (
+                  <div
+                    key={log._id}
+                    className="bg-white border border-slate-200 rounded-xl px-4 py-3 flex items-center gap-4"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-slate-800 truncate">{log.taskLabel}</p>
+                      <p className="text-xs text-slate-400 mt-0.5">{date}</p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {log.cost != null && (
+                        <span className="text-xs text-slate-500">${log.cost}</span>
+                      )}
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                          log.doneBy === 'pro'
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-slate-100 text-slate-600'
+                        }`}
+                      >
+                        {log.doneBy === 'pro' ? 'Pro' : 'DIY'}
+                      </span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </>
+      )}
 
       {editing && (
         <EditApplianceModal

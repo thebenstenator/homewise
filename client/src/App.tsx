@@ -6,6 +6,7 @@ import { RegisterPage } from './pages/RegisterPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { ApplianceDetailPage } from './pages/ApplianceDetailPage'
 import { ProfilePage } from './pages/ProfilePage'
+import { HistoryPage } from './pages/HistoryPage'
 
 function RootRedirect() {
   const { user, loading } = useAuth()
@@ -32,6 +33,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <ProfilePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/history"
+        element={
+          <ProtectedRoute>
+            <HistoryPage />
           </ProtectedRoute>
         }
       />

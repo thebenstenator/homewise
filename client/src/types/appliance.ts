@@ -70,3 +70,23 @@ export interface CompletePayload {
   notes?: string
   cost?: number
 }
+
+export interface MaintenanceLog {
+  _id: string
+  applianceId: { _id: string; name: string; typeId: string }
+  taskId: string
+  taskLabel: string
+  completedAt: string
+  notes?: string
+  cost?: number
+  doneBy: 'self' | 'pro'
+}
+
+export interface HomeHealthStats {
+  score: number
+  grade: 'A' | 'B' | 'C' | 'D' | 'F'
+  overdueCount: number
+  dueSoonCount: number
+  completedLast30: number
+  totalAppliances: number
+}

@@ -5,32 +5,40 @@ import { ApplianceCard } from '../components/ApplianceCard'
 import { AddApplianceModal } from '../components/AddApplianceModal'
 import { EditApplianceModal } from '../components/EditApplianceModal'
 import { TaskCard } from '../components/TaskCard'
-import type { Appliance } from '../types/appliance'
+import { HomeHealthScore } from '../components/HomeHealthScore'
+import type { Appliance, Schedule, HomeHealthStats } from '../types/appliance'
 import { appliancesApi } from '../lib/appliances'
-import type { Schedule } from '../types/appliance'
 import { schedulesApi } from '../lib/schedules'
+import { historyApi } from '../lib/history'
 
 type Tab = 'due' | 'appliances'
 
 export function DashboardPage() {
   const [appliances, setAppliances] = useState<Appliance[]>([])
   const [schedules, setSchedules] = useState<Schedule[]>([])
+  const [stats, setStats] = useState<HomeHealthStats | null>(null)
   const [loadingAppliances, setLoadingAppliances] = useState(true)
   const [loadingSchedules, setLoadingSchedules] = useState(true)
+  const [loadingStats, setLoadingStats] = useState(true)
   const [tab, setTab] = useState<Tab>('due')
   const [showAdd, setShowAdd] = useState(false)
   const [editing, setEditing] = useState<Appliance | null>(null)
 
+  function refreshStats() {
+    historyApi.getStats().then(setStats).catch(() => setStats(null))
+  }
+
   useEffect(() => {
     appliancesApi.getAll().then(setAppliances).finally(() => setLoadingAppliances(false))
     schedulesApi.getDue().then(setSchedules).finally(() => setLoadingSchedules(false))
+    historyApi.getStats().then(setStats).finally(() => setLoadingStats(false))
   }, [])
 
   function handleCreated(appliance: Appliance) {
     setAppliances((prev) => [appliance, ...prev])
     setShowAdd(false)
-    // Refresh due schedules after adding an appliance
     schedulesApi.getDue().then(setSchedules)
+    refreshStats()
   }
 
   function handleUpdated(appliance: Appliance) {
@@ -42,6 +50,7 @@ export function DashboardPage() {
     await appliancesApi.remove(id)
     setAppliances((prev) => prev.filter((a) => a._id !== id))
     setSchedules((prev) => prev.filter((s) => s.applianceId !== id))
+    refreshStats()
   }
 
   function handleScheduleUpdated(updated: Schedule) {
@@ -52,12 +61,35 @@ export function DashboardPage() {
         ? prev.map((s) => (s._id === updated._id ? updated : s))
         : prev.filter((s) => s._id !== updated._id)
     )
+    refreshStats()
   }
 
   const dueCount = schedules.length
 
   return (
     <AppLayout>
+      {/* Health score */}
+      <HomeHealthScore stats={stats} loading={loadingStats} />
+
+      {/* Stat bar */}
+      {stats && (
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          {[
+            { label: 'Appliances', value: stats.totalAppliances },
+            { label: 'Tasks Due', value: stats.overdueCount + stats.dueSoonCount },
+            { label: 'Done This Month', value: stats.completedLast30 },
+          ].map(({ label, value }) => (
+            <div
+              key={label}
+              className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-center"
+            >
+              <div className="text-2xl font-bold text-slate-800">{value}</div>
+              <div className="text-xs text-slate-500 mt-0.5">{label}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Tabs */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex gap-1 bg-slate-100 rounded-lg p-1">
