@@ -52,9 +52,9 @@ export function HomeHealthScore({ stats, loading }: Props) {
 
   return (
     <div className={`border rounded-xl p-5 mb-6 flex items-center gap-5 ${bgClass}`}>
-      <div className="text-center shrink-0 w-16">
+      <div className="text-center shrink-0 w-16 flex flex-col items-center gap-1">
         <div className={`text-5xl font-bold leading-none ${colorClass}`}>{score}</div>
-        <div className={`text-sm font-semibold mt-1 ${colorClass}`}>{grade}</div>
+        <div className={`text-sm font-semibold ${colorClass}`}>{grade}</div>
       </div>
       <div>
         <p className="font-semibold text-slate-800 mb-1">Home Health Score</p>

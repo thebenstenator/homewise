@@ -42,7 +42,7 @@ export function ApplianceCard({ appliance, onEdit, onDelete }: Props) {
   const colorClass = type ? (categoryColors[type.category] ?? 'bg-slate-50 text-slate-600') : 'bg-slate-50 text-slate-600'
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col gap-3">
+    <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col gap-3 h-36">
       <div className="flex items-start justify-between">
         <div className={`p-2 rounded-lg ${colorClass}`}>
           <Icon size={20} />
