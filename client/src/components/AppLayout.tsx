@@ -18,7 +18,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             HomeWise
           </Link>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-slate-300">{user?.name}</span>
+            <Link to="/profile" className="text-sm text-slate-300 hover:text-white transition-colors">
+              {user?.name}
+            </Link>
             <button
               onClick={handleLogout}
               className="text-sm text-slate-300 hover:text-white transition-colors"

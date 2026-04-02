@@ -99,4 +99,10 @@ router.get('/me', requireAuth, (req: Request, res: Response) => {
   res.json({ user: req.user })
 })
 
+// POST /api/auth/unsubscribe
+router.post('/unsubscribe', requireAuth, async (req: Request, res: Response) => {
+  await User.findByIdAndUpdate(req.user!._id, { emailReminders: false })
+  res.json({ message: 'Unsubscribed from email reminders' })
+})
+
 export default router

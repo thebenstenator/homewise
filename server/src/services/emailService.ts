@@ -1,0 +1,106 @@
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+
+export interface DueTask {
+  applianceName: string
+  taskLabel: string
+  daysUntilDue: number
+  diyUrl: string
+  thumbtackCategory: string
+  angiCategory: string
+}
+
+export interface EmailUser {
+  email: string
+  name: string
+  zipCode: string
+}
+
+export async function sendWeeklyDigest(user: EmailUser, dueTasks: DueTask[]) {
+  const thumbtackBase = 'https://www.thumbtack.com/k'
+  const appUrl = process.env.CLIENT_URL ?? 'http://localhost:5173'
+
+  const taskRows = dueTasks
+    .map((t) => {
+      const dueLabel =
+        t.daysUntilDue < 0
+          ? `<span style="color:#dc2626">Overdue by ${Math.abs(t.daysUntilDue)} day${Math.abs(t.daysUntilDue) !== 1 ? 's' : ''}</span>`
+          : t.daysUntilDue === 0
+          ? `<span style="color:#d97706">Due today</span>`
+          : `<span style="color:#16a34a">Due in ${t.daysUntilDue} day${t.daysUntilDue !== 1 ? 's' : ''}</span>`
+
+      const proUrl = `${thumbtackBase}/${t.thumbtackCategory}/near-me/?zip=${user.zipCode}&utm_source=homewise&utm_medium=email`
+
+      return `
+        <tr>
+          <td style="padding:16px 0;border-bottom:1px solid #e2e8f0">
+            <p style="margin:0 0 4px;font-size:13px;color:#64748b">${t.applianceName}</p>
+            <p style="margin:0 0 6px;font-size:15px;font-weight:600;color:#0f172a">${t.taskLabel}</p>
+            <p style="margin:0 0 12px;font-size:13px">${dueLabel}</p>
+            <a href="${t.diyUrl}" style="display:inline-block;margin-right:8px;padding:6px 14px;background:#f1f5f9;color:#334155;font-size:12px;font-weight:500;border-radius:6px;text-decoration:none">DIY Guide →</a>
+            <a href="${proUrl}" style="display:inline-block;padding:6px 14px;background:#16a34a;color:#ffffff;font-size:12px;font-weight:500;border-radius:6px;text-decoration:none">Find a Pro →</a>
+          </td>
+        </tr>`
+    })
+    .join('')
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+    <body style="margin:0;padding:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:32px 16px">
+        <tr><td align="center">
+          <table width="100%" style="max-width:560px;background:#ffffff;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden">
+
+            <!-- Header -->
+            <tr>
+              <td style="background:#1e293b;padding:24px 32px">
+                <p style="margin:0;font-size:22px;font-weight:700;color:#4ade80">HomeWise</p>
+                <p style="margin:6px 0 0;font-size:14px;color:#94a3b8">Your upcoming maintenance tasks</p>
+              </td>
+            </tr>
+
+            <!-- Body -->
+            <tr>
+              <td style="padding:24px 32px">
+                <p style="margin:0 0 20px;font-size:15px;color:#334155">Hi ${user.name}, here's what's coming up:</p>
+                <table width="100%" cellpadding="0" cellspacing="0">
+                  ${taskRows}
+                </table>
+              </td>
+            </tr>
+
+            <!-- CTA -->
+            <tr>
+              <td style="padding:0 32px 28px">
+                <a href="${appUrl}/dashboard" style="display:block;text-align:center;padding:12px;background:#16a34a;color:#ffffff;font-size:14px;font-weight:600;border-radius:8px;text-decoration:none">
+                  View Dashboard →
+                </a>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="padding:20px 32px;border-top:1px solid #e2e8f0;background:#f8fafc">
+                <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center">
+                  You're receiving this because you have a HomeWise account.
+                  <a href="${appUrl}/profile" style="color:#64748b">Manage preferences</a>
+                </p>
+              </td>
+            </tr>
+
+          </table>
+        </td></tr>
+      </table>
+    </body>
+    </html>`
+
+  await resend.emails.send({
+    from: process.env.RESEND_FROM_EMAIL ?? 'HomeWise <reminders@homewise.app>',
+    to: user.email,
+    subject: '🏠 Your HomeWise Maintenance Reminder',
+    html,
+  })
+}
