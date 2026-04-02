@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ExternalLink, Clock, CheckCircle, ChevronDown, X } from 'lucide-react'
-import { Schedule, schedulesApi, daysUntilDue } from '../lib/schedules'
+import type { Schedule } from '../types/appliance'
+import { schedulesApi, daysUntilDue } from '../lib/schedules'
 import { thumbtackUrl, angiUrl, openAffiliate } from '../lib/affiliateLinks'
 import { useAuth } from '../context/AuthContext'
 import { LogTaskModal } from './LogTaskModal'

@@ -1,34 +1,7 @@
 import { api } from './api'
+import type { Schedule, CompletePayload } from '../types/appliance'
 
-export interface Schedule {
-  _id: string
-  userId: string
-  applianceId: string
-  taskId: string
-  intervalDays: number
-  lastCompletedAt: string | null
-  nextDueAt: string
-  snoozedUntil: string | null
-  isActive: boolean
-  appliance: { _id: string; name: string; typeId: string } | null
-  task: {
-    taskId: string
-    label: string
-    intervalDays: number
-    diyUrl: string
-    thumbtackCategory: string
-    angiCategory: string
-    priority: 'high' | 'medium' | 'low'
-    notes?: string
-  } | null
-}
-
-export interface CompletePayload {
-  doneBy: 'self' | 'pro'
-  completedAt?: string
-  notes?: string
-  cost?: number
-}
+export type { Schedule, CompletePayload }
 
 export const schedulesApi = {
   getAll: () => api.get<Schedule[]>('/api/schedules'),

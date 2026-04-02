@@ -4,9 +4,9 @@ import { Pencil, Trash2, ChevronLeft, Home } from 'lucide-react'
 import { AppLayout } from '../components/AppLayout'
 import { EditApplianceModal } from '../components/EditApplianceModal'
 import { TaskCard } from '../components/TaskCard'
-import type { Appliance } from '../types/appliance'
+import type { Appliance, Schedule } from '../types/appliance'
 import { appliancesApi } from '../lib/appliances'
-import { schedulesApi, Schedule } from '../lib/schedules'
+import { schedulesApi } from '../lib/schedules'
 
 export function ApplianceDetailPage() {
   const { id } = useParams<{ id: string }>()

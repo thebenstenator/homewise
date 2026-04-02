@@ -7,7 +7,8 @@ import { EditApplianceModal } from '../components/EditApplianceModal'
 import { TaskCard } from '../components/TaskCard'
 import type { Appliance } from '../types/appliance'
 import { appliancesApi } from '../lib/appliances'
-import { schedulesApi, Schedule } from '../lib/schedules'
+import type { Schedule } from '../types/appliance'
+import { schedulesApi } from '../lib/schedules'
 
 type Tab = 'due' | 'appliances'
 

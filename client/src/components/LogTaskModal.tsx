@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react'
 import { X } from 'lucide-react'
-import { Schedule, schedulesApi } from '../lib/schedules'
+import type { Schedule } from '../types/appliance'
+import { schedulesApi } from '../lib/schedules'
 
 interface Props {
   schedule: Schedule

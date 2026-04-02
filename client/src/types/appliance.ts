@@ -38,3 +38,35 @@ export interface ApplianceFormData {
   installYear?: number
   notes?: string
 }
+
+export interface ScheduleTask {
+  taskId: string
+  label: string
+  intervalDays: number
+  diyUrl: string
+  thumbtackCategory: string
+  angiCategory: string
+  priority: 'high' | 'medium' | 'low'
+  notes?: string
+}
+
+export interface Schedule {
+  _id: string
+  userId: string
+  applianceId: string
+  taskId: string
+  intervalDays: number
+  lastCompletedAt: string | null
+  nextDueAt: string
+  snoozedUntil: string | null
+  isActive: boolean
+  appliance: { _id: string; name: string; typeId: string } | null
+  task: ScheduleTask | null
+}
+
+export interface CompletePayload {
+  doneBy: 'self' | 'pro'
+  completedAt?: string
+  notes?: string
+  cost?: number
+}
