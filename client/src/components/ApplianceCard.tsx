@@ -42,7 +42,7 @@ export function ApplianceCard({ appliance, onEdit, onDelete }: Props) {
   const colorClass = type ? (categoryColors[type.category] ?? 'bg-slate-50 text-slate-600') : 'bg-slate-50 text-slate-600'
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col gap-3 h-36">
+    <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col gap-3 h-44">
       <div className="flex items-start justify-between">
         <div className={`p-2 rounded-lg ${colorClass}`}>
           <Icon size={20} />
@@ -65,13 +65,11 @@ export function ApplianceCard({ appliance, onEdit, onDelete }: Props) {
         </div>
       </div>
 
-      <div>
+      <div className="h-10">
         <h3 className="font-semibold text-slate-800 leading-tight">{appliance.name}</h3>
-        {(appliance.brand || appliance.model) && (
-          <p className="text-xs text-slate-500 mt-0.5">
-            {[appliance.brand, appliance.model].filter(Boolean).join(' · ')}
-          </p>
-        )}
+        <p className="text-xs text-slate-500 mt-0.5 truncate">
+          {[appliance.brand, appliance.model].filter(Boolean).join(' · ') || '\u00A0'}
+        </p>
       </div>
 
       <div className="flex items-center justify-between mt-auto pt-2 border-t border-slate-100">
