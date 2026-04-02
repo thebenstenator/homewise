@@ -14,6 +14,10 @@ export const applianceTypes = [
         angiCategory: 'heating-cooling',
         priority: 'high',
         notes: 'Use MERV-8 or higher. Replace every 30 days if you have pets.',
+        products: [
+          { label: 'MERV-8 Filter 6-Pack', searchUrl: 'https://www.amazon.com/s?k=merv+8+air+filter+6+pack&tag=homewise-20' },
+          { label: 'MERV-11 Filter (allergy)', searchUrl: 'https://www.amazon.com/s?k=merv+11+furnace+filter&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'hvac_annual_tune',
@@ -24,6 +28,7 @@ export const applianceTypes = [
         angiCategory: 'heating-cooling',
         priority: 'high',
         notes: 'Schedule in spring for AC, fall for furnace. Catches issues before peak season.',
+        products: [],
       },
       {
         taskId: 'hvac_coil_clean',
@@ -34,6 +39,10 @@ export const applianceTypes = [
         angiCategory: 'heating-cooling',
         priority: 'medium',
         notes: 'Dirty coils reduce efficiency by up to 30%. Wear gloves and eye protection.',
+        products: [
+          { label: 'AC Coil Cleaner Spray', searchUrl: 'https://www.amazon.com/s?k=AC+coil+cleaner+spray&tag=homewise-20' },
+          { label: 'Fin Comb Set', searchUrl: 'https://www.amazon.com/s?k=AC+fin+comb+set&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'hvac_drain_flush',
@@ -44,6 +53,9 @@ export const applianceTypes = [
         angiCategory: 'heating-cooling',
         priority: 'medium',
         notes: 'Pour 1 cup of distilled white vinegar down the drain line to prevent clogs and mold.',
+        products: [
+          { label: 'Drain Line Tablets', searchUrl: 'https://www.amazon.com/s?k=AC+condensate+drain+line+tablets&tag=homewise-20' },
+        ],
       },
     ],
   },
@@ -62,6 +74,7 @@ export const applianceTypes = [
         angiCategory: 'heating-cooling',
         priority: 'high',
         notes: 'Wash reusable filters with warm soapy water. Let dry completely before reinstalling.',
+        products: [],
       },
       {
         taskId: 'window_ac_coil_clean',
@@ -72,6 +85,10 @@ export const applianceTypes = [
         angiCategory: 'heating-cooling',
         priority: 'medium',
         notes: 'Do this at start of cooling season. Use a fin comb to straighten bent fins.',
+        products: [
+          { label: 'AC Coil Cleaner', searchUrl: 'https://www.amazon.com/s?k=window+AC+coil+cleaner&tag=homewise-20' },
+          { label: 'Fin Comb Set', searchUrl: 'https://www.amazon.com/s?k=AC+fin+comb+set&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'window_ac_winterize',
@@ -82,6 +99,9 @@ export const applianceTypes = [
         angiCategory: 'heating-cooling',
         priority: 'medium',
         notes: 'Remove unit or use an AC cover to prevent cold drafts and unit damage.',
+        products: [
+          { label: 'Window AC Cover', searchUrl: 'https://www.amazon.com/s?k=window+air+conditioner+cover+winter&tag=homewise-20' },
+        ],
       },
     ],
   },
@@ -100,6 +120,9 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'high',
         notes: 'Sediment buildup reduces efficiency and shortens tank life. Attach hose to drain valve.',
+        products: [
+          { label: 'Garden Hose 25ft', searchUrl: 'https://www.amazon.com/s?k=garden+hose+25+ft&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'gas_wh_anode_rod',
@@ -110,6 +133,10 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'high',
         notes: 'Anode rod prevents tank corrosion. Replace when less than 1/2 inch of core wire is exposed.',
+        products: [
+          { label: 'Magnesium Anode Rod', searchUrl: 'https://www.amazon.com/s?k=water+heater+magnesium+anode+rod&tag=homewise-20' },
+          { label: '1-1/16" Socket for Anode Rod', searchUrl: 'https://www.amazon.com/s?k=1+1+16+socket+anode+rod&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'gas_wh_tpr_valve',
@@ -120,6 +147,9 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'high',
         notes: 'Safety critical. Lift the lever briefly — water should flow. Replace valve if it drips after testing.',
+        products: [
+          { label: 'T&P Relief Valve Replacement', searchUrl: 'https://www.amazon.com/s?k=water+heater+pressure+relief+valve+replacement&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'gas_wh_pilot_inspect',
@@ -130,6 +160,7 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'medium',
         notes: 'Flame should be blue. Yellow or orange flame indicates incomplete combustion — call a pro.',
+        products: [],
       },
     ],
   },
@@ -148,6 +179,9 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'high',
         notes: 'Turn off power at breaker before flushing. Prevents element damage from dry firing.',
+        products: [
+          { label: 'Garden Hose 25ft', searchUrl: 'https://www.amazon.com/s?k=garden+hose+25+ft&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'elec_wh_anode_rod',
@@ -158,6 +192,9 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'high',
         notes: 'Same as gas — critical for tank longevity. Electric heaters often have two anode rods.',
+        products: [
+          { label: 'Magnesium Anode Rod', searchUrl: 'https://www.amazon.com/s?k=water+heater+magnesium+anode+rod&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'elec_wh_tpr_valve',
@@ -168,6 +205,9 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'high',
         notes: 'Safety critical. Replace immediately if valve leaks after testing.',
+        products: [
+          { label: 'T&P Relief Valve Replacement', searchUrl: 'https://www.amazon.com/s?k=water+heater+pressure+relief+valve+replacement&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'elec_wh_element_check',
@@ -178,6 +218,10 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'medium',
         notes: 'Use a multimeter. A failed element means only part of the tank heats.',
+        products: [
+          { label: 'Digital Multimeter', searchUrl: 'https://www.amazon.com/s?k=digital+multimeter&tag=homewise-20' },
+          { label: 'Water Heater Element Wrench', searchUrl: 'https://www.amazon.com/s?k=water+heater+element+wrench&tag=homewise-20' },
+        ],
       },
     ],
   },
@@ -196,6 +240,9 @@ export const applianceTypes = [
         angiCategory: 'appliance-repair',
         priority: 'high',
         notes: 'Dirty coils are the #1 cause of early refrigerator failure. Use a coil brush or vacuum.',
+        products: [
+          { label: 'Refrigerator Coil Brush', searchUrl: 'https://www.amazon.com/s?k=refrigerator+condenser+coil+brush&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'fridge_door_gasket',
@@ -206,6 +253,7 @@ export const applianceTypes = [
         angiCategory: 'appliance-repair',
         priority: 'medium',
         notes: 'Test seal by closing door on a dollar bill — if it pulls out easily, replace the gasket.',
+        products: [],
       },
       {
         taskId: 'fridge_water_filter',
@@ -216,6 +264,9 @@ export const applianceTypes = [
         angiCategory: 'appliance-repair',
         priority: 'medium',
         notes: 'Only applies to fridges with built-in water/ice dispensers. Check filter indicator light.',
+        products: [
+          { label: 'Refrigerator Water Filter', searchUrl: 'https://www.amazon.com/s?k=refrigerator+water+filter+replacement&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'fridge_temp_check',
@@ -225,7 +276,10 @@ export const applianceTypes = [
         thumbtackCategory: 'appliance-repair',
         angiCategory: 'appliance-repair',
         priority: 'medium',
-        notes: 'Fridge should be 35–38°F, freezer 0°F. Use a thermometer — don\'t rely on dial settings.',
+        notes: "Fridge should be 35–38°F, freezer 0°F. Use a thermometer — don't rely on dial settings.",
+        products: [
+          { label: 'Refrigerator Thermometer', searchUrl: 'https://www.amazon.com/s?k=refrigerator+freezer+thermometer&tag=homewise-20' },
+        ],
       },
     ],
   },
@@ -244,6 +298,7 @@ export const applianceTypes = [
         angiCategory: 'appliance-repair',
         priority: 'high',
         notes: 'Most modern dishwashers have a removable filter under the bottom rack. Rinse under warm water.',
+        products: [],
       },
       {
         taskId: 'dishwasher_spray_arms',
@@ -254,6 +309,7 @@ export const applianceTypes = [
         angiCategory: 'appliance-repair',
         priority: 'medium',
         notes: 'Remove arms and use a toothpick to clear clogged holes. Rinse thoroughly.',
+        products: [],
       },
       {
         taskId: 'dishwasher_door_gasket',
@@ -264,6 +320,7 @@ export const applianceTypes = [
         angiCategory: 'appliance-repair',
         priority: 'medium',
         notes: 'Wipe with a damp cloth. Mold in the gasket causes odors and leaks.',
+        products: [],
       },
       {
         taskId: 'dishwasher_deep_clean',
@@ -274,6 +331,9 @@ export const applianceTypes = [
         angiCategory: 'appliance-repair',
         priority: 'low',
         notes: 'Place a cup of white vinegar on the top rack and run a hot cycle. Then sprinkle baking soda and run a short cycle.',
+        products: [
+          { label: 'Dishwasher Cleaner Tablets', searchUrl: 'https://www.amazon.com/s?k=dishwasher+cleaner+tablets&tag=homewise-20' },
+        ],
       },
     ],
   },
@@ -292,6 +352,9 @@ export const applianceTypes = [
         angiCategory: 'appliance-repair',
         priority: 'high',
         notes: 'Use a washing machine cleaner tablet or run a hot cycle with white vinegar. Wipe the door gasket after every wash to prevent mold.',
+        products: [
+          { label: 'Washing Machine Cleaner Tablets', searchUrl: 'https://www.amazon.com/s?k=washing+machine+cleaner+tablets&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'washer_hoses_inspect',
@@ -302,6 +365,9 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'high',
         notes: 'Burst hoses are a leading cause of home water damage. Replace rubber hoses with braided steel every 5 years regardless.',
+        products: [
+          { label: 'Braided Steel Washing Machine Hoses', searchUrl: 'https://www.amazon.com/s?k=braided+steel+washing+machine+hoses&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'washer_filter_clean',
@@ -312,6 +378,7 @@ export const applianceTypes = [
         angiCategory: 'appliance-repair',
         priority: 'medium',
         notes: 'Front-load washers have a small access panel at the bottom front. Catch water with a towel.',
+        products: [],
       },
     ],
   },
@@ -330,6 +397,9 @@ export const applianceTypes = [
         angiCategory: 'appliance-repair',
         priority: 'high',
         notes: 'Clean after every load. A clogged lint trap is a leading cause of house fires.',
+        products: [
+          { label: 'Lint Trap Brush', searchUrl: 'https://www.amazon.com/s?k=dryer+lint+trap+brush&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'gas_dryer_vent_clean',
@@ -340,6 +410,9 @@ export const applianceTypes = [
         angiCategory: 'dryer-vent-cleaning',
         priority: 'high',
         notes: 'The #1 fire prevention task for dryers. Use a dryer vent brush kit. Check exterior vent flap opens freely.',
+        products: [
+          { label: 'Dryer Vent Brush Kit', searchUrl: 'https://www.amazon.com/s?k=dryer+vent+cleaning+brush+kit&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'gas_dryer_gas_line',
@@ -350,6 +423,9 @@ export const applianceTypes = [
         angiCategory: 'appliance-repair',
         priority: 'high',
         notes: 'Apply soapy water to connections and look for bubbles. Any leak — call a pro immediately.',
+        products: [
+          { label: 'Gas Leak Detector Spray', searchUrl: 'https://www.amazon.com/s?k=gas+leak+detector+spray&tag=homewise-20' },
+        ],
       },
     ],
   },
@@ -368,6 +444,9 @@ export const applianceTypes = [
         angiCategory: 'appliance-repair',
         priority: 'high',
         notes: 'Clean after every load. Clogged lint traps cause fires and reduce efficiency.',
+        products: [
+          { label: 'Lint Trap Brush', searchUrl: 'https://www.amazon.com/s?k=dryer+lint+trap+brush&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'elec_dryer_vent_clean',
@@ -378,6 +457,9 @@ export const applianceTypes = [
         angiCategory: 'dryer-vent-cleaning',
         priority: 'high',
         notes: 'Same importance as gas dryers. Use a long brush kit and check the exterior vent cap.',
+        products: [
+          { label: 'Dryer Vent Brush Kit', searchUrl: 'https://www.amazon.com/s?k=dryer+vent+cleaning+brush+kit&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'elec_dryer_heating_element',
@@ -388,6 +470,9 @@ export const applianceTypes = [
         angiCategory: 'appliance-repair',
         priority: 'medium',
         notes: 'If clothes take more than one cycle to dry, the element may be partially failed.',
+        products: [
+          { label: 'Digital Multimeter', searchUrl: 'https://www.amazon.com/s?k=digital+multimeter&tag=homewise-20' },
+        ],
       },
     ],
   },
@@ -406,6 +491,9 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'medium',
         notes: 'Grind ice cubes to sharpen blades, then run citrus peels for odor. Never use chemical drain cleaners.',
+        products: [
+          { label: 'Disposal Cleaning Pods', searchUrl: 'https://www.amazon.com/s?k=garbage+disposal+cleaning+pods&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'disposal_blades_check',
@@ -416,6 +504,9 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'medium',
         notes: 'Use the hex wrench under the unit to manually free jams. Press the red reset button on the bottom.',
+        products: [
+          { label: 'Disposal Hex Wrench Set', searchUrl: 'https://www.amazon.com/s?k=garbage+disposal+hex+wrench+1%2F4+inch&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'disposal_splash_guard',
@@ -426,6 +517,7 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'low',
         notes: 'The rubber flaps harbor bacteria and odors. Scrub with a brush and dish soap.',
+        products: [],
       },
     ],
   },
@@ -444,6 +536,7 @@ export const applianceTypes = [
         angiCategory: 'fire-protection',
         priority: 'high',
         notes: 'Press and hold the test button until the alarm sounds. If no sound, replace batteries immediately.',
+        products: [],
       },
       {
         taskId: 'smoke_battery',
@@ -453,7 +546,10 @@ export const applianceTypes = [
         thumbtackCategory: 'home-safety',
         angiCategory: 'fire-protection',
         priority: 'high',
-        notes: 'Replace annually even if it hasn\'t chirped. Use a 9V or AA battery depending on model.',
+        notes: "Replace annually even if it hasn't chirped. Use a 9V or AA battery depending on model.",
+        products: [
+          { label: '9V Batteries 8-Pack', searchUrl: 'https://www.amazon.com/s?k=9v+batteries+8+pack&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'smoke_replace_unit',
@@ -464,6 +560,10 @@ export const applianceTypes = [
         angiCategory: 'fire-protection',
         priority: 'high',
         notes: 'Smoke detectors expire after 10 years regardless of condition. Check manufacture date on back.',
+        products: [
+          { label: 'Smoke Detector Replacement', searchUrl: 'https://www.amazon.com/s?k=smoke+detector+alarm&tag=homewise-20' },
+          { label: 'Combo Smoke + CO Detector', searchUrl: 'https://www.amazon.com/s?k=combination+smoke+carbon+monoxide+detector&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'smoke_dust',
@@ -474,6 +574,7 @@ export const applianceTypes = [
         angiCategory: 'fire-protection',
         priority: 'medium',
         notes: 'Dust buildup causes false alarms and reduced sensitivity. Use vacuum with brush attachment.',
+        products: [],
       },
     ],
   },
@@ -492,6 +593,7 @@ export const applianceTypes = [
         angiCategory: 'fire-protection',
         priority: 'high',
         notes: 'Press and hold test button. CO detectors should alarm within 5 seconds.',
+        products: [],
       },
       {
         taskId: 'co_battery',
@@ -501,7 +603,10 @@ export const applianceTypes = [
         thumbtackCategory: 'home-safety',
         angiCategory: 'fire-protection',
         priority: 'high',
-        notes: 'Replace annually. A chirping detector means low battery — don\'t ignore it.',
+        notes: "Replace annually. A chirping detector means low battery — don't ignore it.",
+        products: [
+          { label: 'AA Batteries 20-Pack', searchUrl: 'https://www.amazon.com/s?k=AA+batteries+20+pack&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'co_replace_unit',
@@ -512,6 +617,9 @@ export const applianceTypes = [
         angiCategory: 'fire-protection',
         priority: 'high',
         notes: 'CO detectors expire after 5–7 years. Check manufacture date — CO sensor degrades over time.',
+        products: [
+          { label: 'Carbon Monoxide Detector', searchUrl: 'https://www.amazon.com/s?k=carbon+monoxide+detector&tag=homewise-20' },
+        ],
       },
     ],
   },
@@ -530,6 +638,7 @@ export const applianceTypes = [
         angiCategory: 'garage-door',
         priority: 'high',
         notes: 'Disconnect opener, lift door halfway manually, release. It should stay in place. If it falls or rises, springs need adjustment — call a pro.',
+        products: [],
       },
       {
         taskId: 'garage_lubricate',
@@ -540,6 +649,10 @@ export const applianceTypes = [
         angiCategory: 'garage-door',
         priority: 'medium',
         notes: 'Use white lithium grease or silicone spray on rollers, hinges, and springs. Never use WD-40.',
+        products: [
+          { label: 'White Lithium Grease Spray', searchUrl: 'https://www.amazon.com/s?k=white+lithium+grease+spray&tag=homewise-20' },
+          { label: 'Silicone Lubricant Spray', searchUrl: 'https://www.amazon.com/s?k=silicone+lubricant+spray&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'garage_safety_reverse',
@@ -550,6 +663,7 @@ export const applianceTypes = [
         angiCategory: 'garage-door',
         priority: 'high',
         notes: 'Place a 2x4 flat on the ground. Door should reverse when it contacts it. Required by law since 1993.',
+        products: [],
       },
       {
         taskId: 'garage_weatherstripping',
@@ -560,6 +674,9 @@ export const applianceTypes = [
         angiCategory: 'garage-door',
         priority: 'low',
         notes: 'Check the bottom seal and side seals for cracks or gaps. Prevents pests, water, and drafts.',
+        products: [
+          { label: 'Garage Door Bottom Seal', searchUrl: 'https://www.amazon.com/s?k=garage+door+bottom+seal+weatherstrip&tag=homewise-20' },
+        ],
       },
     ],
   },
@@ -578,6 +695,10 @@ export const applianceTypes = [
         angiCategory: 'gutter-cleaning',
         priority: 'high',
         notes: 'Clean in late fall after leaves drop, and again in spring. Clogged gutters cause foundation damage and roof rot.',
+        products: [
+          { label: 'Gutter Cleaning Kit', searchUrl: 'https://www.amazon.com/s?k=gutter+cleaning+kit+extension&tag=homewise-20' },
+          { label: 'Ladder Stabilizer', searchUrl: 'https://www.amazon.com/s?k=ladder+stabilizer+standoff&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'gutter_inspect',
@@ -588,6 +709,9 @@ export const applianceTypes = [
         angiCategory: 'gutter-cleaning',
         priority: 'medium',
         notes: 'Run water through with a hose. Check for leaks at seams and ensure gutters slope toward downspouts.',
+        products: [
+          { label: 'Gutter Sealant', searchUrl: 'https://www.amazon.com/s?k=gutter+sealant+repair&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'gutter_downspout',
@@ -598,6 +722,9 @@ export const applianceTypes = [
         angiCategory: 'gutter-cleaning',
         priority: 'medium',
         notes: 'Downspouts should direct water at least 6 feet from the foundation. Use extensions if needed.',
+        products: [
+          { label: 'Downspout Extender', searchUrl: 'https://www.amazon.com/s?k=gutter+downspout+extender&tag=homewise-20' },
+        ],
       },
     ],
   },
@@ -616,6 +743,9 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'high',
         notes: 'Keep salt level at least half full. Use pellet salt for cleaner tanks. Check for salt bridges (a crust that blocks salt from dissolving).',
+        products: [
+          { label: 'Water Softener Salt Pellets 40lb', searchUrl: 'https://www.amazon.com/s?k=water+softener+salt+pellets+40lb&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'softener_brine_tank_clean',
@@ -626,6 +756,7 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'medium',
         notes: 'Disconnect and empty the tank, scrub with soapy water, rinse thoroughly. Prevents salt mushing and buildup.',
+        products: [],
       },
       {
         taskId: 'softener_venturi_clean',
@@ -636,6 +767,7 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'medium',
         notes: 'A clogged venturi is the most common cause of softener failure. Remove and rinse the small plastic parts under warm water.',
+        products: [],
       },
       {
         taskId: 'softener_hardness_test',
@@ -646,6 +778,9 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'low',
         notes: 'Use a test strip to verify the softener is working. Ideal output is 0–3 grains per gallon. Adjust softener settings if needed.',
+        products: [
+          { label: 'Water Hardness Test Strips', searchUrl: 'https://www.amazon.com/s?k=water+hardness+test+strips&tag=homewise-20' },
+        ],
       },
     ],
   },
@@ -664,6 +799,7 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'high',
         notes: 'Pour water into the pit until the float activates. Pump should start and empty the pit quickly.',
+        products: [],
       },
       {
         taskId: 'sump_clean_pit',
@@ -674,6 +810,7 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'medium',
         notes: 'Remove debris and sediment from the pit annually. Check that the inlet screen is clear.',
+        products: [],
       },
       {
         taskId: 'sump_backup_check',
@@ -684,6 +821,9 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'high',
         notes: 'Most flooding happens during storms when power fails. Test backup system and replace batteries every 2–3 years.',
+        products: [
+          { label: 'Sump Pump Battery Backup System', searchUrl: 'https://www.amazon.com/s?k=sump+pump+battery+backup&tag=homewise-20' },
+        ],
       },
       {
         taskId: 'sump_discharge_inspect',
@@ -694,6 +834,9 @@ export const applianceTypes = [
         angiCategory: 'plumbing',
         priority: 'medium',
         notes: 'Ensure discharge pipe is clear and outlets away from the foundation. Check for freezing in winter.',
+        products: [
+          { label: 'Sump Pump Discharge Hose', searchUrl: 'https://www.amazon.com/s?k=sump+pump+discharge+hose&tag=homewise-20' },
+        ],
       },
     ],
   },

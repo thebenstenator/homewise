@@ -1,5 +1,10 @@
 import { Schema, model } from 'mongoose'
 
+interface IProduct {
+  label: string
+  searchUrl: string
+}
+
 interface ITask {
   taskId: string
   label: string
@@ -9,6 +14,7 @@ interface ITask {
   angiCategory: string
   priority: 'high' | 'medium' | 'low'
   notes?: string
+  products?: IProduct[]
 }
 
 interface IApplianceType {
@@ -18,6 +24,14 @@ interface IApplianceType {
   iconSlug: string
   tasks: ITask[]
 }
+
+const ProductSchema = new Schema<IProduct>(
+  {
+    label: { type: String, required: true },
+    searchUrl: { type: String, required: true },
+  },
+  { _id: false }
+)
 
 const TaskSchema = new Schema<ITask>(
   {
@@ -29,6 +43,7 @@ const TaskSchema = new Schema<ITask>(
     angiCategory: { type: String, required: true },
     priority: { type: String, enum: ['high', 'medium', 'low'], required: true },
     notes: { type: String },
+    products: { type: [ProductSchema], default: [] },
   },
   { _id: false }
 )

@@ -43,7 +43,7 @@ router.get('/', async (req: Request, res: Response) => {
 
 // GET /api/schedules/due
 router.get('/due', async (req: Request, res: Response) => {
-  const in30Days = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+  const in30Days = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
   const schedules = await ReminderSchedule.find({
     userId: new Types.ObjectId(req.user!._id),
     isActive: true,

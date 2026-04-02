@@ -54,7 +54,7 @@ export function DashboardPage() {
   }
 
   function handleScheduleUpdated(updated: Schedule) {
-    const in30Days = Date.now() + 30 * 24 * 60 * 60 * 1000
+    const in30Days = Date.now() + 7 * 24 * 60 * 60 * 1000
     const stillDue = new Date(updated.nextDueAt).getTime() <= in30Days
     setSchedules((prev) =>
       stillDue

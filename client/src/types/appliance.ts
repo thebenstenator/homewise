@@ -1,3 +1,8 @@
+export interface ApplianceProduct {
+  label: string
+  searchUrl: string
+}
+
 export interface ApplianceTask {
   taskId: string
   label: string
@@ -7,6 +12,7 @@ export interface ApplianceTask {
   angiCategory: string
   priority: 'high' | 'medium' | 'low'
   notes?: string
+  products?: ApplianceProduct[]
 }
 
 export interface ApplianceType {
@@ -48,6 +54,7 @@ export interface ScheduleTask {
   angiCategory: string
   priority: 'high' | 'medium' | 'low'
   notes?: string
+  products?: ApplianceProduct[]
 }
 
 export interface Schedule {

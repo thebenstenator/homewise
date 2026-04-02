@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import {
   Thermometer, Wind, Flame, Zap, Refrigerator, Droplets, Waves,
-  AlertTriangle, ShieldAlert, Home, GitBranch, Droplet, CircleSlash, Filter,
+  AlertTriangle, ShieldAlert, Home, GitBranch, Droplet, CircleSlash, Filter, ChevronLeft,
 } from 'lucide-react'
 import { AppLayout } from '../components/AppLayout'
 import { historyApi } from '../lib/history'
@@ -60,6 +61,10 @@ export function HistoryPage() {
 
   return (
     <AppLayout>
+      <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 mb-6">
+        <ChevronLeft size={16} /> Back to Dashboard
+      </Link>
+
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-slate-800">Maintenance History</h1>
         <select

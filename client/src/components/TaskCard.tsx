@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ExternalLink, Clock, CheckCircle, ChevronDown, X } from 'lucide-react'
+import { ExternalLink, Clock, CheckCircle, ChevronDown, X, ShoppingCart } from 'lucide-react'
 import type { Schedule } from '../types/appliance'
 import { schedulesApi, daysUntilDue } from '../lib/schedules'
 import { thumbtackUrl, angiUrl, openAffiliate } from '../lib/affiliateLinks'
@@ -16,12 +16,14 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
   const { user } = useAuth()
   const [showLog, setShowLog] = useState(false)
   const [showPro, setShowPro] = useState(false)
+  const [showSnooze, setShowSnooze] = useState(false)
   const [snoozing, setSnoozing] = useState(false)
   const [editingInterval, setEditingInterval] = useState(false)
   const [intervalValue, setIntervalValue] = useState(schedule.intervalDays.toString())
 
   const days = daysUntilDue(schedule.nextDueAt)
   const isOverdue = days < 0
+  const isDueSoon = days <= 7
   const isSnoozed = schedule.snoozedUntil && new Date(schedule.snoozedUntil) > new Date()
 
   const urgencyColor = isOverdue
@@ -42,10 +44,11 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
     ? 'Due today'
     : `Due in ${days} day${days !== 1 ? 's' : ''}`
 
-  async function handleSnooze(days: number) {
+  async function handleSnooze(d: number) {
     setSnoozing(true)
+    setShowSnooze(false)
     try {
-      const updated = await schedulesApi.snooze(schedule._id, days)
+      const updated = await schedulesApi.snooze(schedule._id, d)
       onUpdated(updated)
     } finally {
       setSnoozing(false)
@@ -61,6 +64,8 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
   }
 
   if (isSnoozed) return null
+
+  const products = schedule.task?.products ?? []
 
   return (
     <>
@@ -106,41 +111,56 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
             Find a Pro
           </button>
 
-          <div className="relative">
-            <button
-              disabled={snoozing}
-              onClick={() => {}}
-              className="flex items-center gap-1 px-3 py-1.5 border border-slate-200 text-slate-600 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors"
-            >
-              <Clock size={13} /> Snooze <ChevronDown size={11} />
-            </button>
-            <div className="absolute left-0 top-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-10 hidden group-hover:block">
-              {[7, 14, 30].map((d) => (
-                <button
-                  key={d}
-                  onClick={() => handleSnooze(d)}
-                  className="block w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-slate-50"
-                >
-                  {d === 7 ? '1 week' : d === 14 ? '2 weeks' : '1 month'}
-                </button>
-              ))}
+          {isDueSoon && (
+            <div className="relative">
+              <button
+                disabled={snoozing}
+                onClick={() => setShowSnooze((v) => !v)}
+                className="flex items-center gap-1 px-3 py-1.5 border border-slate-200 text-slate-600 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50"
+              >
+                <Clock size={13} /> Snooze <ChevronDown size={11} />
+              </button>
+              {showSnooze && (
+                <div className="absolute left-0 top-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-10 min-w-[110px]">
+                  {[7, 14, 30].map((d) => (
+                    <button
+                      key={d}
+                      onClick={() => handleSnooze(d)}
+                      className="block w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 first:rounded-t-lg last:rounded-b-lg"
+                    >
+                      {d === 7 ? '1 week' : d === 14 ? '2 weeks' : '1 month'}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
 
-        {/* Snooze options inline */}
-        <div className="flex gap-2 mt-2">
-          {[7, 14, 30].map((d) => (
-            <button
-              key={d}
-              onClick={() => handleSnooze(d)}
-              disabled={snoozing}
-              className="text-xs text-slate-400 hover:text-slate-600 disabled:opacity-50"
-            >
-              Snooze {d === 7 ? '1wk' : d === 14 ? '2wk' : '1mo'}
-            </button>
-          ))}
-        </div>
+        {/* Tools & Parts */}
+        {products.length > 0 && (
+          <div className="mt-3 pt-3 border-t border-slate-200">
+            <p className="text-xs font-medium text-slate-500 mb-2 flex items-center gap-1">
+              <ShoppingCart size={12} /> Tools & Parts
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {products.map((p, i) => (
+                <a
+                  key={i}
+                  href={p.searchUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs px-2.5 py-1 bg-amber-50 border border-amber-200 text-amber-800 rounded-full hover:bg-amber-100 transition-colors"
+                >
+                  {p.label} →
+                </a>
+              ))}
+            </div>
+            <p className="text-xs text-slate-400 mt-1.5">
+              Amazon links · HomeWise may earn a small commission
+            </p>
+          </div>
+        )}
 
         {showInterval && (
           <div className="mt-3 pt-3 border-t border-slate-200 flex items-center gap-2">
