@@ -6,6 +6,7 @@ import mongoose from 'mongoose'
 import authRoutes from './routes/auth.js'
 import applianceTypeRoutes from './routes/applianceTypes.js'
 import applianceRoutes from './routes/appliances.js'
+import scheduleRoutes from './routes/schedules.js'
 import { errorHandler } from './middleware/errorHandler.js'
 
 const app = express()
@@ -23,6 +24,7 @@ app.use(cookieParser())
 app.use('/api/auth', authRoutes)
 app.use('/api/appliance-types', applianceTypeRoutes)
 app.use('/api/appliances', applianceRoutes)
+app.use('/api/schedules', scheduleRoutes)
 
 // Health check
 app.get('/api/health', (_req, res) => {

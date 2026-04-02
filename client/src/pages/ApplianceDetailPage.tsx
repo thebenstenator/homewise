@@ -3,23 +3,32 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Pencil, Trash2, ChevronLeft, Home } from 'lucide-react'
 import { AppLayout } from '../components/AppLayout'
 import { EditApplianceModal } from '../components/EditApplianceModal'
+import { TaskCard } from '../components/TaskCard'
 import type { Appliance } from '../types/appliance'
 import { appliancesApi } from '../lib/appliances'
+import { schedulesApi, Schedule } from '../lib/schedules'
 
 export function ApplianceDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [appliance, setAppliance] = useState<Appliance | null>(null)
+  const [schedules, setSchedules] = useState<Schedule[]>([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
   useEffect(() => {
-    appliancesApi
-      .getAll()
-      .then((all) => setAppliance(all.find((a) => a._id === id) ?? null))
+    Promise.all([appliancesApi.getAll(), schedulesApi.getAll()])
+      .then(([all, allSchedules]) => {
+        setAppliance(all.find((a) => a._id === id) ?? null)
+        setSchedules(allSchedules.filter((s) => s.applianceId === id))
+      })
       .finally(() => setLoading(false))
   }, [id])
+
+  function handleScheduleUpdated(updated: Schedule) {
+    setSchedules((prev) => prev.map((s) => (s._id === updated._id ? updated : s)))
+  }
 
   async function handleDelete() {
     if (!appliance) return
@@ -54,6 +63,7 @@ export function ApplianceDetailPage() {
         <ChevronLeft size={16} /> Back to Dashboard
       </Link>
 
+      {/* Header card */}
       <div className="bg-white border border-slate-200 rounded-xl p-6 mb-6">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
@@ -83,20 +93,33 @@ export function ApplianceDetailPage() {
 
         {(appliance.brand || appliance.model || appliance.installYear) && (
           <div className="mt-4 flex flex-wrap gap-4 text-sm text-slate-600 border-t border-slate-100 pt-4">
-            {appliance.brand && <span><span className="text-slate-400">Brand</span> {appliance.brand}</span>}
-            {appliance.model && <span><span className="text-slate-400">Model</span> {appliance.model}</span>}
-            {appliance.installYear && <span><span className="text-slate-400">Installed</span> {appliance.installYear}</span>}
+            {appliance.brand && <span><span className="text-slate-400">Brand </span>{appliance.brand}</span>}
+            {appliance.model && <span><span className="text-slate-400">Model </span>{appliance.model}</span>}
+            {appliance.installYear && <span><span className="text-slate-400">Installed </span>{appliance.installYear}</span>}
           </div>
         )}
-
         {appliance.notes && (
           <p className="mt-3 text-sm text-slate-500 border-t border-slate-100 pt-3">{appliance.notes}</p>
         )}
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl p-6">
+      {/* Maintenance tasks */}
+      <div>
         <h2 className="font-semibold text-slate-800 mb-4">Maintenance Tasks</h2>
-        <p className="text-sm text-slate-400">Maintenance schedule will appear here in the next update.</p>
+        {schedules.length === 0 ? (
+          <p className="text-sm text-slate-400">No maintenance tasks found.</p>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {schedules.map((s) => (
+              <TaskCard
+                key={s._id}
+                schedule={s}
+                onUpdated={handleScheduleUpdated}
+                showInterval
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {editing && (
@@ -111,7 +134,7 @@ export function ApplianceDetailPage() {
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
             <h3 className="font-semibold text-slate-800 mb-2">Delete "{appliance.name}"?</h3>
-            <p className="text-sm text-slate-500 mb-5">This will also remove its maintenance history. This can't be undone.</p>
+            <p className="text-sm text-slate-500 mb-5">This will also remove all maintenance history. This can't be undone.</p>
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmDelete(false)}

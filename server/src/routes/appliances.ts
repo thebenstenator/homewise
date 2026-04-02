@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { Appliance } from '../models/Appliance.js'
 import { ApplianceType } from '../models/ApplianceType.js'
 import { requireAuth } from '../middleware/auth.js'
+import { generateSchedulesForAppliance, deleteSchedulesForAppliance } from '../services/scheduleService.js'
 
 const router = Router()
 router.use(requireAuth)
@@ -44,6 +45,7 @@ router.post('/', async (req: Request, res: Response) => {
   }
 
   const appliance = await Appliance.create({ ...parsed.data, userId: req.user!._id })
+  await generateSchedulesForAppliance(appliance._id.toString(), req.user!._id)
   res.status(201).json({ ...appliance.toObject(), applianceType: type })
 })
 
@@ -82,6 +84,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
     return
   }
 
+  await deleteSchedulesForAppliance(appliance._id.toString())
   res.json({ message: 'Appliance deleted' })
 })
 
