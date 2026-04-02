@@ -98,7 +98,8 @@ router.post('/:id/complete', async (req: Request, res: Response) => {
   await recalculateNextDue(schedule._id.toString())
 
   const updated = await ReminderSchedule.findById(schedule._id).lean()
-  res.json(updated)
+  const [enriched] = await enrichSchedules([updated])
+  res.json(enriched)
 })
 
 // POST /api/schedules/:id/snooze
@@ -120,7 +121,8 @@ router.post('/:id/snooze', async (req: Request, res: Response) => {
     return
   }
 
-  res.json(schedule)
+  const [enriched] = await enrichSchedules([schedule])
+  res.json(enriched)
 })
 
 // PUT /api/schedules/:id
