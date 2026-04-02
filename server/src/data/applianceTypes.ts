@@ -397,6 +397,7 @@ export const applianceTypes = [
         angiCategory: 'appliance-repair',
         priority: 'high',
         notes: 'Clean after every load. A clogged lint trap is a leading cause of house fires.',
+        isReminder: true,
         products: [
           { label: 'Lint Trap Brush', searchUrl: 'https://www.amazon.com/s?k=dryer+lint+trap+brush&tag=homewise-20' },
         ],
@@ -444,6 +445,7 @@ export const applianceTypes = [
         angiCategory: 'appliance-repair',
         priority: 'high',
         notes: 'Clean after every load. Clogged lint traps cause fires and reduce efficiency.',
+        isReminder: true,
         products: [
           { label: 'Lint Trap Brush', searchUrl: 'https://www.amazon.com/s?k=dryer+lint+trap+brush&tag=homewise-20' },
         ],

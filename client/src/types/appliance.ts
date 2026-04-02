@@ -13,6 +13,7 @@ export interface ApplianceTask {
   priority: 'high' | 'medium' | 'low'
   notes?: string
   products?: ApplianceProduct[]
+  isReminder?: boolean
 }
 
 export interface ApplianceType {

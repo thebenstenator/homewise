@@ -13,6 +13,7 @@ export async function generateSchedulesForAppliance(applianceId: string, userId:
   const now = new Date()
 
   for (const task of type.tasks) {
+    if (task.isReminder) continue
     const existing = await ReminderSchedule.findOne({ applianceId, taskId: task.taskId })
     if (existing) continue
 

@@ -15,6 +15,7 @@ interface ITask {
   priority: 'high' | 'medium' | 'low'
   notes?: string
   products?: IProduct[]
+  isReminder?: boolean
 }
 
 interface IApplianceType {
@@ -44,6 +45,7 @@ const TaskSchema = new Schema<ITask>(
     priority: { type: String, enum: ['high', 'medium', 'low'], required: true },
     notes: { type: String },
     products: { type: [ProductSchema], default: [] },
+    isReminder: { type: Boolean, default: false },
   },
   { _id: false }
 )

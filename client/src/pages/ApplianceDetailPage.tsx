@@ -152,6 +152,31 @@ export function ApplianceDetailPage() {
               ))}
             </div>
           )}
+
+          {/* Always-on reminder tips */}
+          {type && type.tasks.filter((t) => t.isReminder).length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+                Always-On Reminders
+              </h3>
+              <div className="flex flex-col gap-2">
+                {type.tasks.filter((t) => t.isReminder).map((t) => (
+                  <div
+                    key={t.taskId}
+                    className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-start gap-3"
+                  >
+                    <span className="text-amber-500 text-base mt-0.5">⚠</span>
+                    <div>
+                      <p className="text-sm font-medium text-slate-800">{t.label}</p>
+                      {t.notes && (
+                        <p className="text-xs text-slate-500 mt-0.5">{t.notes}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </>
       )}
 
