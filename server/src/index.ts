@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import mongoose from 'mongoose'
 import authRoutes from './routes/auth.js'
 import applianceTypeRoutes from './routes/applianceTypes.js'
+import applianceRoutes from './routes/appliances.js'
 import { errorHandler } from './middleware/errorHandler.js'
 
 const app = express()
@@ -21,6 +22,7 @@ app.use(cookieParser())
 // Routes
 app.use('/api/auth', authRoutes)
 app.use('/api/appliance-types', applianceTypeRoutes)
+app.use('/api/appliances', applianceRoutes)
 
 // Health check
 app.get('/api/health', (_req, res) => {

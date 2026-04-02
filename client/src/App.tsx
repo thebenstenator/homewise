@@ -4,6 +4,7 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 import { LoginPage } from './pages/LoginPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { DashboardPage } from './pages/DashboardPage'
+import { ApplianceDetailPage } from './pages/ApplianceDetailPage'
 
 function RootRedirect() {
   const { user, loading } = useAuth()
@@ -22,6 +23,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/appliances/:id"
+        element={
+          <ProtectedRoute>
+            <ApplianceDetailPage />
           </ProtectedRoute>
         }
       />
