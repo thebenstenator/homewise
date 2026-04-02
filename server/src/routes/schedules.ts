@@ -125,6 +125,23 @@ router.post('/:id/snooze', async (req: Request, res: Response) => {
   res.json(enriched)
 })
 
+// POST /api/schedules/:id/due-now — move nextDueAt to today so task appears in Due Soon
+router.post('/:id/due-now', async (req: Request, res: Response) => {
+  const schedule = await ReminderSchedule.findOneAndUpdate(
+    { _id: req.params.id, userId: new Types.ObjectId(req.user!._id) },
+    { nextDueAt: new Date() },
+    { new: true }
+  ).lean()
+
+  if (!schedule) {
+    res.status(404).json({ error: 'Schedule not found' })
+    return
+  }
+
+  const [enriched] = await enrichSchedules([schedule])
+  res.json(enriched)
+})
+
 // PUT /api/schedules/:id
 router.put('/:id', async (req: Request, res: Response) => {
   const parsed = z.object({ intervalDays: z.number().int().min(1) }).safeParse(req.body)

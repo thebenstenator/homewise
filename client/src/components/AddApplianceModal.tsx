@@ -1,5 +1,6 @@
 import { useState, FormEvent } from 'react'
-import { X, ChevronLeft } from 'lucide-react'
+import { X, ChevronLeft, CheckCircle } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { ApplianceTypePicker } from './ApplianceTypePicker'
 import type { ApplianceType, Appliance } from '../types/appliance'
 import { appliancesApi } from '../lib/appliances'
@@ -10,8 +11,10 @@ interface Props {
 }
 
 export function AddApplianceModal({ onClose, onCreated }: Props) {
-  const [step, setStep] = useState<1 | 2>(1)
+  const navigate = useNavigate()
+  const [step, setStep] = useState<1 | 2 | 3>(1)
   const [selectedType, setSelectedType] = useState<ApplianceType | null>(null)
+  const [createdAppliance, setCreatedAppliance] = useState<Appliance | null>(null)
   const [form, setForm] = useState({ name: '', brand: '', model: '', installYear: '', notes: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -42,11 +45,26 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
         notes: form.notes || undefined,
       })
       onCreated(appliance)
+      setCreatedAppliance(appliance)
+
+      // Suggest catch-up review if install year is more than a year ago
+      const installYear = form.installYear ? parseInt(form.installYear) : null
+      const isOld = installYear && installYear < new Date().getFullYear() - 1
+      if (isOld) {
+        setStep(3)
+      } else {
+        onClose()
+      }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to add appliance')
     } finally {
       setLoading(false)
     }
+  }
+
+  function handleReviewTasks() {
+    onClose()
+    if (createdAppliance) navigate(`/appliances/${createdAppliance._id}`)
   }
 
   return (
@@ -61,7 +79,7 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
               </button>
             )}
             <h2 className="font-semibold text-slate-800">
-              {step === 1 ? 'What type of appliance?' : 'Appliance details'}
+              {step === 1 ? 'What type of appliance?' : step === 2 ? 'Appliance details' : 'Appliance added'}
             </h2>
           </div>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-700">
@@ -134,6 +152,26 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
               </div>
             </form>
           )}
+
+          {step === 3 && (
+            <div className="py-4 flex flex-col items-center text-center gap-4">
+              <div className="p-3 bg-green-50 rounded-full">
+                <CheckCircle size={32} className="text-green-600" />
+              </div>
+              <div>
+                <p className="font-semibold text-slate-800 mb-1">{createdAppliance?.name} added!</p>
+                <p className="text-sm text-slate-500">
+                  Since this appliance has been installed for a while, some maintenance tasks may already be overdue.
+                </p>
+              </div>
+              <div className="w-full bg-amber-50 border border-amber-200 rounded-xl p-4 text-left">
+                <p className="text-sm font-medium text-amber-800 mb-1">Want to get caught up?</p>
+                <p className="text-xs text-amber-700">
+                  Review your tasks and use "Schedule for this week" to add any you'd like to tackle soon. Completely optional — your tasks are already scheduled based on the install year.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer */}
@@ -146,6 +184,23 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
               className="w-full bg-green-600 text-white rounded-lg py-2.5 text-sm font-medium hover:bg-green-700 disabled:opacity-50 transition-colors"
             >
               {loading ? 'Adding…' : 'Add Appliance'}
+            </button>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className="px-6 py-4 border-t border-slate-100 flex gap-3">
+            <button
+              onClick={onClose}
+              className="flex-1 border border-slate-200 text-slate-600 rounded-lg py-2.5 text-sm font-medium hover:bg-slate-50 transition-colors"
+            >
+              Done
+            </button>
+            <button
+              onClick={handleReviewTasks}
+              className="flex-1 bg-green-600 text-white rounded-lg py-2.5 text-sm font-medium hover:bg-green-700 transition-colors"
+            >
+              Review Tasks →
             </button>
           </div>
         )}

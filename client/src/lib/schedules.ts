@@ -12,6 +12,8 @@ export const schedulesApi = {
     api.post<Schedule>(`/api/schedules/${id}/snooze`, { days }),
   updateInterval: (id: string, intervalDays: number) =>
     api.put<Schedule>(`/api/schedules/${id}`, { intervalDays }),
+  scheduleNow: (id: string) =>
+    api.post<Schedule>(`/api/schedules/${id}/due-now`, {}),
 }
 
 export function daysUntilDue(nextDueAt: string): number {

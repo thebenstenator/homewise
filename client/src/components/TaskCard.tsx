@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ExternalLink, Clock, CheckCircle, ChevronDown, X, ShoppingCart } from 'lucide-react'
+import { ExternalLink, Clock, CheckCircle, ChevronDown, X, ShoppingCart, CalendarClock } from 'lucide-react'
 import type { Schedule } from '../types/appliance'
 import { schedulesApi, daysUntilDue } from '../lib/schedules'
 import { thumbtackUrl, angiUrl, openAffiliate } from '../lib/affiliateLinks'
@@ -18,6 +18,7 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
   const [showPro, setShowPro] = useState(false)
   const [showSnooze, setShowSnooze] = useState(false)
   const [snoozing, setSnoozing] = useState(false)
+  const [schedulingNow, setSchedulingNow] = useState(false)
   const [editingInterval, setEditingInterval] = useState(false)
   const [intervalValue, setIntervalValue] = useState(schedule.intervalDays.toString())
 
@@ -52,6 +53,16 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
       onUpdated(updated)
     } finally {
       setSnoozing(false)
+    }
+  }
+
+  async function handleScheduleNow() {
+    setSchedulingNow(true)
+    try {
+      const updated = await schedulesApi.scheduleNow(schedule._id)
+      onUpdated(updated)
+    } finally {
+      setSchedulingNow(false)
     }
   }
 
@@ -110,6 +121,16 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
           >
             Find a Pro
           </button>
+
+          {showInterval && !isDueSoon && (
+            <button
+              onClick={handleScheduleNow}
+              disabled={schedulingNow}
+              className="flex items-center gap-1.5 px-3 py-1.5 border border-amber-300 text-amber-700 bg-amber-50 text-xs font-medium rounded-lg hover:bg-amber-100 transition-colors disabled:opacity-50 cursor-pointer"
+            >
+              <CalendarClock size={13} /> Schedule for this week
+            </button>
+          )}
 
           {isDueSoon && (
             <div className="relative">
