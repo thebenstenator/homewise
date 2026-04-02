@@ -42,22 +42,25 @@ export function ApplianceCard({ appliance, onEdit, onDelete }: Props) {
   const colorClass = type ? (categoryColors[type.category] ?? 'bg-slate-50 text-slate-600') : 'bg-slate-50 text-slate-600'
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col gap-3 h-44">
+    <Link
+      to={`/appliances/${appliance._id}`}
+      className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col gap-3 h-44 hover:border-green-400 hover:shadow-sm transition-all cursor-pointer"
+    >
       <div className="flex items-start justify-between">
         <div className={`p-2 rounded-lg ${colorClass}`}>
           <Icon size={20} />
         </div>
         <div className="flex gap-1">
           <button
-            onClick={() => onEdit(appliance)}
-            className="p-1.5 text-slate-400 hover:text-slate-700 transition-colors"
+            onClick={(e) => { e.preventDefault(); onEdit(appliance) }}
+            className="p-1.5 text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
             aria-label="Edit appliance"
           >
             <Pencil size={15} />
           </button>
           <button
-            onClick={() => setConfirmDelete(true)}
-            className="p-1.5 text-slate-400 hover:text-red-600 transition-colors"
+            onClick={(e) => { e.preventDefault(); setConfirmDelete(true) }}
+            className="p-1.5 text-slate-400 hover:text-red-600 transition-colors cursor-pointer"
             aria-label="Delete appliance"
           >
             <Trash2 size={15} />
@@ -74,34 +77,32 @@ export function ApplianceCard({ appliance, onEdit, onDelete }: Props) {
 
       <div className="flex items-center justify-between mt-auto pt-2 border-t border-slate-100">
         <span className="text-xs text-slate-400">0 tasks due</span>
-        <Link
-          to={`/appliances/${appliance._id}`}
-          className="text-xs font-medium text-green-600 hover:text-green-700"
-        >
-          View Tasks →
-        </Link>
+        <span className="text-xs font-medium text-green-600">View Tasks →</span>
       </div>
 
       {confirmDelete && (
-        <div className="absolute inset-0 bg-white rounded-xl flex flex-col items-center justify-center gap-3 p-4 border border-red-200 z-10">
+        <div
+          onClick={(e) => e.preventDefault()}
+          className="absolute inset-0 bg-white rounded-xl flex flex-col items-center justify-center gap-3 p-4 border border-red-200 z-10"
+        >
           <p className="text-sm font-medium text-slate-800 text-center">Delete "{appliance.name}"?</p>
           <p className="text-xs text-slate-500 text-center">This will also remove its maintenance history.</p>
           <div className="flex gap-2">
             <button
-              onClick={() => setConfirmDelete(false)}
-              className="px-3 py-1.5 text-sm border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50"
+              onClick={(e) => { e.preventDefault(); setConfirmDelete(false) }}
+              className="px-3 py-1.5 text-sm border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 cursor-pointer"
             >
               Cancel
             </button>
             <button
-              onClick={() => { onDelete(appliance._id); setConfirmDelete(false) }}
-              className="px-3 py-1.5 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700"
+              onClick={(e) => { e.preventDefault(); onDelete(appliance._id); setConfirmDelete(false) }}
+              className="px-3 py-1.5 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 cursor-pointer"
             >
               Delete
             </button>
           </div>
         </div>
       )}
-    </div>
+    </Link>
   )
 }
