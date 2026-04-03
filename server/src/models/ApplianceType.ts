@@ -16,6 +16,7 @@ interface ITask {
   notes?: string
   products?: IProduct[]
   isReminder?: boolean
+  steps?: string[]
 }
 
 interface IApplianceType {
@@ -46,6 +47,7 @@ const TaskSchema = new Schema<ITask>(
     notes: { type: String },
     products: { type: [ProductSchema], default: [] },
     isReminder: { type: Boolean, default: false },
+    steps: { type: [String], default: [] },
   },
   { _id: false }
 )

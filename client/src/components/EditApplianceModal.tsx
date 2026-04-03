@@ -2,6 +2,7 @@ import { useState, FormEvent } from 'react'
 import { X } from 'lucide-react'
 import type { Appliance } from '../types/appliance'
 import { appliancesApi } from '../lib/appliances'
+import { useModalClose } from '../hooks/useModalClose'
 
 interface Props {
   appliance: Appliance
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export function EditApplianceModal({ appliance, onClose, onUpdated }: Props) {
+  useModalClose(onClose)
   const [form, setForm] = useState({
     name: appliance.name,
     brand: appliance.brand ?? '',
@@ -46,8 +48,8 @@ export function EditApplianceModal({ appliance, onClose, onUpdated }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-md">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
           <h2 className="font-semibold text-slate-800">Edit Appliance</h2>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-700">

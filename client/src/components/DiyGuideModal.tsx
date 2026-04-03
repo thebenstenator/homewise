@@ -1,5 +1,6 @@
 import { X, ExternalLink, ShoppingCart } from 'lucide-react'
 import type { ScheduleTask } from '../types/appliance'
+import { useModalClose } from '../hooks/useModalClose'
 
 interface Props {
   task: ScheduleTask
@@ -8,11 +9,13 @@ interface Props {
 }
 
 export function DiyGuideModal({ task, applianceName, onClose }: Props) {
+  useModalClose(onClose)
   const products = task.products ?? []
+  const steps = task.steps ?? []
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-md flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl w-full max-w-md flex flex-col max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex items-start justify-between px-6 py-4 border-b border-slate-100">
           <div>
@@ -25,11 +28,28 @@ export function DiyGuideModal({ task, applianceName, onClose }: Props) {
         </div>
 
         <div className="overflow-y-auto flex-1 px-6 py-4 flex flex-col gap-5">
+          {/* Steps */}
+          {steps.length > 0 && (
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Steps</p>
+              <ol className="flex flex-col gap-3">
+                {steps.map((step, i) => (
+                  <li key={i} className="flex gap-3">
+                    <span className="shrink-0 w-6 h-6 rounded-full bg-green-100 text-green-700 text-xs font-bold flex items-center justify-center mt-0.5">
+                      {i + 1}
+                    </span>
+                    <p className="text-sm text-slate-700 leading-relaxed">{step}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+
           {/* Tips */}
           {task.notes && (
             <div>
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Tips</p>
-              <p className="text-sm text-slate-700 leading-relaxed">{task.notes}</p>
+              <p className="text-sm text-slate-600 leading-relaxed italic">{task.notes}</p>
             </div>
           )}
 

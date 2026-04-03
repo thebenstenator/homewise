@@ -2,6 +2,7 @@ import { useState, FormEvent } from 'react'
 import { X } from 'lucide-react'
 import type { Schedule } from '../types/appliance'
 import { schedulesApi } from '../lib/schedules'
+import { useModalClose } from '../hooks/useModalClose'
 
 interface Props {
   schedule: Schedule
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export function LogTaskModal({ schedule, onClose, onCompleted }: Props) {
+  useModalClose(onClose)
   const today = new Date().toISOString().split('T')[0]
   const [form, setForm] = useState({
     completedAt: today,
@@ -48,8 +50,8 @@ export function LogTaskModal({ schedule, onClose, onCompleted }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-md">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
           <div>
             <h2 className="font-semibold text-slate-800">Mark Task Done</h2>

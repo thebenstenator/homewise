@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Clock, CheckCircle, ChevronDown, X, CalendarClock, BookOpen } from 'lucide-react'
 import type { Schedule } from '../types/appliance'
 import { schedulesApi, daysUntilDue } from '../lib/schedules'
@@ -75,6 +75,20 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
     onUpdated(updated)
     setEditingInterval(false)
   }
+
+  useEffect(() => {
+    if (!showPro && !showDiy && !showLog) return
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        setShowPro(false)
+        setShowDiy(false)
+        setShowLog(false)
+        setShowSnooze(false)
+      }
+    }
+    document.addEventListener('keydown', handleKey)
+    return () => document.removeEventListener('keydown', handleKey)
+  }, [showPro, showDiy, showLog])
 
   if (isSnoozed) return null
 
@@ -189,8 +203,8 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
 
       {/* Find a Pro popover */}
       {showPro && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setShowPro(false)}>
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-slate-800">Find a Pro</h3>
               <button onClick={() => setShowPro(false)} className="text-slate-400 hover:text-slate-700">

@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react'
 import { X, ChevronLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useModalClose } from '../hooks/useModalClose'
 import { ApplianceTypePicker } from './ApplianceTypePicker'
 import type { ApplianceType, Appliance } from '../types/appliance'
 import { appliancesApi } from '../lib/appliances'
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export function AddApplianceModal({ onClose, onCreated }: Props) {
+  useModalClose(onClose)
   const navigate = useNavigate()
   const [step, setStep] = useState<1 | 2>(1)
   const [selectedType, setSelectedType] = useState<ApplianceType | null>(null)
@@ -59,8 +61,8 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
   const isOld = installYear !== null && installYear < new Date().getFullYear() - 1
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2">

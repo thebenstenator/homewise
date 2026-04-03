@@ -14,6 +14,7 @@ export interface ApplianceTask {
   notes?: string
   products?: ApplianceProduct[]
   isReminder?: boolean
+  steps?: string[]
 }
 
 export interface ApplianceType {
@@ -56,6 +57,8 @@ export interface ScheduleTask {
   priority: 'high' | 'medium' | 'low'
   notes?: string
   products?: ApplianceProduct[]
+  isReminder?: boolean
+  steps?: string[]
 }
 
 export interface Schedule {
