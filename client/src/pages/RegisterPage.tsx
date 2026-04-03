@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext'
 export function RegisterPage() {
   const { register } = useAuth()
   const navigate = useNavigate()
-  const [form, setForm] = useState({ name: '', email: '', password: '', zipCode: '' })
+  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '', zipCode: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -17,6 +17,10 @@ export function RegisterPage() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError('')
+    if (form.password !== form.confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
     setLoading(true)
     try {
       await register(form.name, form.email, form.password, form.zipCode)
@@ -31,8 +35,8 @@ export function RegisterPage() {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-slate-800 mb-2">Create your account</h1>
-        <p className="text-slate-500 mb-8">Free forever. No credit card needed.</p>
+        <h1 className="text-2xl font-bold text-slate-800 mb-2 text-center">Create your account</h1>
+        <p className="text-slate-500 mb-8 text-center">Free forever. No credit card needed.</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
@@ -57,6 +61,7 @@ export function RegisterPage() {
               value={form.email}
               onChange={set('email')}
               required
+              autoComplete="email"
               className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
@@ -69,9 +74,23 @@ export function RegisterPage() {
               onChange={set('password')}
               required
               minLength={8}
+              autoComplete="new-password"
               className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
             <p className="text-xs text-slate-400 mt-1">At least 8 characters</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Confirm Password</label>
+            <input
+              type="password"
+              value={form.confirmPassword}
+              onChange={set('confirmPassword')}
+              required
+              minLength={8}
+              autoComplete="new-password"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
           </div>
 
           <div>

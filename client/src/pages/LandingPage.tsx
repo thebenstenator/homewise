@@ -51,7 +51,7 @@ const steps = [
   {
     icon: Home,
     title: 'Add your appliances',
-    desc: 'Tell us what you have — HVAC, water heater, washer, and more. Takes under a minute.',
+    desc: 'Tell us what you have — HVAC, water heater, washer, and more. Takes a few minutes.',
   },
   {
     icon: Bell,
@@ -138,7 +138,7 @@ export function LandingPage() {
           <h2 className="text-2xl font-bold text-slate-800 text-center mb-10">What's included</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
             {features.map((f, i) => (
-              <div key={i} className="flex items-center gap-3">
+              <div key={i} className="flex items-center gap-3 justify-center sm:justify-start">
                 <CheckCircle size={16} className="text-green-600 shrink-0" />
                 <span className="text-sm text-slate-700">{f}</span>
               </div>
@@ -152,7 +152,7 @@ export function LandingPage() {
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl font-bold text-slate-800 text-center mb-3">Covers your whole home</h2>
           <p className="text-sm text-slate-500 text-center mb-10">
-            15+ appliance types with pre-built maintenance schedules.
+            16 appliance types with pre-built maintenance schedules — more to come.
           </p>
           <div className="grid grid-cols-3 sm:grid-cols-5 gap-4">
             {applianceIcons.map(({ label, icon: Icon }) => (

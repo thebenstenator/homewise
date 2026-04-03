@@ -27,8 +27,8 @@ export function LoginPage() {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-slate-800 mb-2">Welcome back</h1>
-        <p className="text-slate-500 mb-8">Log in to your HomeWise account</p>
+        <h1 className="text-2xl font-bold text-slate-800 mb-2 text-center">Welcome back</h1>
+        <p className="text-slate-500 mb-8 text-center">Log in to your HomeWise account</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
@@ -42,6 +42,7 @@ export function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
               className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
@@ -53,6 +54,7 @@ export function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete="current-password"
               className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
