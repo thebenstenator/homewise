@@ -1,5 +1,6 @@
-import { useState, FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { X } from 'lucide-react'
+import toast from 'react-hot-toast'
 import type { Schedule } from '../types/appliance'
 import { schedulesApi } from '../lib/schedules'
 import { useModalClose } from '../hooks/useModalClose'
@@ -40,10 +41,13 @@ export function LogTaskModal({ schedule, onClose, onCompleted }: Props) {
         cost: form.cost ? parseFloat(form.cost) : undefined,
       })
       onCompleted(updated)
+      toast.success('Task marked as done!')
       setSuccess(true)
       setTimeout(onClose, 1200)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to log task')
+      const msg = err instanceof Error ? err.message : 'Failed to log task'
+      setError(msg)
+      toast.error(msg)
     } finally {
       setLoading(false)
     }

@@ -1,4 +1,5 @@
-import { useState, FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
+import toast from 'react-hot-toast'
 import { AppLayout } from '../components/AppLayout'
 import { useAuth } from '../context/AuthContext'
 import { api } from '../lib/api'
@@ -28,9 +29,12 @@ export function ProfilePage() {
       const { user: updated } = await api.put<{ user: typeof user }>('/api/users/profile', form)
       setUser(updated)
       setSuccess(true)
+      toast.success('Profile saved!')
       setTimeout(() => setSuccess(false), 3000)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to save')
+      const msg = err instanceof Error ? err.message : 'Failed to save'
+      setError(msg)
+      toast.error(msg)
     } finally {
       setLoading(false)
     }

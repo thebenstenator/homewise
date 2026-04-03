@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import { LandingPage } from './pages/LandingPage'
 import { LoginPage } from './pages/LoginPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { DashboardPage } from './pages/DashboardPage'
@@ -11,7 +13,7 @@ import { HistoryPage } from './pages/HistoryPage'
 function RootRedirect() {
   const { user, loading } = useAuth()
   if (loading) return null
-  return <Navigate to={user ? '/dashboard' : '/login'} replace />
+  return user ? <Navigate to="/dashboard" replace /> : <LandingPage />
 }
 
 function AppRoutes() {
@@ -61,6 +63,14 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <AppRoutes />
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            duration: 3000,
+            style: { fontSize: '14px' },
+            success: { iconTheme: { primary: '#16a34a', secondary: '#fff' } },
+          }}
+        />
       </AuthProvider>
     </BrowserRouter>
   )

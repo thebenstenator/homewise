@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Clock, CheckCircle, ChevronDown, X, CalendarClock, BookOpen } from 'lucide-react'
+import toast from 'react-hot-toast'
 import type { Schedule } from '../types/appliance'
 import { schedulesApi, daysUntilDue } from '../lib/schedules'
 import { thumbtackUrl, angiUrl, openAffiliate } from '../lib/affiliateLinks'
@@ -53,6 +54,10 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
     try {
       const updated = await schedulesApi.snooze(schedule._id, d)
       onUpdated(updated)
+      const label = d === 7 ? '1 week' : d === 14 ? '2 weeks' : '1 month'
+      toast.success(`Snoozed for ${label}`)
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Failed to snooze')
     } finally {
       setSnoozing(false)
     }
@@ -220,7 +225,7 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
             <div className="flex flex-col gap-2">
               <button
                 onClick={() => {
-                  openAffiliate(thumbtackUrl(schedule.task?.thumbtackCategory ?? '', user?.zipCode ?? ''))
+                  openAffiliate(thumbtackUrl(schedule.task?.thumbtackCategory ?? '', user?.zipCode ?? ''), 'thumbtack')
                   setShowPro(false)
                 }}
                 className="w-full px-4 py-2.5 bg-slate-800 text-white text-sm font-medium rounded-lg hover:bg-slate-700 transition-colors"
@@ -229,7 +234,7 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
               </button>
               <button
                 onClick={() => {
-                  openAffiliate(angiUrl(schedule.task?.angiCategory ?? '', user?.zipCode ?? ''))
+                  openAffiliate(angiUrl(schedule.task?.angiCategory ?? '', user?.zipCode ?? ''), 'angi')
                   setShowPro(false)
                 }}
                 className="w-full px-4 py-2.5 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors"

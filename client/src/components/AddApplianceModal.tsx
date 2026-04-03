@@ -1,6 +1,7 @@
-import { useState, FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { X, ChevronLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 import { useModalClose } from '../hooks/useModalClose'
 import { ApplianceTypePicker } from './ApplianceTypePicker'
 import type { ApplianceType, Appliance } from '../types/appliance'
@@ -46,12 +47,15 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
         notes: form.notes || undefined,
       })
       onCreated(appliance)
+      toast.success(`${form.name} added!`)
       if (reviewAfter) {
         navigate(`/appliances/${appliance._id}`)
       }
       onClose()
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to add appliance')
+      const msg = err instanceof Error ? err.message : 'Failed to add appliance'
+      setError(msg)
+      toast.error(msg)
     } finally {
       setLoading(false)
     }

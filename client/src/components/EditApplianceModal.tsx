@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { X } from 'lucide-react'
 import type { Appliance } from '../types/appliance'
 import { appliancesApi } from '../lib/appliances'

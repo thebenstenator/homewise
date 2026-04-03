@@ -2,6 +2,8 @@ import 'dotenv/config'
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import helmet from 'helmet'
+import rateLimit from 'express-rate-limit'
 import mongoose from 'mongoose'
 import authRoutes from './routes/auth.js'
 import applianceTypeRoutes from './routes/applianceTypes.js'
@@ -16,13 +18,45 @@ import { requireAuth } from './middleware/auth.js'
 const app = express()
 const PORT = process.env.PORT || 3001
 
-// Middleware
+// Security headers
+app.use(helmet())
+
+// CORS — must come before other middleware so preflight requests get credentials header
 app.use(cors({
   origin: process.env.CLIENT_URL,
   credentials: true,
 }))
 app.use(express.json())
 app.use(cookieParser())
+
+// Rate limiting
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' },
+})
+
+const registerLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many registration attempts, please try again later.' },
+})
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many login attempts, please try again later.' },
+})
+
+app.use('/api/', globalLimiter)
+app.use('/api/auth/register', registerLimiter)
+app.use('/api/auth/login', loginLimiter)
 
 // Routes
 app.use('/api/auth', authRoutes)
