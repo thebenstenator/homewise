@@ -1,9 +1,11 @@
 import { Router, Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import crypto from 'crypto'
 import { z } from 'zod'
 import { User } from '../models/User.js'
 import { requireAuth } from '../middleware/auth.js'
+import { sendPasswordReset } from '../services/emailService.js'
 
 const router = Router()
 
@@ -97,6 +99,66 @@ router.post('/logout', (_req: Request, res: Response) => {
 // GET /api/auth/me
 router.get('/me', requireAuth, (req: Request, res: Response) => {
   res.json({ user: req.user })
+})
+
+// POST /api/auth/forgot-password
+router.post('/forgot-password', async (req: Request, res: Response) => {
+  const parsed = z.object({ email: z.string().email().trim().toLowerCase() }).safeParse(req.body)
+  if (!parsed.success) {
+    res.status(400).json({ error: 'Valid email required' })
+    return
+  }
+
+  // Always respond with the same message to avoid leaking whether an email exists
+  const genericResponse = { message: 'If that email is registered, a reset link is on its way.' }
+
+  const user = await User.findOne({ email: parsed.data.email })
+  if (!user) {
+    res.json(genericResponse)
+    return
+  }
+
+  const token = crypto.randomBytes(32).toString('hex')
+  const expiry = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
+
+  await User.findByIdAndUpdate(user._id, { resetToken: token, resetTokenExpiry: expiry })
+
+  const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${token}`
+  await sendPasswordReset(user.email, resetUrl)
+
+  res.json(genericResponse)
+})
+
+// POST /api/auth/reset-password
+router.post('/reset-password', async (req: Request, res: Response) => {
+  const parsed = z.object({
+    token: z.string().min(1),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+  }).safeParse(req.body)
+
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.errors[0].message })
+    return
+  }
+
+  const user = await User.findOne({
+    resetToken: parsed.data.token,
+    resetTokenExpiry: { $gt: new Date() },
+  })
+
+  if (!user) {
+    res.status(400).json({ error: 'This reset link is invalid or has expired.' })
+    return
+  }
+
+  const passwordHash = await bcrypt.hash(parsed.data.password, 10)
+  await User.findByIdAndUpdate(user._id, {
+    passwordHash,
+    resetToken: undefined,
+    resetTokenExpiry: undefined,
+  })
+
+  res.json({ message: 'Password updated. You can now log in.' })
 })
 
 // POST /api/auth/unsubscribe

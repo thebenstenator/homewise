@@ -7,6 +7,8 @@ interface IUser {
   zipCode: string
   emailReminders: boolean
   createdAt: Date
+  resetToken?: string
+  resetTokenExpiry?: Date
 }
 
 const UserSchema = new Schema<IUser>(
@@ -16,6 +18,8 @@ const UserSchema = new Schema<IUser>(
     name: { type: String, required: true, trim: true },
     zipCode: { type: String, required: true, trim: true },
     emailReminders: { type: Boolean, default: true },
+    resetToken: { type: String },
+    resetTokenExpiry: { type: Date },
   },
   { timestamps: { createdAt: true, updatedAt: false } }
 )

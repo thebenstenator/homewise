@@ -2,6 +2,51 @@ import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
+export async function sendPasswordReset(email: string, resetUrl: string) {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+    <body style="margin:0;padding:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:32px 16px">
+        <tr><td align="center">
+          <table width="100%" style="max-width:560px;background:#ffffff;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden">
+            <tr>
+              <td style="background:#1e293b;padding:24px 32px">
+                <p style="margin:0;font-size:22px;font-weight:700;color:#4ade80">HomeWise</p>
+                <p style="margin:6px 0 0;font-size:14px;color:#94a3b8">Password reset request</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:32px">
+                <p style="margin:0 0 16px;font-size:15px;color:#334155">We received a request to reset your password. Click the button below to choose a new one.</p>
+                <p style="margin:0 0 24px;font-size:15px;color:#334155">This link expires in <strong>1 hour</strong>.</p>
+                <a href="${resetUrl}" style="display:block;text-align:center;padding:12px;background:#16a34a;color:#ffffff;font-size:14px;font-weight:600;border-radius:8px;text-decoration:none">
+                  Reset my password →
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:20px 32px;border-top:1px solid #e2e8f0;background:#f8fafc">
+                <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center">
+                  If you didn't request this, you can safely ignore this email. Your password won't change.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td></tr>
+      </table>
+    </body>
+    </html>`
+
+  await resend.emails.send({
+    from: process.env.RESEND_FROM_EMAIL ?? 'HomeWise <reminders@homewise.app>',
+    to: email,
+    subject: 'Reset your HomeWise password',
+    html,
+  })
+}
+
 export interface DueTask {
   applianceName: string
   taskLabel: string
