@@ -30,6 +30,14 @@ export function EditApplianceModal({ appliance, onClose, onUpdated }: Props) {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError('')
+    if (form.installYear) {
+      const year = parseInt(form.installYear)
+      const currentYear = new Date().getFullYear()
+      if (form.installYear.length !== 4 || isNaN(year) || year < 1950 || year > currentYear) {
+        setError(`Install year must be between 1950 and ${currentYear}`)
+        return
+      }
+    }
     setLoading(true)
     try {
       const updated = await appliancesApi.update(appliance._id, {
@@ -94,11 +102,12 @@ export function EditApplianceModal({ appliance, onClose, onUpdated }: Props) {
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Install Year</label>
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
               value={form.installYear}
               onChange={set('installYear')}
-              min={1950}
-              max={new Date().getFullYear()}
+              maxLength={4}
+              placeholder="e.g. 2018"
               className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>

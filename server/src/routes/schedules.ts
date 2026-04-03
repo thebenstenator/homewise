@@ -125,11 +125,12 @@ router.post('/:id/snooze', async (req: Request, res: Response) => {
   res.json(enriched)
 })
 
-// POST /api/schedules/:id/due-now — move nextDueAt to today so task appears in Due Soon
+// POST /api/schedules/:id/due-now — move nextDueAt to 2 days from now so task appears in Due Soon
 router.post('/:id/due-now', async (req: Request, res: Response) => {
+  const twoDaysFromNow = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
   const schedule = await ReminderSchedule.findOneAndUpdate(
     { _id: req.params.id, userId: new Types.ObjectId(req.user!._id) },
-    { nextDueAt: new Date() },
+    { nextDueAt: twoDaysFromNow },
     { new: true }
   ).lean()
 

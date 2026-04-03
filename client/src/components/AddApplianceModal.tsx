@@ -32,9 +32,21 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
       setForm((f) => ({ ...f, [field]: e.target.value }))
   }
 
+  function validateYear(): string | null {
+    if (!form.installYear) return null
+    const year = parseInt(form.installYear)
+    const currentYear = new Date().getFullYear()
+    if (form.installYear.length !== 4 || isNaN(year) || year < 1950 || year > currentYear) {
+      return `Install year must be between 1950 and ${currentYear}`
+    }
+    return null
+  }
+
   async function handleSubmit(e: FormEvent, reviewAfter = false) {
     e.preventDefault()
     if (!selectedType) return
+    const yearError = validateYear()
+    if (yearError) { setError(yearError); return }
     setError('')
     setLoading(true)
     try {
@@ -61,8 +73,9 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
     }
   }
 
-  const installYear = form.installYear ? parseInt(form.installYear) : null
-  const isOld = installYear !== null && installYear < new Date().getFullYear() - 1
+  const installYear = form.installYear.length === 4 ? parseInt(form.installYear) : null
+  const currentYear = new Date().getFullYear()
+  const isOld = installYear !== null && installYear >= 1950 && installYear <= currentYear && installYear < currentYear - 1
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={onClose}>
@@ -128,11 +141,11 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Install Year</label>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   value={form.installYear}
                   onChange={set('installYear')}
-                  min={1950}
-                  max={new Date().getFullYear()}
+                  maxLength={4}
                   placeholder="e.g. 2018"
                   className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                 />

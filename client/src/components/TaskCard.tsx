@@ -181,11 +181,11 @@ export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
             {editingInterval ? (
               <>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   value={intervalValue}
                   onChange={(e) => setIntervalValue(e.target.value)}
                   className="w-16 border border-slate-300 rounded px-2 py-0.5 text-xs"
-                  min={1}
                 />
                 <span className="text-xs text-slate-500">days</span>
                 <button onClick={handleSaveInterval} className="text-xs text-green-600 font-medium">Save</button>
