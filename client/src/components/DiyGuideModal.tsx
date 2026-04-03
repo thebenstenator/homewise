@@ -30,7 +30,7 @@ export function DiyGuideModal({ task, applianceName, onClose }: Props) {
           </button>
         </div>
 
-        <div className="overflow-y-auto flex-1 px-6 py-4 flex flex-col gap-5">
+        <div className="overflow-y-auto flex-1 px-6 py-4 flex flex-col gap-5 pb-2">
           {/* Steps */}
           {steps.length > 0 && (
             <div>
@@ -81,6 +81,9 @@ export function DiyGuideModal({ task, applianceName, onClose }: Props) {
               </p>
             </div>
           )}
+          <p className="text-xs text-slate-400 text-center leading-relaxed pb-1">
+            DIY guides are for general reference only. When in doubt, hire a licensed professional.
+          </p>
         </div>
 
         {/* Footer */}
@@ -123,9 +126,6 @@ export function DiyGuideModal({ task, applianceName, onClose }: Props) {
             </div>
           )}
 
-          <p className="text-xs text-slate-400 text-center leading-relaxed">
-            DIY guides are for general reference only. When in doubt, hire a licensed professional.
-          </p>
         </div>
       </div>
     </div>
