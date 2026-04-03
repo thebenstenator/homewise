@@ -11,7 +11,7 @@ export function HomeHealthScore({ stats, loading }: Props) {
 
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl p-5 mb-6 animate-pulse">
+      <div className="bg-white border border-slate-200 rounded-xl p-5 mb-16 animate-pulse">
         <div className="h-16 bg-slate-100 rounded-lg" />
       </div>
     )
@@ -19,7 +19,7 @@ export function HomeHealthScore({ stats, loading }: Props) {
 
   if (!stats || stats.totalAppliances === 0) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl p-5 mb-6 text-center text-sm text-slate-500">
+      <div className="bg-white border border-slate-200 rounded-xl p-5 mb-16 text-center text-sm text-slate-500">
         Add your appliances to see your home health score.
       </div>
     )
@@ -51,7 +51,7 @@ export function HomeHealthScore({ stats, loading }: Props) {
   const hasDueSoon = overdueCount > 0 || dueSoonCount > 0
 
   return (
-    <div className={`border rounded-xl p-5 mb-6 flex items-center gap-5 ${bgClass}`}>
+    <div className={`border rounded-xl p-5 mb-16 flex items-center gap-5 ${bgClass}`}>
       <div className="text-center shrink-0 w-16 flex flex-col items-center gap-1">
         <div className={`text-5xl font-bold leading-none ${colorClass}`}>{score}</div>
         <div className={`text-sm font-semibold ${colorClass}`}>{grade}</div>
