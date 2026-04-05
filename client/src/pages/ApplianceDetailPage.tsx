@@ -207,6 +207,9 @@ export function ApplianceDetailPage() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-slate-800 truncate">{log.taskLabel}</p>
                       <p className="text-xs text-slate-400 mt-0.5">{date}</p>
+                      {log.notes && (
+                        <p className="text-xs text-slate-500 mt-0.5 truncate">{log.notes}</p>
+                      )}
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       {log.cost != null && (

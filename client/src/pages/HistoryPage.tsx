@@ -121,6 +121,9 @@ export function HistoryPage() {
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-slate-400 truncate">{appliance.name}</p>
                         <p className="text-sm font-medium text-slate-800 truncate">{log.taskLabel}</p>
+                        {log.notes && (
+                          <p className="text-xs text-slate-500 mt-0.5 truncate">{log.notes}</p>
+                        )}
                       </div>
                       <div className="text-right shrink-0 flex flex-col items-end gap-1">
                         <p className="text-xs text-slate-400">{date}</p>

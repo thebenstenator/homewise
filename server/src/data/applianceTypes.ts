@@ -939,7 +939,7 @@ export const applianceTypes = [
   },
   {
     _id: 'garage_door',
-    label: 'Garage Door Opener',
+    label: 'Garage Door',
     category: 'exterior',
     iconSlug: 'home',
     tasks: [

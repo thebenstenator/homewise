@@ -3,7 +3,8 @@ export function thumbtackUrl(category: string, zipCode: string) {
 }
 
 export function angiUrl(category: string, zipCode: string) {
-  return `https://www.angi.com/companylist/${category}/${zipCode}/?utm_source=homewise&utm_medium=referral`
+  const zip = zipCode ? `&zip=${zipCode}` : ''
+  return `https://www.angi.com/nearme/${category}/?utm_source=homewise&utm_medium=referral${zip}`
 }
 
 function trackFindProClick(destination: 'thumbtack' | 'angi') {

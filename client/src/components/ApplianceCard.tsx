@@ -33,9 +33,10 @@ interface Props {
   appliance: Appliance
   onEdit: (appliance: Appliance) => void
   onDelete: (id: string) => void
+  dueCount?: number
 }
 
-export function ApplianceCard({ appliance, onEdit, onDelete }: Props) {
+export function ApplianceCard({ appliance, onEdit, onDelete, dueCount = 0 }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const type = appliance.applianceType
   const Icon = type ? (iconMap[type.iconSlug] ?? Home) : Home
@@ -76,7 +77,9 @@ export function ApplianceCard({ appliance, onEdit, onDelete }: Props) {
       </div>
 
       <div className="flex items-center justify-between mt-auto pt-2 border-t border-slate-100">
-        <span className="text-xs text-slate-400">0 tasks due</span>
+        <span className={`text-xs ${dueCount > 0 ? 'text-amber-600 font-medium' : 'text-slate-400'}`}>
+          {dueCount > 0 ? `${dueCount} task${dueCount !== 1 ? 's' : ''} due` : 'No tasks due'}
+        </span>
         <span className="text-xs font-medium text-green-600">View Tasks →</span>
       </div>
 

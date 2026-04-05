@@ -1,4 +1,6 @@
 import { useState, type FormEvent } from 'react'
+import { Link } from 'react-router-dom'
+import { ChevronLeft } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { AppLayout } from '../components/AppLayout'
 import { useAuth } from '../context/AuthContext'
@@ -42,6 +44,9 @@ export function ProfilePage() {
 
   return (
     <AppLayout>
+      <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 mb-6">
+        <ChevronLeft size={16} /> Back to Dashboard
+      </Link>
       <div className="max-w-md">
         <h1 className="text-2xl font-bold text-slate-800 mb-6">Profile</h1>
 

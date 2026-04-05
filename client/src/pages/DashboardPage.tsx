@@ -39,6 +39,7 @@ export function DashboardPage() {
   function handleCreated(appliance: Appliance) {
     setAppliances((prev) => [appliance, ...prev])
     setShowAdd(false)
+    setTab('appliances')
     schedulesApi.getDue().then(setSchedules)
     refreshStats()
   }
@@ -67,6 +68,10 @@ export function DashboardPage() {
   }
 
   const dueCount = schedules.length
+  const dueCountByAppliance = schedules.reduce<Record<string, number>>((acc, s) => {
+    acc[s.applianceId] = (acc[s.applianceId] ?? 0) + 1
+    return acc
+  }, {})
 
   return (
     <AppLayout>
@@ -188,6 +193,7 @@ export function DashboardPage() {
                     appliance={appliance}
                     onEdit={setEditing}
                     onDelete={handleDelete}
+                    dueCount={dueCountByAppliance[appliance._id] ?? 0}
                   />
                 </div>
               ))}
