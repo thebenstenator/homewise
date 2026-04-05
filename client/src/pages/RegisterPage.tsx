@@ -17,6 +17,14 @@ export function RegisterPage() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError('')
+    if (form.password.length < 8) {
+      setError('Password must be at least 8 characters')
+      return
+    }
+    if (!/[a-zA-Z]/.test(form.password) || !/[0-9]/.test(form.password)) {
+      setError('Password must contain at least one letter and one number')
+      return
+    }
     if (form.password !== form.confirmPassword) {
       setError('Passwords do not match')
       return
@@ -77,7 +85,7 @@ export function RegisterPage() {
               autoComplete="new-password"
               className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
-            <p className="text-xs text-slate-400 mt-1">At least 8 characters</p>
+            <p className="text-xs text-slate-400 mt-1">At least 8 characters with a letter and a number</p>
           </div>
 
           <div>

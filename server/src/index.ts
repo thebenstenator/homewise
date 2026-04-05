@@ -71,6 +71,14 @@ const passwordResetLimiter = rateLimit({
   message: { error: 'Too many password reset attempts, please try again later.' },
 })
 
+const applianceCreateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 50,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many appliances created, please try again later.' },
+})
+
 app.use('/api/', globalLimiter)
 app.use('/api/auth/register', registerLimiter)
 app.use('/api/auth/login', loginLimiter)
@@ -80,6 +88,10 @@ app.use('/api/auth/reset-password', passwordResetLimiter)
 // Routes
 app.use('/api/auth', authRoutes)
 app.use('/api/appliance-types', applianceTypeRoutes)
+app.use('/api/appliances', (req, res, next) => {
+  if (req.method === 'POST') return applianceCreateLimiter(req, res, next)
+  next()
+})
 app.use('/api/appliances', applianceRoutes)
 app.use('/api/schedules', scheduleRoutes)
 app.use('/api/users', userRoutes)

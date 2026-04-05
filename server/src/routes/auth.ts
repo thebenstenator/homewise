@@ -9,10 +9,15 @@ import { sendPasswordReset } from '../services/emailService.js'
 
 const router = Router()
 
+const passwordSchema = z.string()
+  .min(8, 'Password must be at least 8 characters')
+  .regex(/[a-zA-Z]/, 'Password must contain at least one letter')
+  .regex(/[0-9]/, 'Password must contain at least one number')
+
 const registerSchema = z.object({
   name: z.string().min(1, 'Name is required').trim(),
   email: z.string().email('Invalid email address').trim().toLowerCase(),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  password: passwordSchema,
   zipCode: z.string().regex(/^\d{5}$/, 'Zip code must be 5 digits'),
 })
 
@@ -151,7 +156,7 @@ router.post('/reset-password', async (req: Request, res: Response) => {
   try {
     const parsed = z.object({
       token: z.string().min(1),
-      password: z.string().min(8, 'Password must be at least 8 characters'),
+      password: passwordSchema,
     }).safeParse(req.body)
 
     if (!parsed.success) {
