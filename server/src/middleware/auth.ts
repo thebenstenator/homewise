@@ -9,7 +9,9 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET!) as {
+    const payload = jwt.verify(token, process.env.JWT_SECRET!, {
+      algorithms: ['HS256'],
+    }) as {
       _id: string
       email: string
       name: string
@@ -19,5 +21,6 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
     next()
   } catch {
     res.status(401).json({ error: 'Invalid or expired token' })
+    return
   }
 }

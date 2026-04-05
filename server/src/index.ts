@@ -15,6 +15,15 @@ import { errorHandler } from './middleware/errorHandler.js'
 import { startScheduler, runWeeklyDigest } from './services/scheduler.js'
 import { requireAuth } from './middleware/auth.js'
 
+// Validate required environment variables before starting
+const REQUIRED_ENV = ['MONGODB_URI', 'JWT_SECRET', 'CLIENT_URL', 'RESEND_API_KEY']
+for (const key of REQUIRED_ENV) {
+  if (!process.env[key]) {
+    console.error(`Missing required environment variable: ${key}`)
+    process.exit(1)
+  }
+}
+
 const app = express()
 const PORT = process.env.PORT || 3001
 
@@ -54,9 +63,19 @@ const loginLimiter = rateLimit({
   message: { error: 'Too many login attempts, please try again later.' },
 })
 
+const passwordResetLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many password reset attempts, please try again later.' },
+})
+
 app.use('/api/', globalLimiter)
 app.use('/api/auth/register', registerLimiter)
 app.use('/api/auth/login', loginLimiter)
+app.use('/api/auth/forgot-password', passwordResetLimiter)
+app.use('/api/auth/reset-password', passwordResetLimiter)
 
 // Routes
 app.use('/api/auth', authRoutes)

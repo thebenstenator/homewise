@@ -21,11 +21,15 @@ const loginSchema = z.object({
   password: z.string().min(1),
 })
 
+function hashToken(token: string): string {
+  return crypto.createHash('sha256').update(token).digest('hex')
+}
+
 function setTokenCookie(res: Response, userId: string, user: { email: string; name: string; zipCode: string }) {
   const token = jwt.sign(
     { _id: userId, email: user.email, name: user.name, zipCode: user.zipCode },
     process.env.JWT_SECRET!,
-    { expiresIn: '7d' }
+    { algorithm: 'HS256', expiresIn: '7d' }
   )
   res.cookie('token', token, {
     httpOnly: true,
@@ -37,57 +41,65 @@ function setTokenCookie(res: Response, userId: string, user: { email: string; na
 
 // POST /api/auth/register
 router.post('/register', async (req: Request, res: Response) => {
-  const parsed = registerSchema.safeParse(req.body)
-  if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.errors[0].message })
-    return
+  try {
+    const parsed = registerSchema.safeParse(req.body)
+    if (!parsed.success) {
+      res.status(400).json({ error: parsed.error.errors[0].message })
+      return
+    }
+
+    const { name, email, password, zipCode } = parsed.data
+
+    const existing = await User.findOne({ email })
+    if (existing) {
+      res.status(409).json({ error: 'An account with that email already exists' })
+      return
+    }
+
+    const passwordHash = await bcrypt.hash(password, 12)
+    const user = await User.create({ name, email, passwordHash, zipCode })
+
+    setTokenCookie(res, user._id.toString(), { email: user.email, name: user.name, zipCode: user.zipCode })
+
+    res.status(201).json({
+      user: { _id: user._id, email: user.email, name: user.name, zipCode: user.zipCode },
+    })
+  } catch (err) {
+    res.status(500).json({ error: 'Registration failed. Please try again.' })
   }
-
-  const { name, email, password, zipCode } = parsed.data
-
-  const existing = await User.findOne({ email })
-  if (existing) {
-    res.status(409).json({ error: 'An account with that email already exists' })
-    return
-  }
-
-  const passwordHash = await bcrypt.hash(password, 10)
-  const user = await User.create({ name, email, passwordHash, zipCode })
-
-  setTokenCookie(res, user._id.toString(), { email: user.email, name: user.name, zipCode: user.zipCode })
-
-  res.status(201).json({
-    user: { _id: user._id, email: user.email, name: user.name, zipCode: user.zipCode },
-  })
 })
 
 // POST /api/auth/login
 router.post('/login', async (req: Request, res: Response) => {
-  const parsed = loginSchema.safeParse(req.body)
-  if (!parsed.success) {
-    res.status(400).json({ error: 'Invalid email or password' })
-    return
+  try {
+    const parsed = loginSchema.safeParse(req.body)
+    if (!parsed.success) {
+      res.status(400).json({ error: 'Invalid email or password' })
+      return
+    }
+
+    const { email, password } = parsed.data
+
+    const user = await User.findOne({ email })
+    if (!user) {
+      res.status(401).json({ error: 'Invalid email or password' })
+      return
+    }
+
+    const valid = await bcrypt.compare(password, user.passwordHash)
+    if (!valid) {
+      res.status(401).json({ error: 'Invalid email or password' })
+      return
+    }
+
+    setTokenCookie(res, user._id.toString(), { email: user.email, name: user.name, zipCode: user.zipCode })
+
+    res.json({
+      user: { _id: user._id, email: user.email, name: user.name, zipCode: user.zipCode },
+    })
+  } catch (err) {
+    res.status(500).json({ error: 'Login failed. Please try again.' })
   }
-
-  const { email, password } = parsed.data
-
-  const user = await User.findOne({ email })
-  if (!user) {
-    res.status(401).json({ error: 'Invalid email or password' })
-    return
-  }
-
-  const valid = await bcrypt.compare(password, user.passwordHash)
-  if (!valid) {
-    res.status(401).json({ error: 'Invalid email or password' })
-    return
-  }
-
-  setTokenCookie(res, user._id.toString(), { email: user.email, name: user.name, zipCode: user.zipCode })
-
-  res.json({
-    user: { _id: user._id, email: user.email, name: user.name, zipCode: user.zipCode },
-  })
 })
 
 // POST /api/auth/logout
@@ -103,68 +115,82 @@ router.get('/me', requireAuth, (req: Request, res: Response) => {
 
 // POST /api/auth/forgot-password
 router.post('/forgot-password', async (req: Request, res: Response) => {
-  const parsed = z.object({ email: z.string().email().trim().toLowerCase() }).safeParse(req.body)
-  if (!parsed.success) {
-    res.status(400).json({ error: 'Valid email required' })
-    return
-  }
+  try {
+    const parsed = z.object({ email: z.string().email().trim().toLowerCase() }).safeParse(req.body)
+    if (!parsed.success) {
+      res.status(400).json({ error: 'Valid email required' })
+      return
+    }
 
-  // Always respond with the same message to avoid leaking whether an email exists
-  const genericResponse = { message: 'If that email is registered, a reset link is on its way.' }
+    // Always respond with the same message to avoid leaking whether an email exists
+    const genericResponse = { message: 'If that email is registered, a reset link is on its way.' }
 
-  const user = await User.findOne({ email: parsed.data.email })
-  if (!user) {
+    const user = await User.findOne({ email: parsed.data.email })
+    if (!user) {
+      res.json(genericResponse)
+      return
+    }
+
+    const token = crypto.randomBytes(32).toString('hex')
+    const tokenHash = hashToken(token)
+    const expiry = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
+
+    await User.findByIdAndUpdate(user._id, { resetToken: tokenHash, resetTokenExpiry: expiry })
+
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${token}`
+    await sendPasswordReset(user.email, resetUrl)
+
     res.json(genericResponse)
-    return
+  } catch (err) {
+    res.json({ message: 'If that email is registered, a reset link is on its way.' })
   }
-
-  const token = crypto.randomBytes(32).toString('hex')
-  const expiry = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
-
-  await User.findByIdAndUpdate(user._id, { resetToken: token, resetTokenExpiry: expiry })
-
-  const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${token}`
-  await sendPasswordReset(user.email, resetUrl)
-
-  res.json(genericResponse)
 })
 
 // POST /api/auth/reset-password
 router.post('/reset-password', async (req: Request, res: Response) => {
-  const parsed = z.object({
-    token: z.string().min(1),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
-  }).safeParse(req.body)
+  try {
+    const parsed = z.object({
+      token: z.string().min(1),
+      password: z.string().min(8, 'Password must be at least 8 characters'),
+    }).safeParse(req.body)
 
-  if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.errors[0].message })
-    return
+    if (!parsed.success) {
+      res.status(400).json({ error: parsed.error.errors[0].message })
+      return
+    }
+
+    const tokenHash = hashToken(parsed.data.token)
+
+    const user = await User.findOne({
+      resetToken: tokenHash,
+      resetTokenExpiry: { $gt: new Date() },
+    })
+
+    if (!user) {
+      res.status(400).json({ error: 'This reset link is invalid or has expired.' })
+      return
+    }
+
+    const passwordHash = await bcrypt.hash(parsed.data.password, 12)
+    await User.findByIdAndUpdate(user._id, {
+      passwordHash,
+      $unset: { resetToken: '', resetTokenExpiry: '' },
+    })
+
+    res.json({ message: 'Password updated. You can now log in.' })
+  } catch (err) {
+    res.status(500).json({ error: 'Password reset failed. Please try again.' })
   }
-
-  const user = await User.findOne({
-    resetToken: parsed.data.token,
-    resetTokenExpiry: { $gt: new Date() },
-  })
-
-  if (!user) {
-    res.status(400).json({ error: 'This reset link is invalid or has expired.' })
-    return
-  }
-
-  const passwordHash = await bcrypt.hash(parsed.data.password, 10)
-  await User.findByIdAndUpdate(user._id, {
-    passwordHash,
-    resetToken: undefined,
-    resetTokenExpiry: undefined,
-  })
-
-  res.json({ message: 'Password updated. You can now log in.' })
 })
 
 // POST /api/auth/unsubscribe
 router.post('/unsubscribe', requireAuth, async (req: Request, res: Response) => {
-  await User.findByIdAndUpdate(req.user!._id, { emailReminders: false })
-  res.json({ message: 'Unsubscribed from email reminders' })
+  try {
+    await User.findByIdAndUpdate(req.user!._id, { emailReminders: false })
+    res.json({ message: 'Unsubscribed from email reminders' })
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to unsubscribe. Please try again.' })
+  }
 })
 
 export default router

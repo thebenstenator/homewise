@@ -1,7 +1,7 @@
-import { Schema, model } from 'mongoose'
+import { Schema, model, Types } from 'mongoose'
 
 interface IAppliance {
-  userId: string
+  userId: Types.ObjectId
   typeId: string
   name: string
   brand?: string
@@ -13,7 +13,7 @@ interface IAppliance {
 
 const ApplianceSchema = new Schema<IAppliance>(
   {
-    userId: { type: String, required: true, index: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     typeId: { type: String, required: true },
     name: { type: String, required: true, trim: true },
     brand: { type: String, trim: true },
