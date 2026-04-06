@@ -31,8 +31,15 @@ const PORT = process.env.PORT || 3001
 app.use(helmet())
 
 // CORS — must come before other middleware so preflight requests get credentials header
+const allowedOrigins = process.env.CLIENT_URL
+  ? [process.env.CLIENT_URL, process.env.CLIENT_URL.replace('https://', 'https://www.')]
+  : ['http://localhost:5173']
+
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true)
+    callback(new Error('Not allowed by CORS'))
+  },
   credentials: true,
 }))
 app.use(express.json())
