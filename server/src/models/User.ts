@@ -9,6 +9,7 @@ interface IUser {
   createdAt: Date
   resetToken?: string
   resetTokenExpiry?: Date
+  unsubscribeToken?: string
 }
 
 const UserSchema = new Schema<IUser>(
@@ -20,6 +21,7 @@ const UserSchema = new Schema<IUser>(
     emailReminders: { type: Boolean, default: true },
     resetToken: { type: String },
     resetTokenExpiry: { type: Date },
+    unsubscribeToken: { type: String, index: true },
   },
   { timestamps: { createdAt: true, updatedAt: false } }
 )

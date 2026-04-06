@@ -62,7 +62,8 @@ router.post('/register', async (req: Request, res: Response) => {
     }
 
     const passwordHash = await bcrypt.hash(password, 12)
-    const user = await User.create({ name, email, passwordHash, zipCode })
+    const unsubscribeToken = crypto.randomBytes(32).toString('hex')
+    const user = await User.create({ name, email, passwordHash, zipCode, unsubscribeToken })
 
     setTokenCookie(res, user._id.toString(), { email: user.email, name: user.name, zipCode: user.zipCode })
 
@@ -188,11 +189,37 @@ router.post('/reset-password', async (req: Request, res: Response) => {
   }
 })
 
-// POST /api/auth/unsubscribe
+// POST /api/auth/unsubscribe (authenticated — from profile page)
 router.post('/unsubscribe', requireAuth, async (req: Request, res: Response) => {
   try {
     await User.findByIdAndUpdate(req.user!._id, { emailReminders: false })
     res.json({ message: 'Unsubscribed from email reminders' })
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to unsubscribe. Please try again.' })
+  }
+})
+
+// GET /api/auth/unsubscribe?token=xxx (no auth — one-click from email)
+router.get('/unsubscribe', async (req: Request, res: Response) => {
+  try {
+    const token = req.query.token as string
+    if (!token) {
+      res.status(400).json({ error: 'Missing token' })
+      return
+    }
+
+    const user = await User.findOneAndUpdate(
+      { unsubscribeToken: token },
+      { emailReminders: false },
+      { new: true }
+    )
+
+    if (!user) {
+      res.status(400).json({ error: 'Invalid unsubscribe link' })
+      return
+    }
+
+    res.json({ message: 'You have been unsubscribed from HomeWise email reminders.' })
   } catch (err) {
     res.status(500).json({ error: 'Failed to unsubscribe. Please try again.' })
   }

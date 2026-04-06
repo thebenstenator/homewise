@@ -63,11 +63,15 @@ export interface EmailUser {
   email: string
   name: string
   zipCode: string
+  unsubscribeToken?: string
 }
 
 export async function sendWeeklyDigest(user: EmailUser, dueTasks: DueTask[]) {
   const thumbtackBase = 'https://www.thumbtack.com/k'
   const appUrl = process.env.CLIENT_URL ?? 'http://localhost:5173'
+  const unsubscribeUrl = user.unsubscribeToken
+    ? `${appUrl}/unsubscribe?token=${user.unsubscribeToken}`
+    : `${appUrl}/profile`
 
   const taskRows = dueTasks
     .map((t) => {
@@ -134,6 +138,7 @@ export async function sendWeeklyDigest(user: EmailUser, dueTasks: DueTask[]) {
               <td style="padding:20px 32px;border-top:1px solid #e2e8f0;background:#f8fafc">
                 <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center">
                   You're receiving this because you have a HomeWise account.
+                  <a href="${unsubscribeUrl}" style="color:#64748b">Unsubscribe</a> &nbsp;·&nbsp;
                   <a href="${appUrl}/profile" style="color:#64748b">Manage preferences</a>
                 </p>
               </td>

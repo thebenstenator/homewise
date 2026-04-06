@@ -60,7 +60,7 @@ export async function runWeeklyDigest(userIdFilter?: string) {
       if (dueTasks.length === 0) continue
 
       await sendWeeklyDigest(
-        { email: user.email, name: user.name, zipCode: user.zipCode },
+        { email: user.email, name: user.name, zipCode: user.zipCode, unsubscribeToken: user.unsubscribeToken },
         dueTasks
       )
       sent++
