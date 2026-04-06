@@ -1,9 +1,8 @@
-import * as Brevo from '@getbrevo/brevo'
+import { BrevoClient } from '@getbrevo/brevo'
 
-const apiInstance = new Brevo.TransactionalEmailsApi()
-apiInstance.setApiKey(Brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY!)
+const client = new BrevoClient({ apiKey: process.env.BREVO_API_KEY! })
 
-const FROM_EMAIL = process.env.BREVO_FROM_EMAIL ?? 'homewiseapp@outlook.com'
+const FROM_EMAIL = process.env.BREVO_FROM_EMAIL ?? 'reminders@yourhomewise.app'
 const FROM_NAME = 'HomeWise'
 
 export async function sendPasswordReset(email: string, resetUrl: string) {
@@ -43,13 +42,12 @@ export async function sendPasswordReset(email: string, resetUrl: string) {
     </body>
     </html>`
 
-  const email_ = new Brevo.SendSmtpEmail()
-  email_.sender = { name: FROM_NAME, email: FROM_EMAIL }
-  email_.to = [{ email }]
-  email_.subject = 'Reset your HomeWise password'
-  email_.htmlContent = html
-
-  await apiInstance.sendTransacEmail(email_)
+  await client.transactionalEmails.sendTransacEmail({
+    sender: { name: FROM_NAME, email: FROM_EMAIL },
+    to: [{ email }],
+    subject: 'Reset your HomeWise password',
+    htmlContent: html,
+  })
 }
 
 export interface DueTask {
@@ -147,11 +145,10 @@ export async function sendWeeklyDigest(user: EmailUser, dueTasks: DueTask[]) {
     </body>
     </html>`
 
-  const email_ = new Brevo.SendSmtpEmail()
-  email_.sender = { name: FROM_NAME, email: FROM_EMAIL }
-  email_.to = [{ email: user.email }]
-  email_.subject = '🏠 Your HomeWise Maintenance Reminder'
-  email_.htmlContent = html
-
-  await apiInstance.sendTransacEmail(email_)
+  await client.transactionalEmails.sendTransacEmail({
+    sender: { name: FROM_NAME, email: FROM_EMAIL },
+    to: [{ email: user.email }],
+    subject: '🏠 Your HomeWise Maintenance Reminder',
+    htmlContent: html,
+  })
 }
