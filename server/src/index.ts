@@ -31,8 +31,10 @@ const PORT = process.env.PORT || 3001
 app.use(helmet())
 
 // CORS — must come before other middleware so preflight requests get credentials header
+const clientUrl = process.env.CLIENT_URL ?? 'http://localhost:5173'
+const clientUrlBase = clientUrl.replace('https://www.', 'https://').replace('http://www.', 'http://')
 const allowedOrigins = process.env.CLIENT_URL
-  ? [process.env.CLIENT_URL, process.env.CLIENT_URL.replace('https://', 'https://www.')]
+  ? [clientUrlBase, clientUrlBase.replace('https://', 'https://www.')]
   : ['http://localhost:5173']
 
 app.use(cors({

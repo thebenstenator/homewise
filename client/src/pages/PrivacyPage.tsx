@@ -37,7 +37,7 @@ export function PrivacyPage() {
           <section className="mb-8">
             <h2 className="text-lg font-semibold text-slate-800 mb-3">Who we share data with</h2>
             <p className="text-slate-600 text-sm leading-relaxed mb-3">
-              We use <strong>Resend</strong> (resend.com) to send email. Your email address is shared with Resend solely to deliver reminders and password reset emails. Resend is a data processor acting on our behalf — they do not use your data for their own purposes.
+              We use <strong>Brevo</strong> (brevo.com) to send email. Your email address is shared with Brevo solely to deliver reminders and password reset emails. Brevo is a data processor acting on our behalf — they do not use your data for their own purposes.
             </p>
             <p className="text-slate-600 text-sm leading-relaxed">
               We do not sell, rent, or share your personal information with any other third party.

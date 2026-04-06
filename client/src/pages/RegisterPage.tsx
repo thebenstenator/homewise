@@ -123,6 +123,13 @@ export function RegisterPage() {
           >
             {loading ? 'Creating account…' : 'Create account'}
           </button>
+
+          <p className="text-xs text-slate-400 text-center">
+            By creating an account, you agree to our{' '}
+            <Link to="/terms" className="underline hover:text-slate-600">Terms of Service</Link>
+            {' '}and{' '}
+            <Link to="/privacy" className="underline hover:text-slate-600">Privacy Policy</Link>.
+          </p>
         </form>
 
         <p className="text-sm text-slate-500 mt-6 text-center">

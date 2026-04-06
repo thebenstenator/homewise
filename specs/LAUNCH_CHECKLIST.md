@@ -9,9 +9,9 @@
 - [ ] **`sameSite: 'none'` cookie in production** — since Vercel and Railway are different domains you need `none`, but verify CSRF risk is acceptable (the API is JSON-only which significantly reduces CSRF risk in practice)
 
 ### Infrastructure
-- [ ] **Verify Resend sending domain** — add DNS records in your domain registrar so emails send from `reminders@yourdomain.com` instead of Resend's shared domain. Without this, emails may land in spam or fail entirely. Blocked until domain is purchased.
-- [x] **Set all env vars on Railway** — `MONGODB_URI`, `JWT_SECRET`, `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `CLIENT_URL`, `PORT`, `NODE_ENV=production`
-- [x] **Set `VITE_API_URL` on Vercel** — pointing to your Railway backend URL
+- [x] **Verify Brevo sending domain** — added DNS records in Namecheap (TXT, CNAME x2, DMARC) so emails send from `reminders@yourhomewise.app`. Switched from Resend to Brevo (Resend free tier limited to 1 domain, already used by Boardfoot).
+- [x] **Set all env vars on Railway** — `MONGODB_URI`, `JWT_SECRET`, `BREVO_API_KEY`, `BREVO_FROM_EMAIL`, `CLIENT_URL`, `NODE_ENV=production`
+- [x] **Set `VITE_API_URL` on Vercel** — pointing to Railway backend URL
 
 ---
 
@@ -25,33 +25,34 @@
 - [x] **Sanitize production error messages** — `errorHandler.ts` sends `err.message` to the client, which can include MongoDB internals like collection names and duplicate key values
 
 ### Deployment
-- [x] **Test full deploy on Railway + Vercel** — do a complete end-to-end smoke test in production before sharing with anyone
-- [x] **Verify HTTPS is enforced** — Railway and Vercel both do this automatically, but confirm cookies are being set with `Secure: true` in production
-- [ ] **Run the weekly digest manually** — trigger `runWeeklyDigest()` with your user ID once in production to confirm emails send correctly from the real domain
+- [x] **Test full deploy on Railway + Vercel** — complete end-to-end smoke test in production before sharing with anyone
+- [x] **Verify HTTPS is enforced** — Railway and Vercel both do this automatically; cookies set with `Secure: true` in production
+- [ ] **Run the weekly digest manually** — trigger `runWeeklyDigest()` with your user ID once in production to confirm emails send correctly from `reminders@yourhomewise.app`
 - [x] **Set up MongoDB Atlas IP allowlist** — allowed all IPs (`0.0.0.0/0`) since Railway uses dynamic IPs; acceptable tradeoff for Railway-hosted apps
 
 ### Content/Legal
-- [x] **Privacy Policy** — required before collecting any user data. Covers: what you collect (email, name, zip, appliance data), how it's used (reminders, affiliate referrals), Resend as a processor, no selling data. Free generators: Termly, Iubenda.
-- [x] **Terms of Service** — basic ToS covering acceptable use, no warranty, affiliate disclosure. Same generators work.
-- [x] **Add links to both in the footer** — landing page and possibly the register page
+- [x] **Privacy Policy** — live at `/privacy`; covers data collection, Brevo as processor, affiliate disclosure, user rights
+- [x] **Terms of Service** — live at `/terms`; covers acceptable use, no warranty, affiliate disclosure
+- [x] **Add links to both in the footer** — landing page footer includes Privacy Policy and Terms of Service links
 
 ---
 
 ## 🟡 Medium — First Week After Launch
 
 ### Security
-- [x] **Fix `Appliance` model `userId` type** — it's `String` while every other model uses `Schema.Types.ObjectId`. Low risk now but will cause issues in future aggregations.
+- [x] **Fix `Appliance` model `userId` type** — was `String`, migrated to `Schema.Types.ObjectId` via migration script; also ran `migrate-appliance-userid.ts` against production to fix existing documents
 - [x] **Add rate limit to appliance creation** — currently unlimited; a bad actor could spam thousands of appliances
 - [x] **Password complexity requirements** — currently only enforces 8 character minimum; add at least a number requirement
 
 ### Email
-- [ ] **Unsubscribe link in digest email** — CAN-SPAM requires a one-click unsubscribe that works without logging in. The current "Manage preferences" link requires auth. Add a tokenized `/unsubscribe?token=xxx` endpoint. Do before sharing with anyone.
-- [ ] **Test digest with real tasks** — trigger `runWeeklyDigest()` manually in production and check a real inbox (including spam folder). Blocked until Resend domain is verified.
+- [x] **Unsubscribe link in digest email** — built tokenized `/unsubscribe?token=xxx` system; `unsubscribeToken` stored on User, generated at registration, included in every digest email footer. CAN-SPAM compliant one-click unsubscribe with no login required.
+- [ ] **Test digest with real tasks** — trigger `runWeeklyDigest()` manually in production and check a real inbox (including spam folder)
+- [ ] **Run unsubscribe token migration** — `MONGODB_URI="..." npx tsx scripts/add-unsubscribe-tokens.ts` to backfill tokens for any existing users
 
 ### Product
-- [ ] **Update feedback email** — `AppLayout.tsx` has `feedback@homewise.app` hardcoded in the mailto; update to your real address. Blocked until domain is purchased.
-- [ ] **Update Plausible domain** — uncomment the analytics script in `client/index.html` and set your real domain once deployed
-- [x] **Seed production DB** — run `npm run seed` from `server/` against your production MongoDB Atlas instance so appliance types exist
+- [x] **Update feedback email** — `AppLayout.tsx` updated to `hello@yourhomewise.app`
+- [ ] **Update Plausible domain** — uncomment the analytics script in `client/index.html` and set real domain once deployed
+- [x] **Seed production DB** — run `npm run seed` against production MongoDB Atlas; includes all 17 appliance types (including Sprinkler System added this session)
 
 ---
 
@@ -84,13 +85,12 @@ Items in the codebase with placeholder values that need real ones before going l
 - [x] **Feedback email** — updated to `hello@yourhomewise.app`
 - [x] **Privacy contact email** — updated to `hello@yourhomewise.app`
 - [x] **Legal contact email** — updated to `hello@yourhomewise.app`
-- [ ] **Set up email forwarding** — in Namecheap, forward `hello@yourhomewise.app` to your real inbox so you receive messages sent to that address
+- [x] **Email forwarding** — `hello@yourhomewise.app` forwards to `homewiseapp@outlook.com` via Namecheap email forwarding
+- [x] **FROM_EMAIL** — `emailService.ts` uses `reminders@yourhomewise.app` via Brevo
 
 ---
 
 ## The Short List — Ship This Week
-
-If you want to get this live fast, these are the true blockers:
 
 1. ~~Auth middleware `return` fix~~ ✓
 2. ~~Try-catch sweep on all route handlers~~ ✓
@@ -99,6 +99,8 @@ If you want to get this live fast, these are the true blockers:
 5. ~~Seed production DB~~ ✓
 6. ~~Privacy policy + ToS live on landing page~~ ✓
 7. ~~Full production smoke test~~ ✓
-8. **Add tokenized unsubscribe endpoint** — CAN-SPAM blocker before sharing with real users
-9. **Purchase domain** — unblocks Resend domain verification, email delivery, and placeholder updates
-10. **Verify Resend sending domain** — required for reliable email delivery
+8. ~~Tokenized unsubscribe endpoint~~ ✓
+9. ~~Purchase domain (`yourhomewise.app`)~~ ✓
+10. ~~Switch to Brevo + verify sending domain~~ ✓
+11. **Run weekly digest manually** — confirm real email arrives in inbox from `reminders@yourhomewise.app`
+12. **Run unsubscribe token migration** — `npx tsx scripts/add-unsubscribe-tokens.ts` against production Atlas

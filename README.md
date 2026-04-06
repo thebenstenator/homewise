@@ -12,7 +12,7 @@ Free home appliance maintenance tracker. Add your appliances, get smart reminder
 
 - Node.js 18+
 - A [MongoDB Atlas](https://cloud.mongodb.com) cluster (free tier works)
-- A [Resend](https://resend.com) account for email reminders (free tier: 3,000/month)
+- A [Brevo](https://brevo.com) account for email reminders (free tier: 300 emails/day)
 
 ### 1. Clone and install
 
@@ -44,8 +44,8 @@ cp .env.example .env.example   # read the comments in .env.example
 |---|---|
 | `MONGODB_URI` | Atlas connection string |
 | `JWT_SECRET` | Random secret — run `openssl rand -hex 32` |
-| `RESEND_API_KEY` | From resend.com dashboard |
-| `RESEND_FROM_EMAIL` | Verified sender address in Resend |
+| `BREVO_API_KEY` | From brevo.com dashboard |
+| `BREVO_FROM_EMAIL` | Verified sender address in Brevo |
 | `CLIENT_URL` | Frontend URL (no trailing slash) |
 
 **Required client variables:**
