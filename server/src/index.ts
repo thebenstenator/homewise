@@ -16,7 +16,7 @@ import { startScheduler, runWeeklyDigest } from './services/scheduler.js'
 import { requireAuth } from './middleware/auth.js'
 
 // Validate required environment variables before starting
-const REQUIRED_ENV = ['MONGODB_URI', 'JWT_SECRET', 'CLIENT_URL', 'RESEND_API_KEY']
+const REQUIRED_ENV = ['MONGODB_URI', 'JWT_SECRET', 'CLIENT_URL', 'BREVO_API_KEY']
 for (const key of REQUIRED_ENV) {
   if (!process.env[key]) {
     console.error(`Missing required environment variable: ${key}`)
