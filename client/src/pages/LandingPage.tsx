@@ -152,7 +152,7 @@ export function LandingPage() {
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl font-bold text-slate-800 text-center mb-3">Covers your whole home</h2>
           <p className="text-sm text-slate-500 text-center mb-10">
-            16 appliance types with pre-built maintenance schedules — more to come.
+            17 appliance types with pre-built maintenance schedules — more to come.
           </p>
           <div className="grid grid-cols-3 sm:grid-cols-5 gap-4">
             {applianceIcons.map(({ label, icon: Icon }) => (
@@ -188,6 +188,10 @@ export function LandingPage() {
       <footer className="bg-slate-800 text-slate-400 px-4 py-8 text-center text-sm mt-auto">
         <p className="font-medium text-slate-300 mb-1">HomeWise</p>
         <p>Free home maintenance tracking. Made by a homeowner, for homeowners.</p>
+        <div className="flex justify-center gap-4 mt-3">
+          <Link to="/privacy" className="hover:text-slate-200 transition-colors">Privacy Policy</Link>
+          <Link to="/terms" className="hover:text-slate-200 transition-colors">Terms of Service</Link>
+        </div>
       </footer>
     </div>
   )

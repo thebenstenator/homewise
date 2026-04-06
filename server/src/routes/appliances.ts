@@ -14,6 +14,7 @@ const applianceSchema = z.object({
   brand: z.string().trim().optional(),
   model: z.string().trim().optional(),
   installYear: z.number().int().min(1950).max(new Date().getFullYear()).optional(),
+  lastServiceDate: z.string().datetime().optional(),
   notes: z.string().trim().optional(),
 })
 
@@ -48,8 +49,10 @@ router.post('/', async (req: Request, res: Response) => {
       return
     }
 
-    const appliance = await Appliance.create({ ...parsed.data, userId: req.user!._id })
-    await generateSchedulesForAppliance(appliance._id.toString(), req.user!._id)
+    const { lastServiceDate, ...applianceData } = parsed.data
+    const appliance = await Appliance.create({ ...applianceData, userId: req.user!._id })
+    const lastService = lastServiceDate ? new Date(lastServiceDate) : undefined
+    await generateSchedulesForAppliance(appliance._id.toString(), req.user!._id, lastService)
     res.status(201).json({ ...appliance.toObject(), applianceType: type })
   } catch (err) {
     res.status(500).json({ error: 'Failed to create appliance.' })

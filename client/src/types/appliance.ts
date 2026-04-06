@@ -44,6 +44,7 @@ export interface ApplianceFormData {
   brand?: string
   model?: string
   installYear?: number
+  lastServiceDate?: string
   notes?: string
 }
 

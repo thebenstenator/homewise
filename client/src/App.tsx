@@ -11,6 +11,8 @@ import { DashboardPage } from './pages/DashboardPage'
 import { ApplianceDetailPage } from './pages/ApplianceDetailPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { HistoryPage } from './pages/HistoryPage'
+import { PrivacyPage } from './pages/PrivacyPage'
+import { TermsPage } from './pages/TermsPage'
 
 function RootRedirect() {
   const { user, loading } = useAuth()
@@ -58,6 +60,8 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route path="/privacy" element={<PrivacyPage />} />
+      <Route path="/terms" element={<TermsPage />} />
     </Routes>
   )
 }

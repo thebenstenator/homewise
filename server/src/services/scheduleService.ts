@@ -3,7 +3,7 @@ import { ApplianceType } from '../models/ApplianceType.js'
 import { ReminderSchedule } from '../models/ReminderSchedule.js'
 import { MaintenanceLog } from '../models/MaintenanceLog.js'
 
-export async function generateSchedulesForAppliance(applianceId: string, userId: string) {
+export async function generateSchedulesForAppliance(applianceId: string, userId: string, lastServiceDate?: Date) {
   const appliance = await Appliance.findById(applianceId).lean()
   if (!appliance) return
 
@@ -17,9 +17,16 @@ export async function generateSchedulesForAppliance(applianceId: string, userId:
     const existing = await ReminderSchedule.findOne({ applianceId, taskId: task.taskId })
     if (existing) continue
 
-    // If install year is known, offset nextDueAt based on age
+    // Determine nextDueAt based on best available anchor
     let nextDueAt: Date
-    if (appliance.installYear) {
+    let lastCompletedAt: Date | null = null
+
+    if (lastServiceDate) {
+      // User told us when they last serviced it — use that as the anchor
+      lastCompletedAt = lastServiceDate
+      nextDueAt = new Date(lastServiceDate.getTime() + task.intervalDays * 24 * 60 * 60 * 1000)
+    } else if (appliance.installYear) {
+      // No service date known — estimate cycle position from install year
       const ageMs = now.getTime() - new Date(appliance.installYear, 0, 1).getTime()
       const ageDays = ageMs / (1000 * 60 * 60 * 24)
       const cyclesCompleted = Math.floor(ageDays / task.intervalDays)
@@ -27,6 +34,7 @@ export async function generateSchedulesForAppliance(applianceId: string, userId:
       const daysUntilNext = task.intervalDays - daysSinceLastCycle
       nextDueAt = new Date(now.getTime() + daysUntilNext * 24 * 60 * 60 * 1000)
     } else {
+      // No info — start a fresh interval from today
       nextDueAt = new Date(now.getTime() + task.intervalDays * 24 * 60 * 60 * 1000)
     }
 
@@ -35,7 +43,7 @@ export async function generateSchedulesForAppliance(applianceId: string, userId:
       applianceId,
       taskId: task.taskId,
       intervalDays: task.intervalDays,
-      lastCompletedAt: null,
+      lastCompletedAt,
       nextDueAt,
       snoozedUntil: null,
       isActive: true,

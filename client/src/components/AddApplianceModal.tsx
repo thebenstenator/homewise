@@ -17,7 +17,8 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
   const navigate = useNavigate()
   const [step, setStep] = useState<1 | 2>(1)
   const [selectedType, setSelectedType] = useState<ApplianceType | null>(null)
-  const [form, setForm] = useState({ name: '', brand: '', model: '', installYear: '', notes: '' })
+  const [form, setForm] = useState({ name: '', brand: '', model: '', installYear: '', lastServiceDate: '', notes: '' })
+  const [neverServiced, setNeverServiced] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -56,6 +57,9 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
         brand: form.brand || undefined,
         model: form.model || undefined,
         installYear: form.installYear ? parseInt(form.installYear) : undefined,
+        lastServiceDate: (!neverServiced && form.lastServiceDate)
+          ? new Date(form.lastServiceDate).toISOString()
+          : undefined,
         notes: form.notes || undefined,
       })
       onCreated(appliance)
@@ -149,6 +153,29 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
                   placeholder="e.g. 2018"
                   className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Date of last service</label>
+                <input
+                  type="date"
+                  value={form.lastServiceDate}
+                  onChange={set('lastServiceDate')}
+                  disabled={neverServiced}
+                  max={new Date().toISOString().split('T')[0]}
+                  className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-40 disabled:bg-slate-50"
+                />
+                <label className="flex items-center gap-2 mt-1.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={neverServiced}
+                    onChange={(e) => {
+                      setNeverServiced(e.target.checked)
+                      if (e.target.checked) setForm((f) => ({ ...f, lastServiceDate: '' }))
+                    }}
+                    className="rounded border-slate-300 text-green-600 focus:ring-green-500"
+                  />
+                  <span className="text-xs text-slate-500">Never serviced / not sure</span>
+                </label>
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Notes</label>
