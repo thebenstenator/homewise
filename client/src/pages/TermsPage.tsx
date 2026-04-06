@@ -95,7 +95,7 @@ export function TermsPage() {
             <h2 className="text-lg font-semibold text-slate-800 mb-3">Contact</h2>
             <p className="text-slate-600 text-sm leading-relaxed">
               Questions about these terms? Email us at{' '}
-              <a href="mailto:legal@homewise.app" className="text-green-600 hover:underline">legal@homewise.app</a>.
+              <a href="mailto:hello@yourhomewise.app" className="text-green-600 hover:underline">hello@yourhomewise.app</a>.
             </p>
           </section>
         </div>

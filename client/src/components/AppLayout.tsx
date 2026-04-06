@@ -79,7 +79,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 </Link>
                 <div className="border-t border-slate-100 mt-1 pt-1">
                   <a
-                    href="mailto:feedback@homewise.app?subject=HomeWise Feedback"
+                    href="mailto:hello@yourhomewise.app?subject=HomeWise Feedback"
                     onClick={() => setMenuOpen(false)}
                     className="block px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                   >

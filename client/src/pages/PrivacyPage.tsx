@@ -62,7 +62,7 @@ export function PrivacyPage() {
             <h2 className="text-lg font-semibold text-slate-800 mb-3">Your rights</h2>
             <p className="text-slate-600 text-sm leading-relaxed">
               You can delete your account and all associated data at any time from your Profile page. If you have any questions or requests about your data, email us at{' '}
-              <a href="mailto:privacy@homewise.app" className="text-green-600 hover:underline">privacy@homewise.app</a>.
+              <a href="mailto:hello@yourhomewise.app" className="text-green-600 hover:underline">hello@yourhomewise.app</a>.
             </p>
           </section>
 
