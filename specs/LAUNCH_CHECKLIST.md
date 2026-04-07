@@ -102,5 +102,5 @@ Items in the codebase with placeholder values that need real ones before going l
 8. ~~Tokenized unsubscribe endpoint~~ ✓
 9. ~~Purchase domain (`yourhomewise.app`)~~ ✓
 10. ~~Switch to Brevo + verify sending domain~~ ✓
-11. **Run weekly digest manually** — confirm real email arrives in inbox from `reminders@yourhomewise.app`
-12. **Run unsubscribe token migration** — `npx tsx scripts/add-unsubscribe-tokens.ts` against production Atlas
+11. ~~Run weekly digest manually~~ ✓
+12. ~~Run unsubscribe token migration~~ ✓

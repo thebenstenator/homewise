@@ -153,7 +153,7 @@ export async function sendWeeklyDigest(user: EmailUser, dueTasks: DueTask[]) {
   await client.transactionalEmails.sendTransacEmail({
     sender: { name: FROM_NAME, email: FROM_EMAIL },
     to: [{ email: user.email }],
-    subject: '🏠 Your HomeWise Maintenance Reminder',
+    subject: 'Your HomeWise Maintenance Reminder',
     htmlContent: html,
   })
 }
