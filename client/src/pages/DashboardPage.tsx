@@ -106,7 +106,7 @@ export function DashboardPage() {
       )}
 
       {/* Tabs */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between gap-3 mb-6">
         <div className="flex gap-1 bg-slate-100 rounded-lg p-1">
           <button
             onClick={() => setTab('due')}
