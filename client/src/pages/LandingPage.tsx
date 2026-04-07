@@ -87,8 +87,17 @@ export function LandingPage() {
       </header>
 
       {/* Hero */}
-      <section className="bg-slate-800 text-white px-4 py-20 text-center">
-        <div className="max-w-2xl mx-auto">
+      <section
+        className="relative text-white px-4 py-20 text-center bg-slate-800"
+        style={{
+          backgroundImage: 'url(/hero-background.webp)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-slate-900/70" />
+        <div className="relative max-w-2xl mx-auto">
           <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-4">
             Never forget home<br className="hidden sm:block" /> maintenance again.
           </h1>
@@ -110,7 +119,7 @@ export function LandingPage() {
               Log In
             </Link>
           </div>
-          <p className="text-xs text-slate-500 mt-4">No credit card. No trial. Just free.</p>
+          <p className="text-xs text-slate-400 mt-4">No credit card. No trial. Just free.</p>
         </div>
       </section>
 
