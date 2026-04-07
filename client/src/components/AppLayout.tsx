@@ -15,7 +15,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [showIOSInstructions, setShowIOSInstructions] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-  const { canInstall, isIOS, isInstalled, triggerPrompt } = useInstallPrompt()
+  const { isMobile, canInstall, isIOS, isInstalled, triggerPrompt } = useInstallPrompt()
 
   async function handleLogout() {
     setMenuOpen(false)
@@ -46,7 +46,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
           <div className="flex items-center gap-3">
           {/* Install button — mobile only, hidden once installed */}
-          {!isInstalled && (canInstall || isIOS) && (
+          {!isInstalled && isMobile && (
             <div className="md:hidden relative">
               <button
                 onClick={() => canInstall ? triggerPrompt() : setShowIOSInstructions((v) => !v)}
@@ -61,11 +61,19 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               {showIOSInstructions && (
                 <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-lg border border-slate-200 p-4 z-50">
                   <p className="text-sm font-medium text-slate-800 mb-2">Add to Home Screen</p>
-                  <ol className="text-sm text-slate-600 space-y-1.5 list-decimal list-inside">
-                    <li>Tap the <strong>Share</strong> button <span className="text-base">⎙</span> at the bottom of Safari</li>
-                    <li>Scroll down and tap <strong>Add to Home Screen</strong></li>
-                    <li>Tap <strong>Add</strong></li>
-                  </ol>
+                  {isIOS ? (
+                    <ol className="text-sm text-slate-600 space-y-1.5 list-decimal list-inside">
+                      <li>Tap the <strong>Share</strong> button <span className="text-base">⎙</span> at the bottom of Safari</li>
+                      <li>Scroll down and tap <strong>Add to Home Screen</strong></li>
+                      <li>Tap <strong>Add</strong></li>
+                    </ol>
+                  ) : (
+                    <ol className="text-sm text-slate-600 space-y-1.5 list-decimal list-inside">
+                      <li>Tap the <strong>⋮</strong> menu in your browser</li>
+                      <li>Tap <strong>Add to Home Screen</strong></li>
+                      <li>Tap <strong>Add</strong></li>
+                    </ol>
+                  )}
                   <button
                     onClick={() => setShowIOSInstructions(false)}
                     className="mt-3 text-xs text-slate-400 hover:text-slate-600"

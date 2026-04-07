@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 
 interface InstallPromptResult {
-  canInstall: boolean   // Android/Chrome — deferred prompt available
+  isMobile: boolean     // any mobile browser — show the button
   isIOS: boolean        // iOS Safari — needs manual share sheet instructions
+  canInstall: boolean   // Android/Chrome — native prompt is ready
   isInstalled: boolean  // already running in standalone mode
   triggerPrompt: () => void
 }
@@ -13,8 +14,10 @@ export function useInstallPrompt(): InstallPromptResult {
     () => window.matchMedia('(display-mode: standalone)').matches
   )
 
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase()) &&
-    !(window as any).MSStream
+  const ua = navigator.userAgent.toLowerCase()
+  const isIOS = /iphone|ipad|ipod/.test(ua) && !(window as any).MSStream
+  const isAndroid = /android/.test(ua)
+  const isMobile = isIOS || isAndroid
 
   useEffect(() => {
     if (isInstalled) return
@@ -36,7 +39,7 @@ export function useInstallPrompt(): InstallPromptResult {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
       mq.removeEventListener('change', handleStandaloneChange)
     }
-  }, [isInstalled, isIOS])
+  }, [isInstalled])
 
   function triggerPrompt() {
     if (!deferredPrompt) return
@@ -45,8 +48,9 @@ export function useInstallPrompt(): InstallPromptResult {
   }
 
   return {
-    canInstall: !!deferredPrompt,
+    isMobile,
     isIOS,
+    canInstall: !!deferredPrompt,
     isInstalled,
     triggerPrompt,
   }
