@@ -12,13 +12,14 @@ interface Props {
   schedule: Schedule
   onUpdated: (schedule: Schedule) => void
   showInterval?: boolean
+  autoOpenDiy?: boolean
 }
 
-export function TaskCard({ schedule, onUpdated, showInterval = false }: Props) {
+export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDiy = false }: Props) {
   const { user } = useAuth()
   const [showLog, setShowLog] = useState(false)
   const [showPro, setShowPro] = useState(false)
-  const [showDiy, setShowDiy] = useState(false)
+  const [showDiy, setShowDiy] = useState(autoOpenDiy)
   const [showSnooze, setShowSnooze] = useState(false)
   const [snoozing, setSnoozing] = useState(false)
   const [schedulingNow, setSchedulingNow] = useState(false)

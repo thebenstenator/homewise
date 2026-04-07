@@ -48,10 +48,11 @@ export async function runWeeklyDigest(userIdFilter?: string) {
         )
 
         return [{
+          applianceId: s.applianceId.toString(),
           applianceName: appliance.name,
+          taskId: s.taskId,
           taskLabel: task.label,
           daysUntilDue,
-          diyUrl: task.diyUrl,
           thumbtackCategory: task.thumbtackCategory,
           angiCategory: task.angiCategory,
         }]

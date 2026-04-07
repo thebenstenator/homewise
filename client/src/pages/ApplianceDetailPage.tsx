@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { Pencil, Trash2, ChevronLeft, Home } from 'lucide-react'
 import { AppLayout } from '../components/AppLayout'
 import { EditApplianceModal } from '../components/EditApplianceModal'
@@ -14,6 +14,8 @@ type DetailTab = 'tasks' | 'history'
 export function ApplianceDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const autoOpenDiyTaskId = searchParams.get('diy')
   const [appliance, setAppliance] = useState<Appliance | null>(null)
   const [schedules, setSchedules] = useState<Schedule[]>([])
   const [logs, setLogs] = useState<MaintenanceLog[]>([])
@@ -148,6 +150,7 @@ export function ApplianceDetailPage() {
                   schedule={s}
                   onUpdated={handleScheduleUpdated}
                   showInterval
+                  autoOpenDiy={s.taskId === autoOpenDiyTaskId}
                 />
               ))}
             </div>

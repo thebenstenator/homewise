@@ -51,10 +51,11 @@ export async function sendPasswordReset(email: string, resetUrl: string) {
 }
 
 export interface DueTask {
+  applianceId: string
   applianceName: string
+  taskId: string
   taskLabel: string
   daysUntilDue: number
-  diyUrl: string
   thumbtackCategory: string
   angiCategory: string
 }
@@ -82,6 +83,7 @@ export async function sendWeeklyDigest(user: EmailUser, dueTasks: DueTask[]) {
           ? `<span style="color:#d97706">Due today</span>`
           : `<span style="color:#16a34a">Due in ${t.daysUntilDue} day${t.daysUntilDue !== 1 ? 's' : ''}</span>`
 
+      const diyAppUrl = `${appUrl}/appliances/${t.applianceId}?diy=${t.taskId}`
       const proUrl = `${thumbtackBase}/${t.thumbtackCategory}/near-me/?zip=${user.zipCode}&utm_source=homewise&utm_medium=email`
 
       return `
@@ -90,7 +92,7 @@ export async function sendWeeklyDigest(user: EmailUser, dueTasks: DueTask[]) {
             <p style="margin:0 0 4px;font-size:13px;color:#64748b">${t.applianceName}</p>
             <p style="margin:0 0 6px;font-size:15px;font-weight:600;color:#0f172a">${t.taskLabel}</p>
             <p style="margin:0 0 12px;font-size:13px">${dueLabel}</p>
-            <a href="${t.diyUrl}" style="display:inline-block;margin-right:8px;padding:6px 14px;background:#f1f5f9;color:#334155;font-size:12px;font-weight:500;border-radius:6px;text-decoration:none">DIY Guide →</a>
+            <a href="${diyAppUrl}" style="display:inline-block;margin-right:8px;padding:6px 14px;background:#f1f5f9;color:#334155;font-size:12px;font-weight:500;border-radius:6px;text-decoration:none">DIY Guide →</a>
             <a href="${proUrl}" style="display:inline-block;padding:6px 14px;background:#16a34a;color:#ffffff;font-size:12px;font-weight:500;border-radius:6px;text-decoration:none">Find a Pro →</a>
           </td>
         </tr>`

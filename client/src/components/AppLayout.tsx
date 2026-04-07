@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useInstallPrompt } from '../hooks/useInstallPrompt'
 
 function getInitials(name: string): string {
   const parts = name.trim().split(/\s+/)
@@ -12,7 +13,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [showIOSInstructions, setShowIOSInstructions] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const { canInstall, isIOS, isInstalled, triggerPrompt } = useInstallPrompt()
 
   async function handleLogout() {
     setMenuOpen(false)
@@ -40,6 +43,39 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <Link to="/dashboard" className="text-xl font-bold text-green-400 tracking-tight">
             HomeWise
           </Link>
+
+          <div className="flex items-center gap-3">
+          {/* Install button — mobile only, hidden once installed */}
+          {!isInstalled && (canInstall || isIOS) && (
+            <div className="md:hidden relative">
+              <button
+                onClick={() => canInstall ? triggerPrompt() : setShowIOSInstructions((v) => !v)}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-green-500 hover:bg-green-400 text-white rounded-lg transition-colors"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-3.5 h-3.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Install App
+              </button>
+
+              {showIOSInstructions && (
+                <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-lg border border-slate-200 p-4 z-50">
+                  <p className="text-sm font-medium text-slate-800 mb-2">Add to Home Screen</p>
+                  <ol className="text-sm text-slate-600 space-y-1.5 list-decimal list-inside">
+                    <li>Tap the <strong>Share</strong> button <span className="text-base">⎙</span> at the bottom of Safari</li>
+                    <li>Scroll down and tap <strong>Add to Home Screen</strong></li>
+                    <li>Tap <strong>Add</strong></li>
+                  </ol>
+                  <button
+                    onClick={() => setShowIOSInstructions(false)}
+                    className="mt-3 text-xs text-slate-400 hover:text-slate-600"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="relative" ref={menuRef}>
             <button
@@ -94,6 +130,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 </div>
               </div>
             )}
+          </div>
           </div>
         </div>
       </nav>
