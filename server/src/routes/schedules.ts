@@ -48,11 +48,11 @@ router.get('/', async (req: Request, res: Response) => {
 // GET /api/schedules/due
 router.get('/due', async (req: Request, res: Response) => {
   try {
-    const in30Days = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    const in7Days = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     const schedules = await ReminderSchedule.find({
       userId: new Types.ObjectId(req.user!._id),
       isActive: true,
-      nextDueAt: { $lte: in30Days },
+      nextDueAt: { $lte: in7Days },
     })
       .sort({ nextDueAt: 1 })
       .lean()

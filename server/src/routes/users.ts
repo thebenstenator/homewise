@@ -14,27 +14,31 @@ const profileSchema = z.object({
 
 // PUT /api/users/profile
 router.put('/profile', async (req: Request, res: Response) => {
-  const parsed = profileSchema.safeParse(req.body)
-  if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.errors[0].message })
-    return
-  }
+  try {
+    const parsed = profileSchema.safeParse(req.body)
+    if (!parsed.success) {
+      res.status(400).json({ error: parsed.error.errors[0].message })
+      return
+    }
 
-  const user = await User.findByIdAndUpdate(req.user!._id, parsed.data, { new: true }).lean()
-  if (!user) {
-    res.status(404).json({ error: 'User not found' })
-    return
-  }
+    const user = await User.findByIdAndUpdate(req.user!._id, parsed.data, { new: true }).lean()
+    if (!user) {
+      res.status(404).json({ error: 'User not found' })
+      return
+    }
 
-  res.json({
-    user: {
-      _id: user._id,
-      email: user.email,
-      name: user.name,
-      zipCode: user.zipCode,
-      emailReminders: user.emailReminders,
-    },
-  })
+    res.json({
+      user: {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        zipCode: user.zipCode,
+        emailReminders: user.emailReminders,
+      },
+    })
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update profile' })
+  }
 })
 
 export default router
