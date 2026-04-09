@@ -45,6 +45,8 @@ export async function computeHealthScore(userId: string): Promise<HomeHealthStat
   let lowOverdue = 0
 
   for (const s of schedules) {
+    const isSnoozed = s.snoozedUntil && s.snoozedUntil > now
+    if (isSnoozed) continue
     if (s.nextDueAt < now) {
       overdueCount++
       const appliance = applianceMap[s.applianceId.toString()]
