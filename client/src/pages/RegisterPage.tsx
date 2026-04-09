@@ -95,7 +95,7 @@ export function RegisterPage() {
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                 tabIndex={-1}
               >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
               </button>
             </div>
             <p className="text-xs text-slate-400 mt-1">At least 8 characters with a letter and a number</p>
@@ -119,7 +119,7 @@ export function RegisterPage() {
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                 tabIndex={-1}
               >
-                {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
+                {showConfirm ? <Eye size={16} /> : <EyeOff size={16} />}
               </button>
             </div>
           </div>
