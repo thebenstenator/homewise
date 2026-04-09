@@ -5,10 +5,10 @@ const client = new BrevoClient({ apiKey: process.env.BREVO_API_KEY! })
 const FROM_EMAIL = process.env.BREVO_FROM_EMAIL ?? 'reminders@yourhomewise.app'
 const FROM_NAME = 'HomeWise'
 
-export async function sendFeedback(fromName: string, fromEmail: string, message: string) {
+export async function sendFeedback(fromName: string, fromEmail: string, message: string, toEmail: string) {
   await client.transactionalEmails.sendTransacEmail({
     sender: { name: FROM_NAME, email: FROM_EMAIL },
-    to: [{ email: 'hello@yourhomewise.app' }],
+    to: [{ email: toEmail }],
     replyTo: { email: fromEmail, name: fromName },
     subject: `Feedback from ${fromName}`,
     htmlContent: `<p><strong>From:</strong> ${fromName} (${fromEmail})</p><p>${message.replace(/\n/g, '<br>')}</p>`,

@@ -19,7 +19,7 @@ router.post('/', async (req: Request, res: Response) => {
       return
     }
 
-    await sendFeedback(req.user!.name, req.user!.email, parsed.data.message)
+    await sendFeedback(req.user!.name, req.user!.email, parsed.data.message, 'homewiseapp@outlook.com')
     res.json({ ok: true })
   } catch {
     res.status(500).json({ error: 'Failed to send feedback' })
