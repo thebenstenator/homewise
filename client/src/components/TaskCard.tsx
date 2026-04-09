@@ -196,7 +196,7 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
             disabled={togglingReminder}
             className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-lg transition-colors disabled:opacity-50 ${
               schedule.remindersEnabled ?? true
-                ? 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'
+                ? 'text-green-600 bg-green-50 hover:bg-green-100'
                 : 'text-amber-600 bg-amber-50 hover:bg-amber-100'
             }`}
           >
