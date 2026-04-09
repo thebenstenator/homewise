@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useInstallPrompt } from '../hooks/useInstallPrompt'
+import { api } from '../lib/api'
 
 function getInitials(name: string): string {
   const parts = name.trim().split(/\s+/)
@@ -14,8 +15,30 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
   const [showIOSInstructions, setShowIOSInstructions] = useState(false)
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
+  const [feedbackText, setFeedbackText] = useState('')
+  const [feedbackStatus, setFeedbackStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
   const menuRef = useRef<HTMLDivElement>(null)
   const { isMobile, canInstall, isIOS, isInstalled, triggerPrompt } = useInstallPrompt()
+
+  async function handleSendFeedback() {
+    if (!feedbackText.trim()) return
+    setFeedbackStatus('sending')
+    try {
+      await api.post('/api/feedback', { message: feedbackText })
+      setFeedbackStatus('sent')
+      setFeedbackText('')
+    } catch {
+      setFeedbackStatus('error')
+    }
+  }
+
+  function openFeedback() {
+    setMenuOpen(false)
+    setFeedbackStatus('idle')
+    setFeedbackText('')
+    setFeedbackOpen(true)
+  }
 
   async function handleLogout() {
     setMenuOpen(false)
@@ -122,13 +145,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                   Profile
                 </Link>
                 <div className="border-t border-slate-100 mt-1 pt-1">
-                  <a
-                    href="mailto:hello@yourhomewise.app?subject=HomeWise Feedback"
-                    onClick={() => setMenuOpen(false)}
-                    className="block px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                  <button
+                    onClick={openFeedback}
+                    className="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                   >
                     Send Feedback
-                  </a>
+                  </button>
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
@@ -143,6 +165,59 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       </nav>
       <main className="max-w-5xl mx-auto px-4 py-8">{children}</main>
+
+      {/* Feedback modal */}
+      {feedbackOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+            {feedbackStatus === 'sent' ? (
+              <div className="text-center py-4">
+                <p className="text-2xl mb-2">Thanks!</p>
+                <p className="text-slate-500 text-sm mb-6">Your feedback has been sent.</p>
+                <button
+                  onClick={() => setFeedbackOpen(false)}
+                  className="px-6 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-base font-semibold text-slate-800">Send Feedback</h2>
+                  <button onClick={() => setFeedbackOpen(false)} className="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>
+                </div>
+                <textarea
+                  className="w-full border border-slate-200 rounded-lg p-3 text-sm text-slate-800 resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
+                  rows={5}
+                  placeholder="What's on your mind? Bug reports, feature ideas, anything..."
+                  value={feedbackText}
+                  onChange={(e) => setFeedbackText(e.target.value)}
+                  autoFocus
+                />
+                {feedbackStatus === 'error' && (
+                  <p className="text-red-500 text-xs mt-1">Something went wrong — please try again.</p>
+                )}
+                <div className="flex justify-end gap-2 mt-4">
+                  <button
+                    onClick={() => setFeedbackOpen(false)}
+                    className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSendFeedback}
+                    disabled={!feedbackText.trim() || feedbackStatus === 'sending'}
+                    className="px-5 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {feedbackStatus === 'sending' ? 'Sending…' : 'Send'}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

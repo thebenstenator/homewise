@@ -11,6 +11,7 @@ import applianceRoutes from './routes/appliances.js'
 import scheduleRoutes from './routes/schedules.js'
 import userRoutes from './routes/users.js'
 import historyRoutes from './routes/history.js'
+import feedbackRoutes from './routes/feedback.js'
 import { errorHandler } from './middleware/errorHandler.js'
 import { startScheduler, runWeeklyDigest } from './services/scheduler.js'
 import { requireAuth } from './middleware/auth.js'
@@ -105,6 +106,7 @@ app.use('/api/appliances', applianceRoutes)
 app.use('/api/schedules', scheduleRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/history', historyRoutes)
+app.use('/api/feedback', feedbackRoutes)
 
 // Health check
 app.get('/api/health', (_req, res) => {
