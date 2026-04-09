@@ -22,6 +22,7 @@ export async function runWeeklyDigest(userIdFilter?: string) {
       const schedules = await ReminderSchedule.find({
         userId: user._id,
         isActive: true,
+        remindersEnabled: { $ne: false },
         nextDueAt: { $lte: in14Days },
         $or: [{ snoozedUntil: null }, { snoozedUntil: { $lt: now } }],
       }).lean()

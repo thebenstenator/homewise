@@ -9,6 +9,7 @@ interface IReminderSchedule {
   nextDueAt: Date
   snoozedUntil: Date | null
   isActive: boolean
+  remindersEnabled: boolean
 }
 
 const ReminderScheduleSchema = new Schema<IReminderSchedule>(
@@ -21,6 +22,7 @@ const ReminderScheduleSchema = new Schema<IReminderSchedule>(
     nextDueAt: { type: Date, required: true },
     snoozedUntil: { type: Date, default: null },
     isActive: { type: Boolean, default: true },
+    remindersEnabled: { type: Boolean, default: true },
   },
   { timestamps: false }
 )

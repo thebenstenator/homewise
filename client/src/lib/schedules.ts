@@ -10,6 +10,8 @@ export const schedulesApi = {
     api.post<Schedule>(`/api/schedules/${id}/complete`, payload),
   snooze: (id: string, days: number) =>
     api.post<Schedule>(`/api/schedules/${id}/snooze`, { days }),
+  toggleReminders: (id: string) =>
+    api.patch<Schedule>(`/api/schedules/${id}/reminders`),
   updateInterval: (id: string, intervalDays: number) =>
     api.put<Schedule>(`/api/schedules/${id}`, { intervalDays }),
   scheduleNow: (id: string) =>

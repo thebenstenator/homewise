@@ -72,6 +72,7 @@ export interface Schedule {
   nextDueAt: string
   snoozedUntil: string | null
   isActive: boolean
+  remindersEnabled: boolean
   appliance: { _id: string; name: string; typeId: string } | null
   task: ScheduleTask | null
 }

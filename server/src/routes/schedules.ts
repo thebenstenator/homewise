@@ -165,6 +165,26 @@ router.post('/:id/due-now', async (req: Request, res: Response) => {
   }
 })
 
+// PATCH /api/schedules/:id/reminders — toggle email reminders for a single task
+router.patch('/:id/reminders', async (req: Request, res: Response) => {
+  try {
+    const schedule = await ReminderSchedule.findOne({
+      _id: req.params.id,
+      userId: new Types.ObjectId(req.user!._id),
+    })
+    if (!schedule) {
+      res.status(404).json({ error: 'Schedule not found' })
+      return
+    }
+    schedule.remindersEnabled = !schedule.remindersEnabled
+    await schedule.save()
+    const [enriched] = await enrichSchedules([schedule.toObject()])
+    res.json(enriched)
+  } catch {
+    res.status(500).json({ error: 'Failed to update reminder setting' })
+  }
+})
+
 // PUT /api/schedules/:id
 router.put('/:id', async (req: Request, res: Response) => {
   try {

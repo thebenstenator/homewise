@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Clock, CheckCircle, ChevronDown, X, CalendarClock, BookOpen } from 'lucide-react'
+import { Clock, CheckCircle, ChevronDown, X, CalendarClock, BookOpen, Bell, BellOff } from 'lucide-react'
 import toast from 'react-hot-toast'
 import type { Schedule } from '../types/appliance'
 import { schedulesApi, daysUntilDue } from '../lib/schedules'
@@ -25,6 +25,7 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
   const [schedulingNow, setSchedulingNow] = useState(false)
   const [editingInterval, setEditingInterval] = useState(false)
   const [intervalValue, setIntervalValue] = useState(schedule.intervalDays.toString())
+  const [togglingReminder, setTogglingReminder] = useState(false)
 
   const days = daysUntilDue(schedule.nextDueAt)
   const isOverdue = days < 0
@@ -71,6 +72,19 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
       onUpdated(updated)
     } finally {
       setSchedulingNow(false)
+    }
+  }
+
+  async function handleToggleReminder() {
+    setTogglingReminder(true)
+    try {
+      const updated = await schedulesApi.toggleReminders(schedule._id)
+      onUpdated(updated)
+      toast.success(updated.remindersEnabled ? 'Reminders turned on' : 'Reminders turned off')
+    } catch {
+      toast.error('Failed to update reminder setting')
+    } finally {
+      setTogglingReminder(false)
     }
   }
 
@@ -176,8 +190,24 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
           )}
         </div>
 
-        {showInterval && (
-          <div className="mt-3 pt-3 border-t border-slate-200 flex items-center gap-2">
+        <div className="mt-3 pt-3 border-t border-slate-200 flex items-center justify-between gap-2">
+          <button
+            onClick={handleToggleReminder}
+            disabled={togglingReminder}
+            className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-lg transition-colors disabled:opacity-50 ${
+              schedule.remindersEnabled ?? true
+                ? 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'
+                : 'text-amber-600 bg-amber-50 hover:bg-amber-100'
+            }`}
+          >
+            {schedule.remindersEnabled ?? true
+              ? <><Bell size={12} /> Reminders on</>
+              : <><BellOff size={12} /> Reminders off</>
+            }
+          </button>
+
+          {showInterval && (
+            <div className="flex items-center gap-2">
             <span className="text-xs text-slate-500">Every</span>
             {editingInterval ? (
               <>
@@ -203,8 +233,9 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
                 </button>
               </>
             )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Find a Pro popover */}
