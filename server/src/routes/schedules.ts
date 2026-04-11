@@ -69,10 +69,16 @@ router.get('/due', async (req: Request, res: Response) => {
 router.post('/:id/complete', async (req: Request, res: Response) => {
   try {
     const schema = z.object({
-      notes: z.string().optional(),
-      cost: z.number().min(0).optional(),
+      notes: z.string().max(1000).optional(),
+      cost: z.number().min(0).max(1000000).optional(),
       doneBy: z.enum(['self', 'pro']),
-      completedAt: z.string().optional(),
+      completedAt: z.string().datetime().optional().refine((val) => {
+        if (!val) return true
+        const date = new Date(val)
+        const now = new Date()
+        const minDate = new Date('1950-01-01')
+        return date <= now && date >= minDate
+      }, 'Completed date must be in the past'),
     })
 
     const parsed = schema.safeParse(req.body)
@@ -119,7 +125,7 @@ router.post('/:id/complete', async (req: Request, res: Response) => {
 // POST /api/schedules/:id/snooze
 router.post('/:id/snooze', async (req: Request, res: Response) => {
   try {
-    const parsed = z.object({ days: z.number().int().min(1) }).safeParse(req.body)
+    const parsed = z.object({ days: z.number().int().min(1).max(365) }).safeParse(req.body)
     if (!parsed.success) {
       res.status(400).json({ error: 'days must be a positive integer' })
       return

@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express'
+import { z } from 'zod'
 import { Types } from 'mongoose'
 import { MaintenanceLog } from '../models/MaintenanceLog.js'
 import { requireAuth } from '../middleware/auth.js'
@@ -23,7 +24,12 @@ router.get('/', async (req: Request, res: Response) => {
     const userId = new Types.ObjectId(req.user!._id)
     const query: Record<string, unknown> = { userId }
     if (req.query.applianceId) {
-      query.applianceId = new Types.ObjectId(req.query.applianceId as string)
+      const idParsed = z.string().regex(/^[0-9a-f]{24}$/).safeParse(req.query.applianceId)
+      if (!idParsed.success) {
+        res.status(400).json({ error: 'Invalid appliance ID' })
+        return
+      }
+      query.applianceId = new Types.ObjectId(idParsed.data)
     }
 
     const logs = await MaintenanceLog.find(query)

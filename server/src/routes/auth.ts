@@ -202,11 +202,12 @@ router.post('/unsubscribe', requireAuth, async (req: Request, res: Response) => 
 // GET /api/auth/unsubscribe?token=xxx (no auth — one-click from email)
 router.get('/unsubscribe', async (req: Request, res: Response) => {
   try {
-    const token = req.query.token as string
-    if (!token) {
-      res.status(400).json({ error: 'Missing token' })
+    const parsed = z.string().min(1).max(128).regex(/^[a-f0-9]+$/).safeParse(req.query.token)
+    if (!parsed.success) {
+      res.status(400).json({ error: 'Invalid unsubscribe link' })
       return
     }
+    const token = parsed.data
 
     const user = await User.findOneAndUpdate(
       { unsubscribeToken: token },
