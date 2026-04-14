@@ -55,7 +55,8 @@ router.post('/upload-photo', upload.single('photo'), async (req: Request, res: R
     })
 
     res.json({ url: result.secure_url })
-  } catch {
+  } catch (err) {
+    console.error('Cloudinary upload error:', err)
     res.status(500).json({ error: 'Photo upload failed' })
   }
 })
