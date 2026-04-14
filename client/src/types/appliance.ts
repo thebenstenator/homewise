@@ -45,9 +45,11 @@ export interface ApplianceFormData {
   name: string
   brand?: string
   model?: string
+  serialNumber?: string
   installYear?: number
   lastServiceDate?: string
   notes?: string
+  photoUrl?: string
 }
 
 export interface ScheduleTask {
