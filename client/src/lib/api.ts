@@ -32,4 +32,15 @@ export const api = {
     request<T>(path, { method: 'PUT', body: JSON.stringify(body) }),
   del: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
   patch: <T>(path: string) => request<T>(path, { method: 'PATCH' }),
+  upload: async <T>(path: string, formData: FormData): Promise<T> => {
+    const res = await fetch(`${BASE_URL}${path}`, {
+      method: 'POST',
+      credentials: 'include',
+      body: formData, // no Content-Type header — browser sets multipart boundary
+    })
+    let data: any
+    try { data = await res.json() } catch { throw new Error('Something went wrong') }
+    if (!res.ok) throw new Error(data?.error || 'Something went wrong')
+    return data
+  },
 }

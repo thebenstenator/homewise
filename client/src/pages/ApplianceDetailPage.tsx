@@ -81,9 +81,17 @@ export function ApplianceDetailPage() {
       <div className="bg-white border border-slate-200 rounded-xl p-6 mb-6">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-green-50 rounded-xl">
-              <Home size={24} className="text-green-600" />
-            </div>
+            {appliance.photoUrl ? (
+              <img
+                src={appliance.photoUrl}
+                alt={appliance.name}
+                className="w-16 h-16 object-cover rounded-xl border border-slate-200 shrink-0"
+              />
+            ) : (
+              <div className="p-3 bg-green-50 rounded-xl shrink-0">
+                <Home size={24} className="text-green-600" />
+              </div>
+            )}
             <div>
               <h1 className="text-xl font-bold text-slate-800">{appliance.name}</h1>
               {type && <p className="text-sm text-slate-500">{type.label}</p>}
@@ -105,10 +113,11 @@ export function ApplianceDetailPage() {
           </div>
         </div>
 
-        {(appliance.brand || appliance.model || appliance.installYear) && (
+        {(appliance.brand || appliance.model || appliance.serialNumber || appliance.installYear) && (
           <div className="mt-4 flex flex-wrap gap-4 text-sm text-slate-600 border-t border-slate-100 pt-4">
             {appliance.brand && <span><span className="text-slate-400">Brand </span>{appliance.brand}</span>}
             {appliance.model && <span><span className="text-slate-400">Model </span>{appliance.model}</span>}
+            {appliance.serialNumber && <span><span className="text-slate-400">Serial </span>{appliance.serialNumber}</span>}
             {appliance.installYear && <span><span className="text-slate-400">Installed </span>{appliance.installYear}</span>}
           </div>
         )}

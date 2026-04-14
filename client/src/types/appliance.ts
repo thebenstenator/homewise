@@ -32,8 +32,10 @@ export interface Appliance {
   name: string
   brand?: string
   model?: string
+  serialNumber?: string
   installYear?: number
   notes?: string
+  photoUrl?: string
   createdAt: string
   applianceType: ApplianceType | null
 }

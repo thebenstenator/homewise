@@ -1,9 +1,16 @@
 import { Router, Request, Response } from 'express'
 import { z } from 'zod'
+import multer from 'multer'
+import { v2 as cloudinary } from 'cloudinary'
 import { Appliance } from '../models/Appliance.js'
 import { ApplianceType } from '../models/ApplianceType.js'
 import { requireAuth } from '../middleware/auth.js'
 import { generateSchedulesForAppliance, deleteSchedulesForAppliance } from '../services/scheduleService.js'
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+})
 
 const router = Router()
 router.use(requireAuth)
@@ -22,6 +29,35 @@ const applianceSchema = z.object({
   }, 'Invalid date'),
   notes: z.string().trim().optional(),
   photoUrl: z.string().url().optional(),
+})
+
+// POST /api/appliances/upload-photo
+router.post('/upload-photo', upload.single('photo'), async (req: Request, res: Response) => {
+  try {
+    if (!req.file) {
+      res.status(400).json({ error: 'No file uploaded' })
+      return
+    }
+    if (!req.file.mimetype.startsWith('image/')) {
+      res.status(400).json({ error: 'File must be an image' })
+      return
+    }
+
+    const result = await new Promise<{ secure_url: string }>((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: 'homewise/appliances', resource_type: 'image' },
+        (err, result) => {
+          if (err || !result) return reject(err ?? new Error('Upload failed'))
+          resolve(result)
+        }
+      )
+      stream.end(req.file!.buffer)
+    })
+
+    res.json({ url: result.secure_url })
+  } catch {
+    res.status(500).json({ error: 'Photo upload failed' })
+  }
 })
 
 // GET /api/appliances

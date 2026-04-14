@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from 'react'
-import { X } from 'lucide-react'
+import { useState, useRef, type FormEvent } from 'react'
+import { X, Camera } from 'lucide-react'
 import type { Appliance } from '../types/appliance'
 import { appliancesApi } from '../lib/appliances'
 import { useModalClose } from '../hooks/useModalClose'
@@ -16,15 +16,29 @@ export function EditApplianceModal({ appliance, onClose, onUpdated }: Props) {
     name: appliance.name,
     brand: appliance.brand ?? '',
     model: appliance.model ?? '',
+    serialNumber: appliance.serialNumber ?? '',
     installYear: appliance.installYear?.toString() ?? '',
     notes: appliance.notes ?? '',
   })
+  const [photoFile, setPhotoFile] = useState<File | null>(null)
+  const [photoPreview, setPhotoPreview] = useState<string | null>(appliance.photoUrl ?? null)
+  const photoInputRef = useRef<HTMLInputElement>(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   function set(field: string) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm((f) => ({ ...f, [field]: e.target.value }))
+  }
+
+  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) { setError('Please select an image file'); return }
+    if (file.size > 5 * 1024 * 1024) { setError('Photo must be under 5MB'); return }
+    setPhotoFile(file)
+    setPhotoPreview(URL.createObjectURL(file))
+    setError('')
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -40,12 +54,22 @@ export function EditApplianceModal({ appliance, onClose, onUpdated }: Props) {
     }
     setLoading(true)
     try {
+      let photoUrl: string | undefined = appliance.photoUrl
+      if (photoFile) {
+        const result = await appliancesApi.uploadPhoto(photoFile)
+        photoUrl = result.url
+      } else if (photoPreview === null) {
+        photoUrl = undefined // user removed the photo
+      }
+
       const updated = await appliancesApi.update(appliance._id, {
         name: form.name,
         brand: form.brand || undefined,
         model: form.model || undefined,
+        serialNumber: form.serialNumber || undefined,
         installYear: form.installYear ? parseInt(form.installYear) : undefined,
         notes: form.notes || undefined,
+        photoUrl,
       })
       onUpdated(updated)
     } catch (err: unknown) {
@@ -57,7 +81,7 @@ export function EditApplianceModal({ appliance, onClose, onUpdated }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
           <h2 className="font-semibold text-slate-800">Edit Appliance</h2>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-700">
@@ -65,7 +89,7 @@ export function EditApplianceModal({ appliance, onClose, onUpdated }: Props) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-6 py-4 space-y-4">
+        <form onSubmit={handleSubmit} className="px-6 py-4 space-y-4 overflow-y-auto flex-1">
           {error && (
             <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-lg">{error}</div>
           )}
@@ -100,6 +124,16 @@ export function EditApplianceModal({ appliance, onClose, onUpdated }: Props) {
             </div>
           </div>
           <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Serial Number</label>
+            <input
+              type="text"
+              value={form.serialNumber}
+              onChange={set('serialNumber')}
+              placeholder="e.g. SN123456789"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+          </div>
+          <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Install Year</label>
             <input
               type="text"
@@ -119,6 +153,25 @@ export function EditApplianceModal({ appliance, onClose, onUpdated }: Props) {
               rows={3}
               className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Photo</label>
+            <input ref={photoInputRef} type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
+            {photoPreview ? (
+              <div className="flex items-center gap-3">
+                <img src={photoPreview} alt="Preview" className="w-20 h-20 object-cover rounded-lg border border-slate-200" />
+                <button type="button" onClick={() => photoInputRef.current?.click()} className="text-sm text-green-600 hover:underline">Replace</button>
+                <button type="button" onClick={() => { setPhotoFile(null); setPhotoPreview(null) }} className="text-sm text-slate-400 hover:text-slate-600">Remove</button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => photoInputRef.current?.click()}
+                className="flex items-center gap-2 px-4 py-2 border border-dashed border-slate-300 rounded-lg text-sm text-slate-500 hover:border-green-400 hover:text-green-600 transition-colors"
+              >
+                <Camera size={15} /> Upload a photo
+              </button>
+            )}
           </div>
 
           <div className="pt-2">

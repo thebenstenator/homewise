@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from 'react'
-import { X, ChevronLeft } from 'lucide-react'
+import { useState, useRef, type FormEvent } from 'react'
+import { X, ChevronLeft, Camera } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { useModalClose } from '../hooks/useModalClose'
@@ -17,8 +17,11 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
   const navigate = useNavigate()
   const [step, setStep] = useState<1 | 2>(1)
   const [selectedType, setSelectedType] = useState<ApplianceType | null>(null)
-  const [form, setForm] = useState({ name: '', brand: '', model: '', installYear: '', lastServiceDate: '', notes: '' })
+  const [form, setForm] = useState({ name: '', brand: '', model: '', serialNumber: '', installYear: '', lastServiceDate: '', notes: '' })
   const [neverServiced, setNeverServiced] = useState(false)
+  const [photoFile, setPhotoFile] = useState<File | null>(null)
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null)
+  const photoInputRef = useRef<HTMLInputElement>(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -43,6 +46,16 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
     return null
   }
 
+  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) { setError('Please select an image file'); return }
+    if (file.size > 5 * 1024 * 1024) { setError('Photo must be under 5MB'); return }
+    setPhotoFile(file)
+    setPhotoPreview(URL.createObjectURL(file))
+    setError('')
+  }
+
   async function handleSubmit(e: FormEvent, reviewAfter = false) {
     e.preventDefault()
     if (!selectedType) return
@@ -51,16 +64,21 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
     setError('')
     setLoading(true)
     try {
+      let photoUrl: string | undefined
+      if (photoFile) {
+        const result = await appliancesApi.uploadPhoto(photoFile)
+        photoUrl = result.url
+      }
       const appliance = await appliancesApi.create({
         typeId: selectedType._id,
         name: form.name,
         brand: form.brand || undefined,
         model: form.model || undefined,
+        serialNumber: form.serialNumber || undefined,
         installYear: form.installYear ? parseInt(form.installYear) : undefined,
-        lastServiceDate: (!neverServiced && form.lastServiceDate)
-          ? new Date(form.lastServiceDate).toISOString()
-          : undefined,
+        lastServiceDate: (!neverServiced && form.lastServiceDate) ? form.lastServiceDate : undefined,
         notes: form.notes || undefined,
+        photoUrl,
       })
       onCreated(appliance)
       toast.success(`${form.name} added!`)
@@ -143,6 +161,16 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
                 </div>
               </div>
               <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Serial Number</label>
+                <input
+                  type="text"
+                  value={form.serialNumber}
+                  onChange={set('serialNumber')}
+                  placeholder="e.g. SN123456789"
+                  className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Install Year</label>
                 <input
                   type="text"
@@ -186,6 +214,25 @@ export function AddApplianceModal({ onClose, onCreated }: Props) {
                   placeholder="Anything useful to remember…"
                   className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Photo</label>
+                <input ref={photoInputRef} type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
+                {photoPreview ? (
+                  <div className="flex items-center gap-3">
+                    <img src={photoPreview} alt="Preview" className="w-20 h-20 object-cover rounded-lg border border-slate-200" />
+                    <button type="button" onClick={() => photoInputRef.current?.click()} className="text-sm text-green-600 hover:underline">Replace</button>
+                    <button type="button" onClick={() => { setPhotoFile(null); setPhotoPreview(null) }} className="text-sm text-slate-400 hover:text-slate-600">Remove</button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => photoInputRef.current?.click()}
+                    className="flex items-center gap-2 px-4 py-2 border border-dashed border-slate-300 rounded-lg text-sm text-slate-500 hover:border-green-400 hover:text-green-600 transition-colors"
+                  >
+                    <Camera size={15} /> Upload a photo
+                  </button>
+                )}
               </div>
             </form>
           )}

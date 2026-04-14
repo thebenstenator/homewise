@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import { v2 as cloudinary } from 'cloudinary'
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
@@ -16,8 +17,11 @@ import { errorHandler } from './middleware/errorHandler.js'
 import { startScheduler, runWeeklyDigest } from './services/scheduler.js'
 import { requireAuth } from './middleware/auth.js'
 
+// Cloudinary auto-configures from CLOUDINARY_URL env var
+cloudinary.config()
+
 // Validate required environment variables before starting
-const REQUIRED_ENV = ['MONGODB_URI', 'JWT_SECRET', 'CLIENT_URL', 'BREVO_API_KEY']
+const REQUIRED_ENV = ['MONGODB_URI', 'JWT_SECRET', 'CLIENT_URL', 'BREVO_API_KEY', 'CLOUDINARY_URL']
 for (const key of REQUIRED_ENV) {
   if (!process.env[key]) {
     console.error(`Missing required environment variable: ${key}`)
@@ -89,6 +93,14 @@ const applianceCreateLimiter = rateLimit({
   message: { error: 'Too many appliances created, please try again later.' },
 })
 
+const photoUploadLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many photo uploads, please try again later.' },
+})
+
 app.use('/api/', globalLimiter)
 app.use('/api/auth/register', registerLimiter)
 app.use('/api/auth/login', loginLimiter)
@@ -99,6 +111,7 @@ app.use('/api/auth/reset-password', passwordResetLimiter)
 app.use('/api/auth', authRoutes)
 app.use('/api/appliance-types', applianceTypeRoutes)
 app.use('/api/appliances', (req, res, next) => {
+  if (req.method === 'POST' && req.path === '/upload-photo') return photoUploadLimiter(req, res, next)
   if (req.method === 'POST') return applianceCreateLimiter(req, res, next)
   next()
 })
