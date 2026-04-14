@@ -72,13 +72,14 @@ router.post('/:id/complete', async (req: Request, res: Response) => {
       notes: z.string().max(1000).optional(),
       cost: z.number().min(0).max(1000000).optional(),
       doneBy: z.enum(['self', 'pro']),
-      completedAt: z.string().datetime().optional().refine((val) => {
+      completedAt: z.string().optional().refine((val) => {
         if (!val) return true
         const date = new Date(val)
-        const now = new Date()
-        const minDate = new Date('1950-01-01')
-        return date <= now && date >= minDate
-      }, 'Completed date must be in the past'),
+        if (isNaN(date.getTime())) return false
+        const tomorrow = new Date()
+        tomorrow.setDate(tomorrow.getDate() + 1)
+        return date <= tomorrow && date >= new Date('1950-01-01')
+      }, 'Completed date must be a valid date'),
     })
 
     const parsed = schema.safeParse(req.body)

@@ -13,9 +13,15 @@ const applianceSchema = z.object({
   name: z.string().min(1, 'Name is required').trim(),
   brand: z.string().trim().optional(),
   model: z.string().trim().optional(),
+  serialNumber: z.string().trim().max(100).optional(),
   installYear: z.number().int().min(1950).max(new Date().getFullYear()).optional(),
-  lastServiceDate: z.string().datetime().optional(),
+  lastServiceDate: z.string().optional().refine((val) => {
+    if (!val) return true
+    const date = new Date(val)
+    return !isNaN(date.getTime())
+  }, 'Invalid date'),
   notes: z.string().trim().optional(),
+  photoUrl: z.string().url().optional(),
 })
 
 // GET /api/appliances
