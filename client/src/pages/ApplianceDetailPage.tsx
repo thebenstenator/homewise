@@ -24,6 +24,7 @@ export function ApplianceDetailPage() {
   const [tab, setTab] = useState<DetailTab>('tasks')
   const [editing, setEditing] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [photoOpen, setPhotoOpen] = useState(false)
 
   useEffect(() => {
     Promise.all([appliancesApi.getAll(), schedulesApi.getAll()])
@@ -82,11 +83,13 @@ export function ApplianceDetailPage() {
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             {appliance.photoUrl ? (
-              <img
-                src={appliance.photoUrl}
-                alt={appliance.name}
-                className="w-16 h-16 object-cover rounded-xl border border-slate-200 shrink-0"
-              />
+              <button onClick={() => setPhotoOpen(true)} className="shrink-0 focus:outline-none">
+                <img
+                  src={appliance.photoUrl}
+                  alt={appliance.name}
+                  className="w-16 h-16 object-cover rounded-xl border border-slate-200 hover:opacity-90 transition-opacity cursor-zoom-in"
+                />
+              </button>
             ) : (
               <div className="p-3 bg-green-50 rounded-xl shrink-0">
                 <Home size={24} className="text-green-600" />
@@ -251,6 +254,19 @@ export function ApplianceDetailPage() {
           onClose={() => setEditing(false)}
           onUpdated={(updated) => { setAppliance(updated); setEditing(false) }}
         />
+      )}
+
+      {photoOpen && appliance.photoUrl && (
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 cursor-zoom-out"
+          onClick={() => setPhotoOpen(false)}
+        >
+          <img
+            src={appliance.photoUrl}
+            alt={appliance.name}
+            className="max-w-full max-h-full rounded-xl object-contain shadow-2xl"
+          />
+        </div>
       )}
 
       {confirmDelete && (
