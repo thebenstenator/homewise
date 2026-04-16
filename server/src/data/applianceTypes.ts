@@ -522,7 +522,7 @@ export const applianceTypes = [
   {
     _id: 'washing_machine',
     label: 'Washing Machine',
-    category: 'kitchen',
+    category: 'laundry',
     iconSlug: 'waves',
     tasks: [
       {
@@ -590,7 +590,7 @@ export const applianceTypes = [
   {
     _id: 'dryer_gas',
     label: 'Gas Dryer',
-    category: 'kitchen',
+    category: 'laundry',
     iconSlug: 'wind',
     tasks: [
       {
@@ -656,7 +656,7 @@ export const applianceTypes = [
   {
     _id: 'dryer_electric',
     label: 'Electric Dryer',
-    category: 'kitchen',
+    category: 'laundry',
     iconSlug: 'zap',
     tasks: [
       {

@@ -22,7 +22,7 @@ interface ITask {
 interface IApplianceType {
   _id: string
   label: string
-  category: 'hvac' | 'plumbing' | 'electrical' | 'kitchen' | 'exterior' | 'safety'
+  category: 'hvac' | 'plumbing' | 'electrical' | 'kitchen' | 'laundry' | 'exterior' | 'safety'
   iconSlug: string
   tasks: ITask[]
 }
@@ -58,7 +58,7 @@ const ApplianceTypeSchema = new Schema<IApplianceType>(
     label: { type: String, required: true },
     category: {
       type: String,
-      enum: ['hvac', 'plumbing', 'electrical', 'kitchen', 'exterior', 'safety'],
+      enum: ['hvac', 'plumbing', 'electrical', 'kitchen', 'laundry', 'exterior', 'safety'],
       required: true,
     },
     iconSlug: { type: String, required: true },

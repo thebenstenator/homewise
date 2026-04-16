@@ -26,13 +26,14 @@ const iconMap: Record<string, React.ComponentType<{ size?: number; className?: s
 const categoryLabels: Record<string, string> = {
   hvac: 'HVAC',
   kitchen: 'Kitchen',
+  laundry: 'Laundry',
   plumbing: 'Plumbing',
   safety: 'Safety',
   exterior: 'Exterior',
   electrical: 'Electrical',
 }
 
-const categoryOrder = ['hvac', 'kitchen', 'plumbing', 'safety', 'exterior', 'electrical']
+const categoryOrder = ['hvac', 'kitchen', 'laundry', 'plumbing', 'safety', 'exterior', 'electrical']
 
 interface Props {
   onSelect: (type: ApplianceType) => void

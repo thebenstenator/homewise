@@ -20,7 +20,7 @@ export interface ApplianceTask {
 export interface ApplianceType {
   _id: string
   label: string
-  category: 'hvac' | 'plumbing' | 'electrical' | 'kitchen' | 'exterior' | 'safety'
+  category: 'hvac' | 'plumbing' | 'electrical' | 'kitchen' | 'laundry' | 'exterior' | 'safety'
   iconSlug: string
   tasks: ApplianceTask[]
 }

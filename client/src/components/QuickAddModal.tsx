@@ -30,13 +30,14 @@ const iconMap: Record<string, React.ComponentType<{ size?: number; className?: s
 const categoryLabels: Record<string, string> = {
   hvac: 'HVAC',
   kitchen: 'Kitchen',
+  laundry: 'Laundry',
   plumbing: 'Plumbing',
   safety: 'Safety',
   exterior: 'Exterior',
   electrical: 'Electrical',
 }
 
-const categoryOrder = ['hvac', 'kitchen', 'plumbing', 'safety', 'exterior', 'electrical']
+const categoryOrder = ['hvac', 'kitchen', 'laundry', 'plumbing', 'safety', 'exterior', 'electrical']
 
 interface Props {
   ownedTypeIds: string[]
@@ -103,8 +104,8 @@ export function QuickAddModal({ ownedTypeIds, onClose, onCreated }: Props) {
   const today = new Date().toISOString().split('T')[0]
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-end sm:items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-lg max-h-[85vh] flex flex-col">
+    <div className="fixed inset-0 bg-black/40 flex items-end sm:items-center justify-center z-50 p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl w-full max-w-lg max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-slate-100 shrink-0">
           <div>
