@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useLocation, Link } from 'react-router-dom'
-import { Plus } from 'lucide-react'
+import { Plus, Layers } from 'lucide-react'
 import { AppLayout } from '../components/AppLayout'
 import { ApplianceCard } from '../components/ApplianceCard'
 import { AddApplianceModal } from '../components/AddApplianceModal'
 import { EditApplianceModal } from '../components/EditApplianceModal'
+import { QuickAddModal } from '../components/QuickAddModal'
 import { TaskCard } from '../components/TaskCard'
 import { HomeHealthScore } from '../components/HomeHealthScore'
 import type { Appliance, Schedule, HomeHealthStats } from '../types/appliance'
@@ -24,6 +25,7 @@ export function DashboardPage() {
   const [loadingStats, setLoadingStats] = useState(true)
   const [tab, setTab] = useState<Tab>((location.state as { tab?: Tab })?.tab ?? 'due')
   const [showAdd, setShowAdd] = useState(false)
+  const [showQuickAdd, setShowQuickAdd] = useState(false)
   const [editing, setEditing] = useState<Appliance | null>(null)
 
   function refreshStats() {
@@ -39,6 +41,14 @@ export function DashboardPage() {
   function handleCreated(appliance: Appliance) {
     setAppliances((prev) => [appliance, ...prev])
     setShowAdd(false)
+    setTab('appliances')
+    schedulesApi.getDue().then(setSchedules)
+    refreshStats()
+  }
+
+  function handleQuickAddCreated(newAppliances: Appliance[]) {
+    setAppliances((prev) => [...newAppliances, ...prev])
+    setShowQuickAdd(false)
     setTab('appliances')
     schedulesApi.getDue().then(setSchedules)
     refreshStats()
@@ -131,12 +141,20 @@ export function DashboardPage() {
           </button>
         </div>
 
-        <button
-          onClick={() => setShowAdd(true)}
-          className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
-        >
-          <Plus size={16} /> Add Appliance
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowQuickAdd(true)}
+            className="flex items-center gap-2 border border-green-600 text-green-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-50 transition-colors"
+          >
+            <Layers size={16} /> Quick Add
+          </button>
+          <button
+            onClick={() => setShowAdd(true)}
+            className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
+          >
+            <Plus size={16} /> Add Appliance
+          </button>
+        </div>
       </div>
 
       {/* Due Soon tab */}
@@ -203,6 +221,13 @@ export function DashboardPage() {
       )}
 
       {showAdd && <AddApplianceModal onClose={() => setShowAdd(false)} onCreated={handleCreated} />}
+      {showQuickAdd && (
+        <QuickAddModal
+          ownedTypeIds={appliances.map((a) => a.typeId)}
+          onClose={() => setShowQuickAdd(false)}
+          onCreated={handleQuickAddCreated}
+        />
+      )}
       {editing && (
         <EditApplianceModal
           appliance={editing}
