@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom'
-import { Pencil, Trash2, ChevronLeft, Home } from 'lucide-react'
+import { Pencil, Trash2, ChevronLeft, Home, AlertTriangle } from 'lucide-react'
 import { AppLayout } from '../components/AppLayout'
 import { EditApplianceModal } from '../components/EditApplianceModal'
 import { TaskCard } from '../components/TaskCard'
@@ -8,6 +8,9 @@ import type { Appliance, Schedule, MaintenanceLog } from '../types/appliance'
 import { appliancesApi } from '../lib/appliances'
 import { schedulesApi } from '../lib/schedules'
 import { historyApi } from '../lib/history'
+import { getAgeWarning } from '../lib/applianceLifespans'
+import { thumbtackUrl, angiUrl, openAffiliate } from '../lib/affiliateLinks'
+import { useAuth } from '../context/AuthContext'
 
 type DetailTab = 'tasks' | 'history'
 
@@ -71,6 +74,8 @@ export function ApplianceDetailPage() {
   }
 
   const type = appliance.applianceType
+  const { user } = useAuth()
+  const ageWarning = getAgeWarning(appliance.typeId, appliance.installYear)
 
   return (
     <AppLayout>
@@ -128,6 +133,39 @@ export function ApplianceDetailPage() {
           <p className="mt-3 text-sm text-slate-500 border-t border-slate-100 pt-3">{appliance.notes}</p>
         )}
       </div>
+
+      {/* Age warning banner */}
+      {ageWarning && (
+        <div className={`rounded-xl px-4 py-4 mb-6 border ${ageWarning.level === 'past' ? 'bg-red-50 border-red-200' : 'bg-amber-50 border-amber-200'}`}>
+          <div className="flex items-start gap-3">
+            <AlertTriangle size={18} className={`shrink-0 mt-0.5 ${ageWarning.level === 'past' ? 'text-red-500' : 'text-amber-500'}`} />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-slate-800">
+                {ageWarning.level === 'past'
+                  ? `${ageWarning.age - ageWarning.lifespan} year${ageWarning.age - ageWarning.lifespan !== 1 ? 's' : ''} past its typical lifespan`
+                  : 'Approaching end of typical lifespan'}
+              </p>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Average lifespan is {ageWarning.lifespan} years — yours is {ageWarning.age}. Consider scheduling an inspection or replacement.
+              </p>
+              <div className="flex flex-wrap gap-2 mt-3">
+                <button
+                  onClick={() => openAffiliate(thumbtackUrl(ageWarning.thumbtackCategory, user?.zipCode ?? ''), 'thumbtack')}
+                  className="text-xs px-3 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 font-medium text-slate-700 transition-colors"
+                >
+                  Find a Pro on Thumbtack
+                </button>
+                <button
+                  onClick={() => openAffiliate(angiUrl(ageWarning.angiCategory, user?.zipCode ?? ''), 'angi')}
+                  className="text-xs px-3 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 font-medium text-slate-700 transition-colors"
+                >
+                  Find a Pro on Angi
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-1 bg-slate-100 rounded-lg p-1 mb-6 w-fit">

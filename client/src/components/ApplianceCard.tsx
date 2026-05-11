@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Pencil, Trash2, Home, Thermometer, Wind, Flame, Zap, Refrigerator, Droplets, Waves, AlertTriangle, ShieldAlert, GitBranch, Droplet, CircleSlash, Filter } from 'lucide-react'
 import type { Appliance } from '../types/appliance'
+import { getAgeWarning } from '../lib/applianceLifespans'
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   thermometer: Thermometer,
@@ -23,6 +24,7 @@ const iconMap: Record<string, React.ComponentType<{ size?: number; className?: s
 const categoryColors: Record<string, string> = {
   hvac: 'bg-blue-50 text-blue-600',
   kitchen: 'bg-orange-50 text-orange-600',
+  laundry: 'bg-purple-50 text-purple-600',
   plumbing: 'bg-cyan-50 text-cyan-600',
   safety: 'bg-red-50 text-red-600',
   exterior: 'bg-green-50 text-green-600',
@@ -41,6 +43,7 @@ export function ApplianceCard({ appliance, onEdit, onDelete, dueCount = 0 }: Pro
   const type = appliance.applianceType
   const Icon = type ? (iconMap[type.iconSlug] ?? Home) : Home
   const colorClass = type ? (categoryColors[type.category] ?? 'bg-slate-50 text-slate-600') : 'bg-slate-50 text-slate-600'
+  const ageWarning = getAgeWarning(appliance.typeId, appliance.installYear)
 
   return (
     <Link
@@ -77,9 +80,17 @@ export function ApplianceCard({ appliance, onEdit, onDelete, dueCount = 0 }: Pro
       </div>
 
       <div className="flex items-center justify-between mt-auto pt-2 border-t border-slate-100">
-        <span className={`text-xs ${dueCount > 0 ? 'text-amber-600 font-medium' : 'text-slate-400'}`}>
-          {dueCount > 0 ? `${dueCount} task${dueCount !== 1 ? 's' : ''} due` : 'No tasks due'}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className={`text-xs ${dueCount > 0 ? 'text-amber-600 font-medium' : 'text-slate-400'}`}>
+            {dueCount > 0 ? `${dueCount} task${dueCount !== 1 ? 's' : ''} due` : 'No tasks due'}
+          </span>
+          {ageWarning && (
+            <span className={`text-xs font-medium flex items-center gap-0.5 ${ageWarning.level === 'past' ? 'text-red-600' : 'text-amber-600'}`}>
+              <AlertTriangle size={11} />
+              Aging
+            </span>
+          )}
+        </div>
         <span className="text-xs font-medium text-green-600">View Tasks →</span>
       </div>
 
