@@ -19,6 +19,7 @@ export function DashboardPage() {
   const location = useLocation()
   const [appliances, setAppliances] = useState<Appliance[]>([])
   const [schedules, setSchedules] = useState<Schedule[]>([])
+  const [allSchedules, setAllSchedules] = useState<Schedule[]>([])
   const [stats, setStats] = useState<HomeHealthStats | null>(null)
   const [loadingAppliances, setLoadingAppliances] = useState(true)
   const [loadingSchedules, setLoadingSchedules] = useState(true)
@@ -35,6 +36,7 @@ export function DashboardPage() {
   useEffect(() => {
     appliancesApi.getAll().then(setAppliances).finally(() => setLoadingAppliances(false))
     schedulesApi.getDue().then(setSchedules).finally(() => setLoadingSchedules(false))
+    schedulesApi.getAll().then(setAllSchedules)
     historyApi.getStats().then(setStats).finally(() => setLoadingStats(false))
   }, [])
 
@@ -116,7 +118,9 @@ export function DashboardPage() {
       )}
 
       {/* Seasonal checklist */}
-      {appliances.length > 0 && <SeasonalChecklist appliances={appliances} />}
+      {appliances.length > 0 && (
+        <SeasonalChecklist appliances={appliances} schedules={allSchedules} onCompleted={refreshStats} />
+      )}
 
       {/* Tabs + buttons */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
