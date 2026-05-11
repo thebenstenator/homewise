@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Thermometer, Wind, Flame, Zap, Refrigerator, Droplets, Waves,
-  AlertTriangle, ShieldAlert, Home, GitBranch, Droplet, CircleSlash, Filter, ChevronLeft,
+  AlertTriangle, ShieldAlert, Home, GitBranch, Droplet, CircleSlash, Filter, ChevronLeft, Download,
 } from 'lucide-react'
 import { AppLayout } from '../components/AppLayout'
 import { historyApi } from '../lib/history'
@@ -25,6 +25,30 @@ const iconMap: Record<string, React.ComponentType<{ size?: number; className?: s
   droplet: Droplet,
   'circle-slash': CircleSlash,
   filter: Filter,
+}
+
+function exportCsv(logs: MaintenanceLog[]) {
+  const rows: string[][] = [
+    ['Date', 'Appliance', 'Task', 'Done By', 'Cost', 'Notes'],
+    ...logs.map((log) => [
+      new Date(log.completedAt).toLocaleDateString(),
+      log.applianceId.name,
+      log.taskLabel,
+      log.doneBy === 'pro' ? 'Pro' : 'DIY',
+      log.cost != null ? String(log.cost) : '',
+      log.notes ?? '',
+    ]),
+  ]
+  const csv = rows
+    .map((row) => row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(','))
+    .join('\n')
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `homewise-maintenance-${new Date().toISOString().split('T')[0]}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
 }
 
 function groupByMonth(logs: MaintenanceLog[]): { label: string; logs: MaintenanceLog[] }[] {
@@ -65,20 +89,31 @@ export function HistoryPage() {
         <ChevronLeft size={16} /> Back to Dashboard
       </Link>
 
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <h1 className="text-2xl font-bold text-slate-800">Maintenance History</h1>
-        <select
-          value={selectedAppliance}
-          onChange={(e) => setSelectedAppliance(e.target.value)}
-          className="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
-          <option value="">All appliances</option>
-          {appliances.map((a) => (
-            <option key={a._id} value={a._id}>
-              {a.name}
-            </option>
-          ))}
-        </select>
+        <div className="flex items-center gap-2">
+          <select
+            value={selectedAppliance}
+            onChange={(e) => setSelectedAppliance(e.target.value)}
+            className="flex-1 sm:flex-none border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+            <option value="">All appliances</option>
+            {appliances.map((a) => (
+              <option key={a._id} value={a._id}>
+                {a.name}
+              </option>
+            ))}
+          </select>
+          {logs.length > 0 && (
+            <button
+              onClick={() => exportCsv(logs)}
+              className="flex items-center gap-1.5 border border-slate-300 text-slate-600 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors shrink-0"
+            >
+              <Download size={15} />
+              Export CSV
+            </button>
+          )}
+        </div>
       </div>
 
       {loading ? (
