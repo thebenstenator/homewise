@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useLocation, Link } from 'react-router-dom'
-import { Plus, Layers } from 'lucide-react'
 import { AppLayout } from '../components/AppLayout'
 import { ApplianceCard } from '../components/ApplianceCard'
 import { AddApplianceModal } from '../components/AddApplianceModal'
@@ -115,9 +114,9 @@ export function DashboardPage() {
         </div>
       )}
 
-      {/* Tabs */}
-      <div className="flex items-center justify-between gap-3 mb-6">
-        <div className="flex gap-1 bg-slate-100 rounded-lg p-1">
+      {/* Tabs + buttons */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
+        <div className="flex gap-1 bg-slate-100 rounded-lg p-1 self-start">
           <button
             onClick={() => setTab('due')}
             className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
@@ -144,15 +143,15 @@ export function DashboardPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowQuickAdd(true)}
-            className="flex items-center gap-2 border border-green-600 text-green-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-50 transition-colors"
+            className="flex-1 sm:flex-none border border-green-600 text-green-700 px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-50 transition-colors text-center"
           >
-            <Layers size={16} /> Quick Add
+            Quick Add
           </button>
           <button
             onClick={() => setShowAdd(true)}
-            className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
+            className="flex-1 sm:flex-none bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors text-center"
           >
-            <Plus size={16} /> Add Appliance
+            Add Appliance
           </button>
         </div>
       </div>
