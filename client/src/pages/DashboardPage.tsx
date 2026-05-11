@@ -7,6 +7,7 @@ import { EditApplianceModal } from '../components/EditApplianceModal'
 import { QuickAddModal } from '../components/QuickAddModal'
 import { TaskCard } from '../components/TaskCard'
 import { HomeHealthScore } from '../components/HomeHealthScore'
+import { SeasonalChecklist } from '../components/SeasonalChecklist'
 import type { Appliance, Schedule, HomeHealthStats } from '../types/appliance'
 import { appliancesApi } from '../lib/appliances'
 import { schedulesApi } from '../lib/schedules'
@@ -113,6 +114,9 @@ export function DashboardPage() {
           </Link>
         </div>
       )}
+
+      {/* Seasonal checklist */}
+      {appliances.length > 0 && <SeasonalChecklist appliances={appliances} />}
 
       {/* Tabs + buttons */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
