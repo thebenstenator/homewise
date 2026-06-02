@@ -72,13 +72,13 @@ export function ApplianceTypePicker({ onSelect }: Props) {
         placeholder="Search appliances…"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm mb-6 focus:outline-none focus:ring-2 focus:ring-green-500"
+        className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm mb-6 focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
       />
 
       {Object.entries(grouped).map(([category, items]) => {
         return (
           <div key={category} className="mb-6">
-            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+            <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
               {categoryLabels[category] ?? category}
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -88,10 +88,10 @@ export function ApplianceTypePicker({ onSelect }: Props) {
                   <button
                     key={type._id}
                     onClick={() => onSelect(type)}
-                    className="flex items-center gap-2 p-3 rounded-lg border border-slate-200 hover:border-green-500 hover:bg-green-50 transition-colors text-left"
+                    className="flex items-center gap-2 p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors text-left dark:bg-slate-800"
                   >
                     <Icon size={18} className="text-green-600 shrink-0" />
-                    <span className="text-sm text-slate-700 leading-tight">{type.label}</span>
+                    <span className="text-sm text-slate-700 dark:text-slate-200 leading-tight">{type.label}</span>
                   </button>
                 )
               })}
@@ -101,7 +101,7 @@ export function ApplianceTypePicker({ onSelect }: Props) {
       })}
 
       {Object.keys(grouped).length === 0 && (
-        <p className="text-slate-500 text-sm text-center py-8">No appliances match "{search}"</p>
+        <p className="text-slate-500 dark:text-slate-400 text-sm text-center py-8">No appliances match "{search}"</p>
       )}
     </div>
   )

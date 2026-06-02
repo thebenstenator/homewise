@@ -95,24 +95,24 @@ export function DashboardPage() {
         <div className="grid grid-cols-3 gap-3 mb-6">
           <button
             onClick={() => setTab('appliances')}
-            className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-center hover:border-green-400 hover:bg-green-50 transition-colors cursor-pointer"
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-center hover:border-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors cursor-pointer dark:shadow-none"
           >
-            <div className="text-2xl font-bold text-slate-800">{stats.totalAppliances}</div>
-            <div className="text-xs text-slate-500 mt-0.5">Appliances</div>
+            <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.totalAppliances}</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Appliances</div>
           </button>
           <button
             onClick={() => setTab('due')}
-            className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-center hover:border-green-400 hover:bg-green-50 transition-colors cursor-pointer"
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-center hover:border-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors cursor-pointer dark:shadow-none"
           >
-            <div className="text-2xl font-bold text-slate-800">{stats.overdueCount + stats.dueSoonCount}</div>
-            <div className="text-xs text-slate-500 mt-0.5">Tasks Due</div>
+            <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.overdueCount + stats.dueSoonCount}</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Tasks Due</div>
           </button>
           <Link
             to="/history"
-            className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-center hover:border-green-400 hover:bg-green-50 transition-colors cursor-pointer"
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-center hover:border-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors cursor-pointer dark:shadow-none"
           >
-            <div className="text-2xl font-bold text-slate-800">{stats.completedLast30}</div>
-            <div className="text-xs text-slate-500 mt-0.5">Done This Month</div>
+            <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.completedLast30}</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Done This Month</div>
           </Link>
         </div>
       )}
@@ -124,11 +124,11 @@ export function DashboardPage() {
 
       {/* Tabs + buttons */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
-        <div className="flex gap-1 bg-slate-100 rounded-lg p-1 self-start">
+        <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1 self-start">
           <button
             onClick={() => setTab('due')}
             className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-              tab === 'due' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+              tab === 'due' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm dark:shadow-none' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
             }`}
           >
             Due Soon
@@ -141,7 +141,7 @@ export function DashboardPage() {
           <button
             onClick={() => setTab('appliances')}
             className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-              tab === 'appliances' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+              tab === 'appliances' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm dark:shadow-none' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
             }`}
           >
             My Appliances
@@ -151,7 +151,7 @@ export function DashboardPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowQuickAdd(true)}
-            className="flex-1 sm:flex-none border border-green-600 text-green-700 px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-50 transition-colors text-center"
+            className="flex-1 sm:flex-none border border-green-600 text-green-700 px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors text-center"
           >
             Quick Add
           </button>
@@ -174,8 +174,8 @@ export function DashboardPage() {
           ) : schedules.length === 0 ? (
             <div className="text-center py-20">
               <div className="text-5xl mb-4">✅</div>
-              <h2 className="text-lg font-semibold text-slate-800 mb-2">You're all caught up!</h2>
-              <p className="text-slate-500 text-sm">No maintenance tasks due in the next 30 days.</p>
+              <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2">You're all caught up!</h2>
+              <p className="text-slate-500 dark:text-slate-400 text-sm">No maintenance tasks due in the next 30 days.</p>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
@@ -201,8 +201,8 @@ export function DashboardPage() {
           ) : appliances.length === 0 ? (
             <div className="text-center py-20">
               <div className="text-5xl mb-4">🏠</div>
-              <h2 className="text-lg font-semibold text-slate-800 mb-2">No appliances yet</h2>
-              <p className="text-slate-500 mb-6 text-sm">Add your first appliance to start tracking maintenance.</p>
+              <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2">No appliances yet</h2>
+              <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm">Add your first appliance to start tracking maintenance.</p>
               <button
                 onClick={() => setShowAdd(true)}
                 className="bg-green-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"

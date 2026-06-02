@@ -81,60 +81,60 @@ export function EditApplianceModal({ appliance, onClose, onUpdated }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h2 className="font-semibold text-slate-800">Edit Appliance</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-700">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-700">
+          <h2 className="font-semibold text-slate-800 dark:text-slate-100">Edit Appliance</h2>
+          <button onClick={onClose} className="text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200">
             <X size={20} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="px-6 py-4 space-y-4 overflow-y-auto flex-1">
           {error && (
-            <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-lg">{error}</div>
+            <div className="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-sm px-4 py-3 rounded-lg">{error}</div>
           )}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Name *</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Name *</label>
             <input
               type="text"
               value={form.name}
               onChange={set('name')}
               required
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Brand</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Brand</label>
               <input
                 type="text"
                 value={form.brand}
                 onChange={set('brand')}
-                className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Model</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Model</label>
               <input
                 type="text"
                 value={form.model}
                 onChange={set('model')}
-                className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Serial Number</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Serial Number</label>
             <input
               type="text"
               value={form.serialNumber}
               onChange={set('serialNumber')}
               placeholder="e.g. SN123456789"
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Install Year</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Install Year</label>
             <input
               type="text"
               inputMode="numeric"
@@ -142,32 +142,32 @@ export function EditApplianceModal({ appliance, onClose, onUpdated }: Props) {
               onChange={set('installYear')}
               maxLength={4}
               placeholder="e.g. 2018"
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Notes</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Notes</label>
             <textarea
               value={form.notes}
               onChange={set('notes')}
               rows={3}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+              className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Photo</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Photo</label>
             <input ref={photoInputRef} type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
             {photoPreview ? (
               <div className="flex items-center gap-3">
-                <img src={photoPreview} alt="Preview" className="w-20 h-20 object-cover rounded-lg border border-slate-200" />
+                <img src={photoPreview} alt="Preview" className="w-20 h-20 object-cover rounded-lg border border-slate-200 dark:border-slate-700" />
                 <button type="button" onClick={() => photoInputRef.current?.click()} className="text-sm text-green-600 hover:underline">Replace</button>
-                <button type="button" onClick={() => { setPhotoFile(null); setPhotoPreview(null) }} className="text-sm text-slate-400 hover:text-slate-600">Remove</button>
+                <button type="button" onClick={() => { setPhotoFile(null); setPhotoPreview(null) }} className="text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">Remove</button>
               </div>
             ) : (
               <button
                 type="button"
                 onClick={() => photoInputRef.current?.click()}
-                className="flex items-center gap-2 px-4 py-2 border border-dashed border-slate-300 rounded-lg text-sm text-slate-500 hover:border-green-400 hover:text-green-600 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-sm text-slate-500 dark:text-slate-400 hover:border-green-400 hover:text-green-600 transition-colors"
               >
                 <Camera size={15} /> Upload a photo
               </button>

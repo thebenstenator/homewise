@@ -33,10 +33,10 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
   const isSnoozed = schedule.snoozedUntil && new Date(schedule.snoozedUntil) > new Date()
 
   const urgencyColor = isOverdue
-    ? 'border-red-200 bg-red-50'
+    ? 'border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800'
     : days <= 7
-    ? 'border-amber-200 bg-amber-50'
-    : 'border-slate-200 bg-white'
+    ? 'border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-800'
+    : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900'
 
   const badgeColor = isOverdue
     ? 'bg-red-100 text-red-700'
@@ -117,12 +117,12 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
       <div className={`border rounded-xl p-4 ${urgencyColor}`}>
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-slate-500 truncate">{schedule.appliance?.name}</p>
-            <p className="font-medium text-slate-800 leading-tight mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{schedule.appliance?.name}</p>
+            <p className="font-medium text-slate-800 dark:text-slate-100 leading-tight mt-0.5">
               {schedule.task?.label ?? schedule.taskId}
             </p>
             {schedule.task?.notes && (
-              <p className="text-xs text-slate-500 mt-1 leading-relaxed">{schedule.task.notes}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{schedule.task.notes}</p>
             )}
           </div>
           <span className={`text-xs font-medium px-2 py-1 rounded-full shrink-0 ${badgeColor}`}>
@@ -141,7 +141,7 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
           {schedule.task?.diyUrl && (
             <button
               onClick={() => setShowDiy(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 text-slate-600 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer"
             >
               <BookOpen size={13} /> DIY Guide
             </button>
@@ -149,7 +149,7 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
 
           <button
             onClick={() => setShowPro(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 text-slate-600 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
           >
             Find a Pro
           </button>
@@ -158,7 +158,7 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
             <button
               onClick={handleScheduleNow}
               disabled={schedulingNow}
-              className="flex items-center gap-1.5 px-3 py-1.5 border border-amber-300 text-amber-700 bg-amber-50 text-xs font-medium rounded-lg hover:bg-amber-100 transition-colors disabled:opacity-50 cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 border border-amber-300 text-amber-700 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-700 text-xs font-medium rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors disabled:opacity-50 cursor-pointer"
             >
               <CalendarClock size={13} /> Schedule for this week
             </button>
@@ -169,17 +169,17 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
               <button
                 disabled={snoozing}
                 onClick={() => setShowSnooze((v) => !v)}
-                className="flex items-center gap-1 px-3 py-1.5 border border-slate-200 text-slate-600 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50"
+                className="flex items-center gap-1 px-3 py-1.5 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
               >
                 <Clock size={13} /> Snooze <ChevronDown size={11} />
               </button>
               {showSnooze && (
-                <div className="absolute left-0 top-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-10 min-w-[110px]">
+                <div className="absolute left-0 top-full mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg dark:shadow-none z-10 min-w-[110px]">
                   {[7, 14, 30].map((d) => (
                     <button
                       key={d}
                       onClick={() => handleSnooze(d)}
-                      className="block w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 first:rounded-t-lg last:rounded-b-lg"
+                      className="block w-full text-left px-4 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 first:rounded-t-lg last:rounded-b-lg"
                     >
                       {d === 7 ? '1 week' : d === 14 ? '2 weeks' : '1 month'}
                     </button>
@@ -190,14 +190,14 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
           )}
         </div>
 
-        <div className="mt-3 pt-3 border-t border-slate-200 flex items-center justify-between gap-2">
+        <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2">
           <button
             onClick={handleToggleReminder}
             disabled={togglingReminder}
             className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-lg transition-colors disabled:opacity-50 ${
               schedule.remindersEnabled ?? true
-                ? 'text-green-600 bg-green-50 hover:bg-green-100'
-                : 'text-amber-600 bg-amber-50 hover:bg-amber-100'
+                ? 'text-green-600 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/40'
+                : 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 hover:bg-amber-100 dark:hover:bg-amber-900/40'
             }`}
           >
             {schedule.remindersEnabled ?? true
@@ -208,7 +208,7 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
 
           {showInterval && (
             <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-500">Every</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400">Every</span>
             {editingInterval ? (
               <>
                 <input
@@ -216,18 +216,18 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
                   inputMode="numeric"
                   value={intervalValue}
                   onChange={(e) => setIntervalValue(e.target.value)}
-                  className="w-16 border border-slate-300 rounded px-2 py-0.5 text-xs"
+                  className="w-16 border border-slate-300 dark:border-slate-600 rounded px-2 py-0.5 text-xs dark:bg-slate-700 dark:text-slate-100"
                 />
-                <span className="text-xs text-slate-500">days</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400">days</span>
                 <button onClick={handleSaveInterval} className="text-xs text-green-600 font-medium">Save</button>
-                <button onClick={() => setEditingInterval(false)} className="text-xs text-slate-400">Cancel</button>
+                <button onClick={() => setEditingInterval(false)} className="text-xs text-slate-400 dark:text-slate-500">Cancel</button>
               </>
             ) : (
               <>
-                <span className="text-xs font-medium text-slate-700">{schedule.intervalDays} days</span>
+                <span className="text-xs font-medium text-slate-700 dark:text-slate-200">{schedule.intervalDays} days</span>
                 <button
                   onClick={() => setEditingInterval(true)}
-                  className="text-xs text-slate-400 hover:text-slate-600"
+                  className="text-xs text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
                 >
                   Adjust
                 </button>
@@ -241,14 +241,14 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
       {/* Find a Pro popover */}
       {showPro && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setShowPro(false)}>
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-slate-800">Find a Pro</h3>
-              <button onClick={() => setShowPro(false)} className="text-slate-400 hover:text-slate-700">
+              <h3 className="font-semibold text-slate-800 dark:text-slate-100">Find a Pro</h3>
+              <button onClick={() => setShowPro(false)} className="text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200">
                 <X size={18} />
               </button>
             </div>
-            <p className="text-sm text-slate-600 mb-4">
+            <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
               Find a local professional for: <strong>{schedule.task?.label}</strong>
             </p>
             {!user?.zipCode && (
@@ -269,12 +269,12 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
                   openAffiliate(angiUrl(schedule.task?.angiCategory ?? '', user?.zipCode ?? ''), 'angi')
                   setShowPro(false)
                 }}
-                className="w-full px-4 py-2.5 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors"
+                className="w-full px-4 py-2.5 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
               >
                 Search on Angi →
               </button>
             </div>
-            <p className="text-xs text-slate-400 mt-4 text-center">
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-4 text-center">
               HomeWise may earn a referral fee at no additional cost to you.
             </p>
           </div>

@@ -44,44 +44,44 @@ export function ProfilePage() {
 
   return (
     <AppLayout>
-      <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 mb-6">
+      <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 mb-6">
         <ChevronLeft size={16} /> Back to Dashboard
       </Link>
       <div className="max-w-md">
-        <h1 className="text-2xl font-bold text-slate-800 mb-6">Profile</h1>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6">Profile</h1>
 
-        <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-xl p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6 space-y-4 dark:shadow-none">
           {error && (
-            <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-lg">{error}</div>
+            <div className="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-sm px-4 py-3 rounded-lg">{error}</div>
           )}
           {success && (
-            <div className="bg-green-50 text-green-700 text-sm px-4 py-3 rounded-lg">Profile saved.</div>
+            <div className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 text-sm px-4 py-3 rounded-lg">Profile saved.</div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Name</label>
             <input
               type="text"
               value={form.name}
               onChange={set('name')}
               required
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Email</label>
             <input
               type="email"
               value={user?.email ?? ''}
               disabled
-              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-slate-50 text-slate-400 cursor-not-allowed"
+              className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed"
             />
-            <p className="text-xs text-slate-400 mt-1">Email address cannot be changed.</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Email address cannot be changed.</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Zip Code</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Zip Code</label>
             <input
               type="text"
               value={form.zipCode}
@@ -89,21 +89,21 @@ export function ProfilePage() {
               pattern="\d{5}"
               maxLength={5}
               placeholder="e.g. 90210"
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
             />
-            <p className="text-xs text-slate-400 mt-1">Used to find pros near you.</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Used to find pros near you.</p>
           </div>
 
-          <div className="flex items-center justify-between py-3 border-t border-slate-100">
+          <div className="flex items-center justify-between py-3 border-t border-slate-100 dark:border-slate-700">
             <div>
-              <p className="text-sm font-medium text-slate-700">Weekly maintenance reminders</p>
-              <p className="text-xs text-slate-400">Sent every Monday morning</p>
+              <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Weekly maintenance reminders</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500">Sent every Monday morning</p>
             </div>
             <button
               type="button"
               onClick={() => setForm((f) => ({ ...f, emailReminders: !f.emailReminders }))}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                form.emailReminders ? 'bg-green-600' : 'bg-slate-200'
+                form.emailReminders ? 'bg-green-600' : 'bg-slate-200 dark:bg-slate-600'
               }`}
             >
               <span

@@ -22,13 +22,13 @@ const iconMap: Record<string, React.ComponentType<{ size?: number; className?: s
 }
 
 const categoryColors: Record<string, string> = {
-  hvac: 'bg-blue-50 text-blue-600',
-  kitchen: 'bg-orange-50 text-orange-600',
-  laundry: 'bg-purple-50 text-purple-600',
-  plumbing: 'bg-cyan-50 text-cyan-600',
-  safety: 'bg-red-50 text-red-600',
-  exterior: 'bg-green-50 text-green-600',
-  electrical: 'bg-yellow-50 text-yellow-600',
+  hvac: 'bg-blue-50 text-blue-600 dark:bg-blue-900/30',
+  kitchen: 'bg-orange-50 text-orange-600 dark:bg-orange-900/30',
+  laundry: 'bg-purple-50 text-purple-600 dark:bg-purple-900/20',
+  plumbing: 'bg-cyan-50 text-cyan-600 dark:bg-cyan-900/30',
+  safety: 'bg-red-50 text-red-600 dark:bg-red-900/30',
+  exterior: 'bg-green-50 text-green-600 dark:bg-green-900/30',
+  electrical: 'bg-yellow-50 text-yellow-600 dark:bg-yellow-900/30',
 }
 
 interface Props {
@@ -42,13 +42,13 @@ export function ApplianceCard({ appliance, onEdit, onDelete, dueCount = 0 }: Pro
   const [confirmDelete, setConfirmDelete] = useState(false)
   const type = appliance.applianceType
   const Icon = type ? (iconMap[type.iconSlug] ?? Home) : Home
-  const colorClass = type ? (categoryColors[type.category] ?? 'bg-slate-50 text-slate-600') : 'bg-slate-50 text-slate-600'
+  const colorClass = type ? (categoryColors[type.category] ?? 'bg-slate-50 text-slate-600 dark:bg-slate-800') : 'bg-slate-50 text-slate-600 dark:bg-slate-800'
   const ageWarning = getAgeWarning(appliance.typeId, appliance.installYear)
 
   return (
     <Link
       to={`/appliances/${appliance._id}`}
-      className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col gap-3 h-44 hover:border-green-400 hover:shadow-sm transition-all cursor-pointer"
+      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col gap-3 h-44 hover:border-green-400 hover:shadow-sm transition-all cursor-pointer dark:shadow-none"
     >
       <div className="flex items-start justify-between">
         <div className={`p-2 rounded-lg ${colorClass}`}>
@@ -57,14 +57,14 @@ export function ApplianceCard({ appliance, onEdit, onDelete, dueCount = 0 }: Pro
         <div className="flex gap-1">
           <button
             onClick={(e) => { e.preventDefault(); onEdit(appliance) }}
-            className="p-1.5 text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
+            className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer"
             aria-label="Edit appliance"
           >
             <Pencil size={15} />
           </button>
           <button
             onClick={(e) => { e.preventDefault(); setConfirmDelete(true) }}
-            className="p-1.5 text-slate-400 hover:text-red-600 transition-colors cursor-pointer"
+            className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-red-600 transition-colors cursor-pointer"
             aria-label="Delete appliance"
           >
             <Trash2 size={15} />
@@ -73,15 +73,15 @@ export function ApplianceCard({ appliance, onEdit, onDelete, dueCount = 0 }: Pro
       </div>
 
       <div className="h-10">
-        <h3 className="font-semibold text-slate-800 leading-tight">{appliance.name}</h3>
-        <p className="text-xs text-slate-500 mt-0.5 truncate">
-          {[appliance.brand, appliance.model].filter(Boolean).join(' · ') || '\u00A0'}
+        <h3 className="font-semibold text-slate-800 dark:text-slate-100 leading-tight">{appliance.name}</h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+          {[appliance.brand, appliance.model].filter(Boolean).join(' · ') || ' '}
         </p>
       </div>
 
-      <div className="flex items-center justify-between mt-auto pt-2 border-t border-slate-100">
+      <div className="flex items-center justify-between mt-auto pt-2 border-t border-slate-100 dark:border-slate-700">
         <div className="flex items-center gap-2">
-          <span className={`text-xs ${dueCount > 0 ? 'text-amber-600 font-medium' : 'text-slate-400'}`}>
+          <span className={`text-xs ${dueCount > 0 ? 'text-amber-600 font-medium' : 'text-slate-400 dark:text-slate-500'}`}>
             {dueCount > 0 ? `${dueCount} task${dueCount !== 1 ? 's' : ''} due` : 'No tasks due'}
           </span>
           {ageWarning && (
@@ -97,14 +97,14 @@ export function ApplianceCard({ appliance, onEdit, onDelete, dueCount = 0 }: Pro
       {confirmDelete && (
         <div
           onClick={(e) => e.preventDefault()}
-          className="absolute inset-0 bg-white rounded-xl flex flex-col items-center justify-center gap-3 p-4 border border-red-200 z-10"
+          className="absolute inset-0 bg-white dark:bg-slate-900 rounded-xl flex flex-col items-center justify-center gap-3 p-4 border border-red-200 dark:border-red-800 z-10"
         >
-          <p className="text-sm font-medium text-slate-800 text-center">Delete "{appliance.name}"?</p>
-          <p className="text-xs text-slate-500 text-center">This will also remove its maintenance history.</p>
+          <p className="text-sm font-medium text-slate-800 dark:text-slate-100 text-center">Delete "{appliance.name}"?</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 text-center">This will also remove its maintenance history.</p>
           <div className="flex gap-2">
             <button
               onClick={(e) => { e.preventDefault(); setConfirmDelete(false) }}
-              className="px-3 py-1.5 text-sm border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 cursor-pointer"
+              className="px-3 py-1.5 text-sm border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer"
             >
               Cancel
             </button>

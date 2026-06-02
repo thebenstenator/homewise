@@ -23,33 +23,33 @@ const seasonConfig: Record<Season, {
     label: 'Spring',
     Icon: Sprout,
     iconClass: 'text-green-600',
-    borderClass: 'border-green-200',
-    bgClass: 'bg-green-50',
-    headingClass: 'text-green-800',
+    borderClass: 'border-green-200 dark:border-green-800',
+    bgClass: 'bg-green-50 dark:bg-green-900/20',
+    headingClass: 'text-green-800 dark:text-green-300',
   },
   summer: {
     label: 'Summer',
     Icon: Sun,
     iconClass: 'text-yellow-500',
-    borderClass: 'border-yellow-200',
-    bgClass: 'bg-yellow-50',
-    headingClass: 'text-yellow-800',
+    borderClass: 'border-yellow-200 dark:border-yellow-800',
+    bgClass: 'bg-yellow-50 dark:bg-yellow-900/20',
+    headingClass: 'text-yellow-800 dark:text-yellow-300',
   },
   fall: {
     label: 'Fall',
     Icon: Leaf,
     iconClass: 'text-orange-500',
-    borderClass: 'border-orange-200',
-    bgClass: 'bg-orange-50',
-    headingClass: 'text-orange-800',
+    borderClass: 'border-orange-200 dark:border-orange-800',
+    bgClass: 'bg-orange-50 dark:bg-orange-900/20',
+    headingClass: 'text-orange-800 dark:text-orange-300',
   },
   winter: {
     label: 'Winter',
     Icon: Snowflake,
     iconClass: 'text-blue-500',
-    borderClass: 'border-blue-200',
-    bgClass: 'bg-blue-50',
-    headingClass: 'text-blue-800',
+    borderClass: 'border-blue-200 dark:border-blue-800',
+    bgClass: 'bg-blue-50 dark:bg-blue-900/20',
+    headingClass: 'text-blue-800 dark:text-blue-300',
   },
 }
 
@@ -132,15 +132,15 @@ export function SeasonalChecklist({ appliances, schedules, onCompleted }: Props)
           <span className={`text-sm font-semibold ${headingClass}`}>
             {label} Tasks
           </span>
-          <span className="text-xs text-slate-500 font-normal">
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">
             {doneCount > 0
               ? `${doneCount} of ${tasks.length} done`
               : `${tasks.length} for your appliances`}
           </span>
         </div>
         {collapsed
-          ? <ChevronDown size={16} className="text-slate-400 shrink-0" />
-          : <ChevronUp size={16} className="text-slate-400 shrink-0" />
+          ? <ChevronDown size={16} className="text-slate-400 dark:text-slate-500 shrink-0" />
+          : <ChevronUp size={16} className="text-slate-400 dark:text-slate-500 shrink-0" />
         }
       </button>
 
@@ -157,8 +157,10 @@ export function SeasonalChecklist({ appliances, schedules, onCompleted }: Props)
             return (
               <div
                 key={key}
-                className={`flex items-center gap-3 bg-white rounded-lg px-3 py-2.5 border transition-all ${
-                  isDone ? 'border-green-200 bg-green-50' : 'border-white hover:border-slate-200 hover:shadow-sm'
+                className={`flex items-center gap-3 bg-white dark:bg-slate-900 rounded-lg px-3 py-2.5 border transition-all ${
+                  isDone
+                    ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20'
+                    : 'border-white dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-sm dark:hover:shadow-none'
                 }`}
               >
                 {/* Checkbox */}
@@ -169,10 +171,10 @@ export function SeasonalChecklist({ appliances, schedules, onCompleted }: Props)
                     isDone
                       ? 'bg-green-600 border-green-600'
                       : isLoading
-                      ? 'border-slate-300 opacity-50'
+                      ? 'border-slate-300 dark:border-slate-600 opacity-50'
                       : hasSchedule
-                      ? 'border-slate-300 hover:border-green-500'
-                      : 'border-slate-200 opacity-40 cursor-not-allowed'
+                      ? 'border-slate-300 dark:border-slate-600 hover:border-green-500'
+                      : 'border-slate-200 dark:border-slate-700 opacity-40 cursor-not-allowed'
                   }`}
                   title={!hasSchedule ? 'No schedule found for this task' : undefined}
                 >
@@ -184,17 +186,17 @@ export function SeasonalChecklist({ appliances, schedules, onCompleted }: Props)
 
                 {/* Text */}
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm leading-snug ${isDone ? 'line-through text-slate-400' : 'text-slate-700'}`}>
+                  <p className={`text-sm leading-snug ${isDone ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-200'}`}>
                     {task.label}
                   </p>
-                  <p className="text-xs text-slate-400 mt-0.5">{task.applianceName}</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{task.applianceName}</p>
                 </div>
 
                 {/* Detail link */}
                 <Link
                   to={`/appliances/${task.applianceId}`}
                   onClick={(e) => e.stopPropagation()}
-                  className="text-slate-300 hover:text-slate-500 transition-colors shrink-0"
+                  className="text-slate-300 dark:text-slate-600 hover:text-slate-500 dark:hover:text-slate-400 transition-colors shrink-0"
                   title="View appliance"
                 >
                   <ArrowRight size={14} />

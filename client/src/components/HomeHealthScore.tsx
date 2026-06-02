@@ -11,15 +11,15 @@ export function HomeHealthScore({ stats, loading }: Props) {
 
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl p-5 mb-16 animate-pulse">
-        <div className="h-16 bg-slate-100 rounded-lg" />
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-16 animate-pulse dark:shadow-none">
+        <div className="h-16 bg-slate-100 dark:bg-slate-700/50 rounded-lg" />
       </div>
     )
   }
 
   if (!stats || stats.totalAppliances === 0) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl p-5 mb-16 text-center text-sm text-slate-500">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-16 text-center text-sm text-slate-500 dark:text-slate-400 dark:shadow-none">
         Add your appliances to see your home health score.
       </div>
     )
@@ -32,10 +32,10 @@ export function HomeHealthScore({ stats, loading }: Props) {
 
   const colorClass = isGood ? 'text-green-600' : isOk ? 'text-amber-500' : 'text-red-500'
   const bgClass = isGood
-    ? 'bg-green-50 border-green-200'
+    ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800'
     : isOk
-    ? 'bg-amber-50 border-amber-200'
-    : 'bg-red-50 border-red-200'
+    ? 'bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800'
+    : 'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800'
 
   let summary: string
   if (overdueCount === 0 && dueSoonCount === 0) {
@@ -57,12 +57,12 @@ export function HomeHealthScore({ stats, loading }: Props) {
         <div className={`text-sm font-semibold ${colorClass}`}>{grade}</div>
       </div>
       <div>
-        <p className="font-semibold text-slate-800 mb-1">Home Health Score</p>
-        <p className="text-sm text-slate-600">{summary}</p>
+        <p className="font-semibold text-slate-800 dark:text-slate-100 mb-1">Home Health Score</p>
+        <p className="text-sm text-slate-600 dark:text-slate-300">{summary}</p>
         {hasDueSoon && (
           <button
             onClick={() => navigate('/dashboard', { state: { tab: 'due' } })}
-            className="text-xs text-slate-500 mt-1 hover:underline cursor-pointer text-left"
+            className="text-xs text-slate-500 dark:text-slate-400 mt-1 hover:underline cursor-pointer text-left"
           >
             {overdueCount > 0 && `${overdueCount} overdue`}
             {overdueCount > 0 && dueSoonCount > 0 && ' · '}

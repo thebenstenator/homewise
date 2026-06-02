@@ -85,17 +85,17 @@ export function HistoryPage() {
 
   return (
     <AppLayout>
-      <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 mb-6">
+      <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 mb-6">
         <ChevronLeft size={16} /> Back to Dashboard
       </Link>
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <h1 className="text-2xl font-bold text-slate-800">Maintenance History</h1>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Maintenance History</h1>
         <div className="flex items-center gap-2">
           <select
             value={selectedAppliance}
             onChange={(e) => setSelectedAppliance(e.target.value)}
-            className="flex-1 sm:flex-none border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="flex-1 sm:flex-none border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-slate-700 dark:text-slate-100"
           >
             <option value="">All appliances</option>
             {appliances.map((a) => (
@@ -107,7 +107,7 @@ export function HistoryPage() {
           {logs.length > 0 && (
             <button
               onClick={() => exportCsv(logs)}
-              className="flex items-center gap-1.5 border border-slate-300 text-slate-600 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors shrink-0"
+              className="flex items-center gap-1.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shrink-0"
             >
               <Download size={15} />
               Export CSV
@@ -123,8 +123,8 @@ export function HistoryPage() {
       ) : logs.length === 0 ? (
         <div className="text-center py-20">
           <div className="text-5xl mb-4">📋</div>
-          <h2 className="text-lg font-semibold text-slate-800 mb-2">No maintenance logged yet</h2>
-          <p className="text-slate-500 text-sm">
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2">No maintenance logged yet</h2>
+          <p className="text-slate-500 dark:text-slate-400 text-sm">
             Mark a task complete to start your maintenance record.
           </p>
         </div>
@@ -132,7 +132,7 @@ export function HistoryPage() {
         <div className="flex flex-col gap-8">
           {grouped.map(({ label, logs: monthLogs }) => (
             <div key={label}>
-              <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+              <h2 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
                 {label}
               </h2>
               <div className="flex flex-col gap-2">
@@ -148,29 +148,29 @@ export function HistoryPage() {
                   return (
                     <div
                       key={log._id}
-                      className="bg-white border border-slate-200 rounded-xl px-4 py-3 flex items-center gap-4"
+                      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 flex items-center gap-4 dark:shadow-none"
                     >
-                      <div className="p-2 bg-green-50 rounded-lg shrink-0">
+                      <div className="p-2 bg-green-50 dark:bg-green-900/30 rounded-lg shrink-0">
                         <Icon size={18} className="text-green-600" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-slate-400 truncate">{appliance.name}</p>
-                        <p className="text-sm font-medium text-slate-800 truncate">{log.taskLabel}</p>
+                        <p className="text-xs text-slate-400 dark:text-slate-500 truncate">{appliance.name}</p>
+                        <p className="text-sm font-medium text-slate-800 dark:text-slate-100 truncate">{log.taskLabel}</p>
                         {log.notes && (
-                          <p className="text-xs text-slate-500 mt-0.5 truncate">{log.notes}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">{log.notes}</p>
                         )}
                       </div>
                       <div className="text-right shrink-0 flex flex-col items-end gap-1">
-                        <p className="text-xs text-slate-400">{date}</p>
+                        <p className="text-xs text-slate-400 dark:text-slate-500">{date}</p>
                         <div className="flex items-center gap-2">
                           {log.cost != null && (
-                            <span className="text-xs text-slate-500">${log.cost}</span>
+                            <span className="text-xs text-slate-500 dark:text-slate-400">${log.cost}</span>
                           )}
                           <span
                             className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                               log.doneBy === 'pro'
                                 ? 'bg-blue-100 text-blue-700'
-                                : 'bg-slate-100 text-slate-600'
+                                : 'bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300'
                             }`}
                           >
                             {log.doneBy === 'pro' ? 'Pro' : 'DIY'}

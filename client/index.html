@@ -25,6 +25,16 @@
 
     <!-- Plausible Analytics (privacy-friendly, no cookies) -->
     <!-- <script defer data-domain="yourhomewise.app" src="https://plausible.io/js/script.js"></script> -->
+    <!-- Apply dark class before React mounts to prevent flash -->
+    <script>
+      try {
+        const stored = localStorage.getItem('theme')
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (stored === 'dark' || (!stored && prefersDark)) {
+          document.documentElement.classList.add('dark')
+        }
+      } catch {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

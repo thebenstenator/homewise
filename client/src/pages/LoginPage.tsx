@@ -27,31 +27,31 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4">
+    <div className="min-h-screen bg-white dark:bg-slate-900 flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-slate-800 mb-2 text-center">Welcome back</h1>
-        <p className="text-slate-500 mb-8 text-center">Log in to your HomeWise account</p>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2 text-center">Welcome back</h1>
+        <p className="text-slate-500 dark:text-slate-400 mb-8 text-center">Log in to your HomeWise account</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-lg">{error}</div>
+            <div className="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-sm px-4 py-3 rounded-lg">{error}</div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="block text-sm font-medium text-slate-700">Password</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Password</label>
               <Link to="/forgot-password" className="text-xs text-green-600 hover:underline">
                 Forgot password?
               </Link>
@@ -63,12 +63,12 @@ export function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 autoComplete="current-password"
-                className="w-full border border-slate-300 rounded-lg px-3 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
                 tabIndex={-1}
               >
                 {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
@@ -85,7 +85,7 @@ export function LoginPage() {
           </button>
         </form>
 
-        <p className="text-sm text-slate-500 mt-6 text-center">
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-6 text-center">
           Don't have an account?{' '}
           <Link to="/register" className="text-green-600 font-medium hover:underline">
             Sign up free

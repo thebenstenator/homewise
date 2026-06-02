@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Sun, Moon } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useInstallPrompt } from '../hooks/useInstallPrompt'
+import { useDarkMode } from '../hooks/useDarkMode'
 import { api } from '../lib/api'
 
 function getInitials(name: string): string {
@@ -13,6 +15,7 @@ function getInitials(name: string): string {
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const { dark, toggle: toggleDark } = useDarkMode()
   const [menuOpen, setMenuOpen] = useState(false)
   const [showIOSInstructions, setShowIOSInstructions] = useState(false)
   const [feedbackOpen, setFeedbackOpen] = useState(false)
@@ -60,7 +63,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const initials = user?.name ? getInitials(user.name) : '?'
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-slate-900">
       <nav className="bg-slate-800 text-white px-4 py-3">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <Link to="/dashboard" className="text-xl font-bold text-green-400 tracking-tight">
@@ -118,42 +121,49 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </button>
 
             {menuOpen && (
-              <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-200 py-1 z-50">
-                <div className="px-4 py-2.5 border-b border-slate-100">
-                  <p className="text-sm font-medium text-slate-800 truncate">{user?.name}</p>
-                  <p className="text-xs text-slate-400 truncate">{user?.email}</p>
+              <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-50">
+                <div className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-700">
+                  <p className="text-sm font-medium text-slate-800 dark:text-slate-100 truncate">{user?.name}</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 truncate">{user?.email}</p>
                 </div>
                 <Link
                   to="/dashboard"
                   onClick={() => setMenuOpen(false)}
-                  className="block px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                  className="block px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                 >
                   Dashboard
                 </Link>
                 <Link
                   to="/history"
                   onClick={() => setMenuOpen(false)}
-                  className="block px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                  className="block px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                 >
                   History
                 </Link>
                 <Link
                   to="/profile"
                   onClick={() => setMenuOpen(false)}
-                  className="block px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                  className="block px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                 >
                   Profile
                 </Link>
-                <div className="border-t border-slate-100 mt-1 pt-1">
+                <div className="border-t border-slate-100 dark:border-slate-700 mt-1 pt-1">
+                  <button
+                    onClick={toggleDark}
+                    className="w-full text-left px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-2"
+                  >
+                    {dark ? <Sun size={14} /> : <Moon size={14} />}
+                    {dark ? 'Light mode' : 'Dark mode'}
+                  </button>
                   <button
                     onClick={openFeedback}
-                    className="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                    className="w-full text-left px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                   >
                     Send Feedback
                   </button>
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
                   >
                     Log out
                   </button>
@@ -169,11 +179,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       {/* Feedback modal */}
       {feedbackOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md p-6">
             {feedbackStatus === 'sent' ? (
               <div className="text-center py-4">
                 <p className="text-2xl mb-2">Thanks!</p>
-                <p className="text-slate-500 text-sm mb-6">Your feedback has been sent.</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">Your feedback has been sent.</p>
                 <button
                   onClick={() => setFeedbackOpen(false)}
                   className="px-6 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
@@ -184,11 +194,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             ) : (
               <>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-base font-semibold text-slate-800">Send Feedback</h2>
-                  <button onClick={() => setFeedbackOpen(false)} className="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>
+                  <h2 className="text-base font-semibold text-slate-800 dark:text-slate-100">Send Feedback</h2>
+                  <button onClick={() => setFeedbackOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 text-xl leading-none">&times;</button>
                 </div>
                 <textarea
-                  className="w-full border border-slate-200 rounded-lg p-3 text-sm text-slate-800 resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400 rounded-lg p-3 text-sm text-slate-800 resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
                   rows={5}
                   placeholder="What's on your mind? Bug reports, feature ideas, anything..."
                   value={feedbackText}
@@ -201,7 +211,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 <div className="flex justify-end gap-2 mt-4">
                   <button
                     onClick={() => setFeedbackOpen(false)}
-                    className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700 transition-colors"
+                    className="px-4 py-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
                   >
                     Cancel
                   </button>

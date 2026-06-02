@@ -105,23 +105,23 @@ export function QuickAddModal({ ownedTypeIds, onClose, onCreated }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-end sm:items-center justify-center z-50 p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl w-full max-w-lg max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-lg max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-slate-100 shrink-0">
+        <div className="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-700 shrink-0">
           <div>
-            <h2 className="text-lg font-semibold text-slate-800">Quick Add Appliances</h2>
-            <p className="text-xs text-slate-500 mt-0.5">Select all the appliances in your home</p>
+            <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Quick Add Appliances</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Select all the appliances in your home</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-            <X size={18} className="text-slate-500" />
+          <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
+            <X size={18} className="text-slate-500 dark:text-slate-400" />
           </button>
         </div>
 
         {/* Shared date */}
-        <div className="px-5 py-4 border-b border-slate-100 shrink-0">
-          <label className="text-sm font-medium text-slate-700">
+        <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700 shrink-0">
+          <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
             Last service date{' '}
-            <span className="text-slate-400 font-normal">(optional — applies to all)</span>
+            <span className="text-slate-400 dark:text-slate-500 font-normal">(optional — applies to all)</span>
           </label>
           <input
             type="date"
@@ -129,7 +129,7 @@ export function QuickAddModal({ ownedTypeIds, onClose, onCreated }: Props) {
             onChange={(e) => setSharedDate(e.target.value)}
             max={today}
             disabled={submitting}
-            className="mt-1.5 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50"
+            className="mt-1.5 w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
           />
         </div>
 
@@ -142,8 +142,8 @@ export function QuickAddModal({ ownedTypeIds, onClose, onCreated }: Props) {
           ) : available.length === 0 ? (
             <div className="text-center py-12">
               <div className="text-4xl mb-3">🎉</div>
-              <p className="text-slate-700 font-medium">You've added all appliance types!</p>
-              <p className="text-slate-500 text-sm mt-1">
+              <p className="text-slate-700 dark:text-slate-200 font-medium">You've added all appliance types!</p>
+              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
                 Use "Add Appliance" to add more of the same type.
               </p>
             </div>
@@ -154,7 +154,7 @@ export function QuickAddModal({ ownedTypeIds, onClose, onCreated }: Props) {
               return (
                 <div key={cat} className="mb-5">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       {categoryLabels[cat] ?? cat}
                     </h3>
                     <button
@@ -176,13 +176,13 @@ export function QuickAddModal({ ownedTypeIds, onClose, onCreated }: Props) {
                           disabled={submitting}
                           className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-colors text-left w-full disabled:opacity-50 ${
                             checked
-                              ? 'border-green-400 bg-green-50'
-                              : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                              ? 'border-green-400 bg-green-50 dark:bg-green-900/30 dark:border-green-700'
+                              : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700'
                           }`}
                         >
                           <div
                             className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
-                              checked ? 'bg-green-600 border-green-600' : 'border-slate-300'
+                              checked ? 'bg-green-600 border-green-600' : 'border-slate-300 dark:border-slate-600'
                             }`}
                           >
                             {checked && (
@@ -199,9 +199,9 @@ export function QuickAddModal({ ownedTypeIds, onClose, onCreated }: Props) {
                           </div>
                           <Icon
                             size={16}
-                            className={checked ? 'text-green-600 shrink-0' : 'text-slate-400 shrink-0'}
+                            className={checked ? 'text-green-600 shrink-0' : 'text-slate-400 dark:text-slate-500 shrink-0'}
                           />
-                          <span className="text-sm text-slate-700">{type.label}</span>
+                          <span className="text-sm text-slate-700 dark:text-slate-200">{type.label}</span>
                         </button>
                       )
                     })}
@@ -214,11 +214,11 @@ export function QuickAddModal({ ownedTypeIds, onClose, onCreated }: Props) {
 
         {/* Footer */}
         {available.length > 0 && (
-          <div className="p-5 border-t border-slate-100 flex gap-3 shrink-0">
+          <div className="p-5 border-t border-slate-100 dark:border-slate-700 flex gap-3 shrink-0">
             <button
               onClick={onClose}
               disabled={submitting}
-              className="flex-1 border border-slate-300 text-slate-700 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors disabled:opacity-50"
+              className="flex-1 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
             >
               Cancel
             </button>

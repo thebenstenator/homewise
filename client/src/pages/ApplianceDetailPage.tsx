@@ -67,7 +67,7 @@ export function ApplianceDetailPage() {
   if (!appliance) {
     return (
       <AppLayout>
-        <p className="text-slate-500">Appliance not found.</p>
+        <p className="text-slate-500 dark:text-slate-400">Appliance not found.</p>
         <Link to="/dashboard" className="text-green-600 text-sm mt-2 inline-block">← Back to Dashboard</Link>
       </AppLayout>
     )
@@ -79,12 +79,12 @@ export function ApplianceDetailPage() {
 
   return (
     <AppLayout>
-      <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 mb-6">
+      <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 mb-6">
         <ChevronLeft size={16} /> Back to Dashboard
       </Link>
 
       {/* Header card */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6 mb-6">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6 mb-6 dark:shadow-none">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             {appliance.photoUrl ? (
@@ -92,29 +92,29 @@ export function ApplianceDetailPage() {
                 <img
                   src={appliance.photoUrl}
                   alt={appliance.name}
-                  className="w-16 h-16 object-cover rounded-xl border border-slate-200 hover:opacity-90 transition-opacity cursor-zoom-in"
+                  className="w-16 h-16 object-cover rounded-xl border border-slate-200 dark:border-slate-700 hover:opacity-90 transition-opacity cursor-zoom-in"
                 />
               </button>
             ) : (
-              <div className="p-3 bg-green-50 rounded-xl shrink-0">
+              <div className="p-3 bg-green-50 dark:bg-green-900/30 rounded-xl shrink-0">
                 <Home size={24} className="text-green-600" />
               </div>
             )}
             <div>
-              <h1 className="text-xl font-bold text-slate-800">{appliance.name}</h1>
-              {type && <p className="text-sm text-slate-500">{type.label}</p>}
+              <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">{appliance.name}</h1>
+              {type && <p className="text-sm text-slate-500 dark:text-slate-400">{type.label}</p>}
             </div>
           </div>
           <div className="flex gap-2">
             <button
               onClick={() => setEditing(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
             >
               <Pencil size={14} /> Edit
             </button>
             <button
               onClick={() => setConfirmDelete(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-red-200 rounded-lg text-red-600 hover:bg-red-50"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-red-200 dark:border-red-800 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30"
             >
               <Trash2 size={14} /> Delete
             </button>
@@ -122,42 +122,42 @@ export function ApplianceDetailPage() {
         </div>
 
         {(appliance.brand || appliance.model || appliance.serialNumber || appliance.installYear) && (
-          <div className="mt-4 flex flex-wrap gap-4 text-sm text-slate-600 border-t border-slate-100 pt-4">
-            {appliance.brand && <span><span className="text-slate-400">Brand </span>{appliance.brand}</span>}
-            {appliance.model && <span><span className="text-slate-400">Model </span>{appliance.model}</span>}
-            {appliance.serialNumber && <span><span className="text-slate-400">Serial </span>{appliance.serialNumber}</span>}
-            {appliance.installYear && <span><span className="text-slate-400">Installed </span>{appliance.installYear}</span>}
+          <div className="mt-4 flex flex-wrap gap-4 text-sm text-slate-600 dark:text-slate-300 border-t border-slate-100 dark:border-slate-700 pt-4">
+            {appliance.brand && <span><span className="text-slate-400 dark:text-slate-500">Brand </span>{appliance.brand}</span>}
+            {appliance.model && <span><span className="text-slate-400 dark:text-slate-500">Model </span>{appliance.model}</span>}
+            {appliance.serialNumber && <span><span className="text-slate-400 dark:text-slate-500">Serial </span>{appliance.serialNumber}</span>}
+            {appliance.installYear && <span><span className="text-slate-400 dark:text-slate-500">Installed </span>{appliance.installYear}</span>}
           </div>
         )}
         {appliance.notes && (
-          <p className="mt-3 text-sm text-slate-500 border-t border-slate-100 pt-3">{appliance.notes}</p>
+          <p className="mt-3 text-sm text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-700 pt-3">{appliance.notes}</p>
         )}
       </div>
 
       {/* Age warning banner */}
       {ageWarning && (
-        <div className={`rounded-xl px-4 py-4 mb-6 border ${ageWarning.level === 'past' ? 'bg-red-50 border-red-200' : 'bg-amber-50 border-amber-200'}`}>
+        <div className={`rounded-xl px-4 py-4 mb-6 border ${ageWarning.level === 'past' ? 'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800' : 'bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800'}`}>
           <div className="flex items-start gap-3">
             <AlertTriangle size={18} className={`shrink-0 mt-0.5 ${ageWarning.level === 'past' ? 'text-red-500' : 'text-amber-500'}`} />
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-slate-800">
+              <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
                 {ageWarning.level === 'past'
                   ? `${ageWarning.age - ageWarning.lifespan} year${ageWarning.age - ageWarning.lifespan !== 1 ? 's' : ''} past its typical lifespan`
                   : 'Approaching end of typical lifespan'}
               </p>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Average lifespan is {ageWarning.lifespan} years — yours is {ageWarning.age}. Consider scheduling an inspection or replacement.
               </p>
               <div className="flex flex-wrap gap-2 mt-3">
                 <button
                   onClick={() => openAffiliate(thumbtackUrl(ageWarning.thumbtackCategory, user?.zipCode ?? ''), 'thumbtack')}
-                  className="text-xs px-3 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 font-medium text-slate-700 transition-colors"
+                  className="text-xs px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 font-medium text-slate-700 dark:text-slate-200 transition-colors"
                 >
                   Find a Pro on Thumbtack
                 </button>
                 <button
                   onClick={() => openAffiliate(angiUrl(ageWarning.angiCategory, user?.zipCode ?? ''), 'angi')}
-                  className="text-xs px-3 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 font-medium text-slate-700 transition-colors"
+                  className="text-xs px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 font-medium text-slate-700 dark:text-slate-200 transition-colors"
                 >
                   Find a Pro on Angi
                 </button>
@@ -168,11 +168,11 @@ export function ApplianceDetailPage() {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-slate-100 rounded-lg p-1 mb-6 w-fit">
+      <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1 mb-6 w-fit">
         <button
           onClick={() => setTab('tasks')}
           className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-            tab === 'tasks' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+            tab === 'tasks' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm dark:shadow-none' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
           }`}
         >
           Maintenance Tasks
@@ -180,7 +180,7 @@ export function ApplianceDetailPage() {
         <button
           onClick={() => setTab('history')}
           className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-            tab === 'history' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+            tab === 'history' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm dark:shadow-none' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
           }`}
         >
           History
@@ -191,7 +191,7 @@ export function ApplianceDetailPage() {
       {tab === 'tasks' && (
         <>
           {schedules.length === 0 ? (
-            <p className="text-sm text-slate-400">No maintenance tasks found.</p>
+            <p className="text-sm text-slate-400 dark:text-slate-500">No maintenance tasks found.</p>
           ) : (
             <div className="flex flex-col gap-3">
               {schedules.map((s) => (
@@ -209,20 +209,20 @@ export function ApplianceDetailPage() {
           {/* Always-on reminder tips */}
           {type && type.tasks.filter((t) => t.isReminder).length > 0 && (
             <div className="mt-6">
-              <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+              <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
                 Always-On Reminders
               </h3>
               <div className="flex flex-col gap-2">
                 {type.tasks.filter((t) => t.isReminder).map((t) => (
                   <div
                     key={t.taskId}
-                    className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-start gap-3"
+                    className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl px-4 py-3 flex items-start gap-3"
                   >
                     <span className="text-amber-500 text-base mt-0.5">⚠</span>
                     <div>
-                      <p className="text-sm font-medium text-slate-800">{t.label}</p>
+                      <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{t.label}</p>
                       {t.notes && (
-                        <p className="text-xs text-slate-500 mt-0.5">{t.notes}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t.notes}</p>
                       )}
                     </div>
                   </div>
@@ -242,7 +242,7 @@ export function ApplianceDetailPage() {
             </div>
           ) : logs.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-slate-500 text-sm">No maintenance logged yet for this appliance.</p>
+              <p className="text-slate-500 dark:text-slate-400 text-sm">No maintenance logged yet for this appliance.</p>
             </div>
           ) : (
             <div className="flex flex-col gap-2">
@@ -255,24 +255,24 @@ export function ApplianceDetailPage() {
                 return (
                   <div
                     key={log._id}
-                    className="bg-white border border-slate-200 rounded-xl px-4 py-3 flex items-center gap-4"
+                    className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 flex items-center gap-4 dark:shadow-none"
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-slate-800 truncate">{log.taskLabel}</p>
-                      <p className="text-xs text-slate-400 mt-0.5">{date}</p>
+                      <p className="text-sm font-medium text-slate-800 dark:text-slate-100 truncate">{log.taskLabel}</p>
+                      <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{date}</p>
                       {log.notes && (
-                        <p className="text-xs text-slate-500 mt-0.5 truncate">{log.notes}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">{log.notes}</p>
                       )}
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       {log.cost != null && (
-                        <span className="text-xs text-slate-500">${log.cost}</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">${log.cost}</span>
                       )}
                       <span
                         className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                           log.doneBy === 'pro'
                             ? 'bg-blue-100 text-blue-700'
-                            : 'bg-slate-100 text-slate-600'
+                            : 'bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300'
                         }`}
                       >
                         {log.doneBy === 'pro' ? 'Pro' : 'DIY'}
@@ -309,13 +309,13 @@ export function ApplianceDetailPage() {
 
       {confirmDelete && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
-            <h3 className="font-semibold text-slate-800 mb-2">Delete "{appliance.name}"?</h3>
-            <p className="text-sm text-slate-500 mb-5">This will also remove all maintenance history. This can't be undone.</p>
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-sm w-full">
+            <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-2">Delete "{appliance.name}"?</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">This will also remove all maintenance history. This can't be undone.</p>
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmDelete(false)}
-                className="flex-1 px-4 py-2 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50"
+                className="flex-1 px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Cancel
               </button>
