@@ -47,6 +47,19 @@ export function getCurrentSeason(): Season {
   return 'winter'
 }
 
+export function getSeasonStart(season: Season): Date {
+  const year = new Date().getFullYear()
+  const month = new Date().getMonth()
+  switch (season) {
+    case 'spring': return new Date(year, 2, 1)   // Mar 1
+    case 'summer': return new Date(year, 5, 1)   // Jun 1
+    case 'fall':   return new Date(year, 8, 1)   // Sep 1
+    case 'winter':
+      // Dec spans into the next year — if we're in Jan/Feb, start was Dec 1 last year
+      return month === 11 ? new Date(year, 11, 1) : new Date(year - 1, 11, 1)
+  }
+}
+
 export interface RelevantSeasonalTask {
   applianceId: string
   applianceName: string

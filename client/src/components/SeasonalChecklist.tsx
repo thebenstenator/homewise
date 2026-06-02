@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Sun, Leaf, Snowflake, Sprout, ChevronDown, ChevronUp, ArrowRight, Check } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -6,6 +6,7 @@ import type { Appliance, Schedule } from '../types/appliance'
 import { schedulesApi } from '../lib/schedules'
 import {
   getCurrentSeason,
+  getSeasonStart,
   getSeasonalTasksForUser,
   type Season,
 } from '../lib/seasonalTasks'
@@ -60,11 +61,32 @@ interface Props {
 
 export function SeasonalChecklist({ appliances, schedules, onCompleted }: Props) {
   const [collapsed, setCollapsed] = useState(false)
-  const [checked, setChecked] = useState<Set<string>>(new Set())
+  const [sessionChecked, setSessionChecked] = useState<Set<string>>(new Set())
   const [completing, setCompleting] = useState<Set<string>>(new Set())
 
   const season = getCurrentSeason()
   const tasks = getSeasonalTasksForUser(season, appliances)
+  const seasonStart = getSeasonStart(season)
+
+  // Tasks completed this season according to lastCompletedAt on the schedule
+  const alreadyDone = useMemo(() => {
+    const set = new Set<string>()
+    for (const task of tasks) {
+      const schedule = schedules.find(
+        (s) => s.applianceId === task.applianceId && s.taskId === task.taskId
+      )
+      if (schedule?.lastCompletedAt && new Date(schedule.lastCompletedAt) >= seasonStart) {
+        set.add(`${task.applianceId}-${task.taskId}`)
+      }
+    }
+    return set
+  }, [tasks, schedules, seasonStart])
+
+  // Combine persisted (server) + session (optimistic) checked state
+  const checked = useMemo(
+    () => new Set([...alreadyDone, ...sessionChecked]),
+    [alreadyDone, sessionChecked]
+  )
 
   if (tasks.length === 0) return null
 
@@ -88,7 +110,7 @@ export function SeasonalChecklist({ appliances, schedules, onCompleted }: Props)
         doneBy: 'self',
         completedAt: new Date().toISOString().split('T')[0],
       })
-      setChecked((prev) => new Set(prev).add(key))
+      setSessionChecked((prev) => new Set(prev).add(key))
       onCompleted()
     } catch {
       toast.error('Could not mark task complete. Try again.')
