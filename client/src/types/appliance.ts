@@ -77,6 +77,7 @@ export interface Schedule {
   snoozedUntil: string | null
   isActive: boolean
   remindersEnabled: boolean
+  customNotes?: string
   appliance: { _id: string; name: string; typeId: string } | null
   task: ScheduleTask | null
 }
@@ -106,4 +107,24 @@ export interface HomeHealthStats {
   dueSoonCount: number
   completedLast30: number
   totalAppliances: number
+}
+
+export interface SpendingByAppliance {
+  applianceId: string
+  applianceName: string
+  category: string
+  total: number
+  count: number
+}
+
+export interface SpendingByYear {
+  year: number
+  total: number
+  count: number
+}
+
+export interface SpendingStats {
+  total: number
+  byAppliance: SpendingByAppliance[]
+  byYear: SpendingByYear[]
 }

@@ -6,8 +6,11 @@ import { z } from 'zod'
 import { User } from '../models/User.js'
 import { requireAuth } from '../middleware/auth.js'
 import { sendPasswordReset } from '../services/emailService.js'
+import { validateBody } from '../middleware/validate.js'
 
 const router = Router()
+
+const isSecure = process.env.NODE_ENV === 'production' || process.env.SECURE_COOKIES === 'true'
 
 const passwordSchema = z.string()
   .min(8, 'Password must be at least 8 characters')
@@ -38,8 +41,8 @@ function setTokenCookie(res: Response, userId: string, user: { email: string; na
   )
   res.cookie('token', token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: isSecure,
+    sameSite: isSecure ? 'none' : 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000,
   })
 }
@@ -47,13 +50,10 @@ function setTokenCookie(res: Response, userId: string, user: { email: string; na
 // POST /api/auth/register
 router.post('/register', async (req: Request, res: Response) => {
   try {
-    const parsed = registerSchema.safeParse(req.body)
-    if (!parsed.success) {
-      res.status(400).json({ error: parsed.error.errors[0].message })
-      return
-    }
+    const data = validateBody(registerSchema, req.body, res)
+    if (!data) return
 
-    const { name, email, password, zipCode } = parsed.data
+    const { name, email, password, zipCode } = data
 
     const existing = await User.findOne({ email })
     if (existing) {
@@ -71,6 +71,7 @@ router.post('/register', async (req: Request, res: Response) => {
       user: { _id: user._id, email: user.email, name: user.name, zipCode: user.zipCode },
     })
   } catch (err) {
+    console.error('Registration error:', err)
     res.status(500).json({ error: 'Registration failed. Please try again.' })
   }
 })
@@ -104,6 +105,7 @@ router.post('/login', async (req: Request, res: Response) => {
       user: { _id: user._id, email: user.email, name: user.name, zipCode: user.zipCode },
     })
   } catch (err) {
+    console.error('Login error:', err)
     res.status(500).json({ error: 'Login failed. Please try again.' })
   }
 })
@@ -122,16 +124,13 @@ router.get('/me', requireAuth, (req: Request, res: Response) => {
 // POST /api/auth/forgot-password
 router.post('/forgot-password', async (req: Request, res: Response) => {
   try {
-    const parsed = z.object({ email: z.string().email().trim().toLowerCase() }).safeParse(req.body)
-    if (!parsed.success) {
-      res.status(400).json({ error: 'Valid email required' })
-      return
-    }
+    const data = validateBody(z.object({ email: z.string().email().trim().toLowerCase() }), req.body, res)
+    if (!data) return
 
     // Always respond with the same message to avoid leaking whether an email exists
     const genericResponse = { message: 'If that email is registered, a reset link is on its way.' }
 
-    const user = await User.findOne({ email: parsed.data.email })
+    const user = await User.findOne({ email: data.email })
     if (!user) {
       res.json(genericResponse)
       return
@@ -143,11 +142,12 @@ router.post('/forgot-password', async (req: Request, res: Response) => {
 
     await User.findByIdAndUpdate(user._id, { resetToken: tokenHash, resetTokenExpiry: expiry })
 
-    const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${token}`
+    const resetUrl = `${process.env.CLIENT_URL!}/reset-password?token=${token}`
     await sendPasswordReset(user.email, resetUrl)
 
     res.json(genericResponse)
   } catch (err) {
+    console.error('Forgot password error:', err)
     res.json({ message: 'If that email is registered, a reset link is on its way.' })
   }
 })
@@ -155,17 +155,10 @@ router.post('/forgot-password', async (req: Request, res: Response) => {
 // POST /api/auth/reset-password
 router.post('/reset-password', async (req: Request, res: Response) => {
   try {
-    const parsed = z.object({
-      token: z.string().min(1),
-      password: passwordSchema,
-    }).safeParse(req.body)
+    const data = validateBody(z.object({ token: z.string().min(1), password: passwordSchema }), req.body, res)
+    if (!data) return
 
-    if (!parsed.success) {
-      res.status(400).json({ error: parsed.error.errors[0].message })
-      return
-    }
-
-    const tokenHash = hashToken(parsed.data.token)
+    const tokenHash = hashToken(data.token)
 
     const user = await User.findOne({
       resetToken: tokenHash,
@@ -177,7 +170,7 @@ router.post('/reset-password', async (req: Request, res: Response) => {
       return
     }
 
-    const passwordHash = await bcrypt.hash(parsed.data.password, 12)
+    const passwordHash = await bcrypt.hash(data.password, 12)
     await User.findByIdAndUpdate(user._id, {
       passwordHash,
       $unset: { resetToken: '', resetTokenExpiry: '' },
@@ -185,6 +178,7 @@ router.post('/reset-password', async (req: Request, res: Response) => {
 
     res.json({ message: 'Password updated. You can now log in.' })
   } catch (err) {
+    console.error('Password reset error:', err)
     res.status(500).json({ error: 'Password reset failed. Please try again.' })
   }
 })
@@ -195,6 +189,7 @@ router.post('/unsubscribe', requireAuth, async (req: Request, res: Response) => 
     await User.findByIdAndUpdate(req.user!._id, { emailReminders: false })
     res.json({ message: 'Unsubscribed from email reminders' })
   } catch (err) {
+    console.error('Unsubscribe error:', err)
     res.status(500).json({ error: 'Failed to unsubscribe. Please try again.' })
   }
 })
@@ -222,6 +217,7 @@ router.get('/unsubscribe', async (req: Request, res: Response) => {
 
     res.json({ message: 'You have been unsubscribed from HomeWise email reminders.' })
   } catch (err) {
+    console.error('Unsubscribe (token) error:', err)
     res.status(500).json({ error: 'Failed to unsubscribe. Please try again.' })
   }
 })

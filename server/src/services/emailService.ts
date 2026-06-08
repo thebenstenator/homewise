@@ -86,6 +86,68 @@ export interface EmailUser {
   unsubscribeToken?: string
 }
 
+export async function sendHealthAlert(user: EmailUser, score: number, overdueCount: number) {
+  const appUrl = process.env.CLIENT_URL ?? 'http://localhost:5173'
+  const unsubscribeUrl = user.unsubscribeToken
+    ? `${appUrl}/unsubscribe?token=${user.unsubscribeToken}`
+    : `${appUrl}/profile`
+
+  const grade = score >= 90 ? 'A' : score >= 75 ? 'B' : score >= 60 ? 'C' : score >= 40 ? 'D' : 'F'
+  const scoreColor = score >= 60 ? '#d97706' : '#dc2626'
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+    <body style="margin:0;padding:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:32px 16px">
+        <tr><td align="center">
+          <table width="100%" style="max-width:560px;background:#ffffff;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden">
+            <tr>
+              <td style="background:#1e293b;padding:24px 32px">
+                <p style="margin:0;font-size:22px;font-weight:700;color:#4ade80">HomeWise</p>
+                <p style="margin:6px 0 0;font-size:14px;color:#94a3b8">Home health alert</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:32px">
+                <p style="margin:0 0 20px;font-size:15px;color:#334155">Hi ${escapeHtml(user.name)},</p>
+                <div style="text-align:center;padding:24px;background:#f8fafc;border-radius:12px;margin-bottom:20px">
+                  <p style="margin:0;font-size:56px;font-weight:800;color:${scoreColor};line-height:1">${score}</p>
+                  <p style="margin:4px 0 0;font-size:20px;font-weight:700;color:${scoreColor}">Grade ${grade}</p>
+                  <p style="margin:8px 0 0;font-size:13px;color:#64748b">Your home health score has dropped</p>
+                </div>
+                <p style="margin:0 0 16px;font-size:15px;color:#334155">
+                  You have <strong>${overdueCount} overdue task${overdueCount !== 1 ? 's' : ''}</strong> that may be affecting your home's health. Taking care of these now can prevent costly repairs later.
+                </p>
+                <a href="${appUrl}/dashboard" style="display:block;text-align:center;padding:12px;background:#16a34a;color:#ffffff;font-size:14px;font-weight:600;border-radius:8px;text-decoration:none">
+                  View overdue tasks →
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:20px 32px;border-top:1px solid #e2e8f0;background:#f8fafc">
+                <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center">
+                  You're receiving this because your home health score dropped below 60.
+                  <a href="${unsubscribeUrl}" style="color:#64748b">Unsubscribe</a> &nbsp;·&nbsp;
+                  <a href="${appUrl}/profile" style="color:#64748b">Manage preferences</a>
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td></tr>
+      </table>
+    </body>
+    </html>`
+
+  await client.transactionalEmails.sendTransacEmail({
+    sender: { name: FROM_NAME, email: FROM_EMAIL },
+    to: [{ email: user.email }],
+    subject: `Your HomeWise health score dropped to ${score} — ${overdueCount} overdue task${overdueCount !== 1 ? 's' : ''}`,
+    htmlContent: html,
+  })
+}
+
 export async function sendWeeklyDigest(user: EmailUser, dueTasks: DueTask[]) {
   const thumbtackBase = 'https://www.thumbtack.com/k'
   const appUrl = process.env.CLIENT_URL ?? 'http://localhost:5173'
@@ -108,8 +170,8 @@ export async function sendWeeklyDigest(user: EmailUser, dueTasks: DueTask[]) {
       return `
         <tr>
           <td style="padding:16px 0;border-bottom:1px solid #e2e8f0">
-            <p style="margin:0 0 4px;font-size:13px;color:#64748b">${t.applianceName}</p>
-            <p style="margin:0 0 6px;font-size:15px;font-weight:600;color:#0f172a">${t.taskLabel}</p>
+            <p style="margin:0 0 4px;font-size:13px;color:#64748b">${escapeHtml(t.applianceName)}</p>
+            <p style="margin:0 0 6px;font-size:15px;font-weight:600;color:#0f172a">${escapeHtml(t.taskLabel)}</p>
             <p style="margin:0 0 12px;font-size:13px">${dueLabel}</p>
             <a href="${diyAppUrl}" style="display:inline-block;margin-right:8px;padding:6px 14px;background:#f1f5f9;color:#334155;font-size:12px;font-weight:500;border-radius:6px;text-decoration:none">DIY Guide →</a>
             <a href="${proUrl}" style="display:inline-block;padding:6px 14px;background:#16a34a;color:#ffffff;font-size:12px;font-weight:500;border-radius:6px;text-decoration:none">Find a Pro →</a>
@@ -138,7 +200,7 @@ export async function sendWeeklyDigest(user: EmailUser, dueTasks: DueTask[]) {
             <!-- Body -->
             <tr>
               <td style="padding:24px 32px">
-                <p style="margin:0 0 20px;font-size:15px;color:#334155">Hi ${user.name}, here's what's coming up:</p>
+                <p style="margin:0 0 20px;font-size:15px;color:#334155">Hi ${escapeHtml(user.name)}, here's what's coming up:</p>
                 <table width="100%" cellpadding="0" cellspacing="0">
                   ${taskRows}
                 </table>

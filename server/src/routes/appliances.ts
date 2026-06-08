@@ -6,6 +6,7 @@ import { Appliance } from '../models/Appliance.js'
 import { ApplianceType } from '../models/ApplianceType.js'
 import { requireAuth } from '../middleware/auth.js'
 import { generateSchedulesForAppliance, deleteSchedulesForAppliance } from '../services/scheduleService.js'
+import { validateBody } from '../middleware/validate.js'
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -73,6 +74,7 @@ router.get('/', async (req: Request, res: Response) => {
     const result = appliances.map((a) => ({ ...a, applianceType: typeMap[a.typeId] ?? null }))
     res.json(result)
   } catch (err) {
+    console.error('Failed to fetch appliances:', err)
     res.status(500).json({ error: 'Failed to fetch appliances.' })
   }
 })
@@ -80,24 +82,22 @@ router.get('/', async (req: Request, res: Response) => {
 // POST /api/appliances
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const parsed = applianceSchema.safeParse(req.body)
-    if (!parsed.success) {
-      res.status(400).json({ error: parsed.error.errors[0].message })
-      return
-    }
+    const data = validateBody(applianceSchema, req.body, res)
+    if (!data) return
 
-    const type = await ApplianceType.findById(parsed.data.typeId).lean()
+    const type = await ApplianceType.findById(data.typeId).lean()
     if (!type) {
       res.status(400).json({ error: 'Invalid appliance type' })
       return
     }
 
-    const { lastServiceDate, ...applianceData } = parsed.data
+    const { lastServiceDate, ...applianceData } = data
     const appliance = await Appliance.create({ ...applianceData, userId: req.user!._id })
     const lastService = lastServiceDate ? new Date(lastServiceDate) : undefined
     await generateSchedulesForAppliance(appliance._id.toString(), req.user!._id, lastService)
     res.status(201).json({ ...appliance.toObject(), applianceType: type })
   } catch (err) {
+    console.error('Failed to create appliance:', err)
     res.status(500).json({ error: 'Failed to create appliance.' })
   }
 })
@@ -105,15 +105,12 @@ router.post('/', async (req: Request, res: Response) => {
 // PUT /api/appliances/:id
 router.put('/:id', async (req: Request, res: Response) => {
   try {
-    const parsed = applianceSchema.partial().safeParse(req.body)
-    if (!parsed.success) {
-      res.status(400).json({ error: parsed.error.errors[0].message })
-      return
-    }
+    const data = validateBody(applianceSchema.partial(), req.body, res)
+    if (!data) return
 
     const appliance = await Appliance.findOneAndUpdate(
       { _id: req.params.id, userId: req.user!._id },
-      parsed.data,
+      data,
       { new: true }
     ).lean()
 
@@ -125,6 +122,7 @@ router.put('/:id', async (req: Request, res: Response) => {
     const type = await ApplianceType.findById(appliance.typeId).lean()
     res.json({ ...appliance, applianceType: type ?? null })
   } catch (err) {
+    console.error('Failed to update appliance:', err)
     res.status(500).json({ error: 'Failed to update appliance.' })
   }
 })
@@ -145,6 +143,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
     await deleteSchedulesForAppliance(appliance._id.toString())
     res.json({ message: 'Appliance deleted' })
   } catch (err) {
+    console.error('Failed to delete appliance:', err)
     res.status(500).json({ error: 'Failed to delete appliance.' })
   }
 })

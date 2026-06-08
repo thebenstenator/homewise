@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom'
-import { Pencil, Trash2, ChevronLeft, Home, AlertTriangle } from 'lucide-react'
+import { Pencil, Trash2, ChevronLeft, Home, AlertTriangle, RotateCcw } from 'lucide-react'
 import { AppLayout } from '../components/AppLayout'
 import { EditApplianceModal } from '../components/EditApplianceModal'
 import { TaskCard } from '../components/TaskCard'
@@ -8,6 +8,7 @@ import type { Appliance, Schedule, MaintenanceLog } from '../types/appliance'
 import { appliancesApi } from '../lib/appliances'
 import { schedulesApi } from '../lib/schedules'
 import { historyApi } from '../lib/history'
+import toast from 'react-hot-toast'
 import { getAgeWarning } from '../lib/applianceLifespans'
 import { thumbtackUrl, angiUrl, openAffiliate } from '../lib/affiliateLinks'
 import { useAuth } from '../context/AuthContext'
@@ -30,7 +31,7 @@ export function ApplianceDetailPage() {
   const [photoOpen, setPhotoOpen] = useState(false)
 
   useEffect(() => {
-    Promise.all([appliancesApi.getAll(), schedulesApi.getAll()])
+    Promise.all([appliancesApi.getAll(), schedulesApi.getAllWithDisabled()])
       .then(([all, allSchedules]) => {
         setAppliance(all.find((a) => a._id === id) ?? null)
         setSchedules(allSchedules.filter((s) => s.applianceId === id))
@@ -46,6 +47,16 @@ export function ApplianceDetailPage() {
 
   function handleScheduleUpdated(updated: Schedule) {
     setSchedules((prev) => prev.map((s) => (s._id === updated._id ? updated : s)))
+  }
+
+  async function handleReenableTask(scheduleId: string) {
+    try {
+      const updated = await schedulesApi.updateSettings(scheduleId, { isActive: true })
+      setSchedules((prev) => prev.map((s) => (s._id === updated._id ? updated : s)))
+      toast.success('Task re-enabled')
+    } catch {
+      toast.error('Failed to re-enable task')
+    }
   }
 
   async function handleDelete() {
@@ -190,11 +201,11 @@ export function ApplianceDetailPage() {
       {/* Tasks tab */}
       {tab === 'tasks' && (
         <>
-          {schedules.length === 0 ? (
+          {schedules.filter((s) => s.isActive).length === 0 ? (
             <p className="text-sm text-slate-400 dark:text-slate-500">No maintenance tasks found.</p>
           ) : (
             <div className="flex flex-col gap-3">
-              {schedules.map((s) => (
+              {schedules.filter((s) => s.isActive).map((s) => (
                 <TaskCard
                   key={s._id}
                   schedule={s}
@@ -203,6 +214,32 @@ export function ApplianceDetailPage() {
                   autoOpenDiy={s.taskId === autoOpenDiyTaskId}
                 />
               ))}
+            </div>
+          )}
+
+          {schedules.filter((s) => !s.isActive).length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
+                Disabled Tasks
+              </h3>
+              <div className="flex flex-col gap-2">
+                {schedules.filter((s) => !s.isActive).map((s) => (
+                  <div key={s._id} className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{s.task?.label ?? s.taskId}</p>
+                      {s.customNotes && (
+                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 italic">{s.customNotes}</p>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => handleReenableTask(s._id)}
+                      className="flex items-center gap-1.5 text-xs text-green-600 font-medium px-3 py-1.5 border border-green-200 dark:border-green-800 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors shrink-0"
+                    >
+                      <RotateCcw size={12} /> Re-enable
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 

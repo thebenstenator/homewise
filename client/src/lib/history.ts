@@ -1,5 +1,5 @@
 import { api } from './api'
-import type { MaintenanceLog, HomeHealthStats } from '../types/appliance'
+import type { MaintenanceLog, HomeHealthStats, SpendingStats } from '../types/appliance'
 
 export const historyApi = {
   getAll: (applianceId?: string) => {
@@ -7,4 +7,5 @@ export const historyApi = {
     return api.get<MaintenanceLog[]>(`/api/history${qs}`)
   },
   getStats: () => api.get<HomeHealthStats>('/api/history/stats'),
+  getSpending: () => api.get<SpendingStats>('/api/history/spending'),
 }

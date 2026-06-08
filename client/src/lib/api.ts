@@ -10,7 +10,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     },
   })
 
-  let data: any
+  let data: unknown
   try {
     data = await res.json()
   } catch {
@@ -38,7 +38,7 @@ export const api = {
       credentials: 'include',
       body: formData, // no Content-Type header — browser sets multipart boundary
     })
-    let data: any
+    let data: unknown
     try { data = await res.json() } catch { throw new Error('Something went wrong') }
     if (!res.ok) throw new Error(data?.error || 'Something went wrong')
     return data

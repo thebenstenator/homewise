@@ -14,6 +14,7 @@ import { HistoryPage } from './pages/HistoryPage'
 import { PrivacyPage } from './pages/PrivacyPage'
 import { TermsPage } from './pages/TermsPage'
 import { UnsubscribePage } from './pages/UnsubscribePage'
+import { SharedHistoryPage } from './pages/SharedHistoryPage'
 
 function RootRedirect() {
   const { user, loading } = useAuth()
@@ -64,6 +65,7 @@ function AppRoutes() {
       <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/terms" element={<TermsPage />} />
       <Route path="/unsubscribe" element={<UnsubscribePage />} />
+      <Route path="/shared/:token" element={<SharedHistoryPage />} />
     </Routes>
   )
 }

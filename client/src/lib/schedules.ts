@@ -5,6 +5,7 @@ export type { Schedule, CompletePayload }
 
 export const schedulesApi = {
   getAll: () => api.get<Schedule[]>('/api/schedules'),
+  getAllWithDisabled: () => api.get<Schedule[]>('/api/schedules?includeDisabled=true'),
   getDue: () => api.get<Schedule[]>('/api/schedules/due'),
   complete: (id: string, payload: CompletePayload) =>
     api.post<Schedule>(`/api/schedules/${id}/complete`, payload),
@@ -16,6 +17,10 @@ export const schedulesApi = {
     api.put<Schedule>(`/api/schedules/${id}`, { intervalDays }),
   scheduleNow: (id: string) =>
     api.post<Schedule>(`/api/schedules/${id}/due-now`, {}),
+  skip: (id: string) =>
+    api.post<Schedule>(`/api/schedules/${id}/skip`, {}),
+  updateSettings: (id: string, settings: { intervalDays?: number; customNotes?: string; isActive?: boolean }) =>
+    api.put<Schedule>(`/api/schedules/${id}`, settings),
 }
 
 export function daysUntilDue(nextDueAt: string): number {

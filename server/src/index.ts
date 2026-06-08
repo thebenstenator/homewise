@@ -13,8 +13,9 @@ import scheduleRoutes from './routes/schedules.js'
 import userRoutes from './routes/users.js'
 import historyRoutes from './routes/history.js'
 import feedbackRoutes from './routes/feedback.js'
+import sharedRoutes from './routes/shared.js'
 import { errorHandler } from './middleware/errorHandler.js'
-import { startScheduler, runWeeklyDigest } from './services/scheduler.js'
+import { startScheduler, runWeeklyDigest, runHealthAlerts } from './services/scheduler.js'
 import { requireAuth } from './middleware/auth.js'
 
 // Cloudinary auto-configures from CLOUDINARY_URL env var
@@ -121,17 +122,22 @@ app.use('/api/schedules', scheduleRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/history', historyRoutes)
 app.use('/api/feedback', feedbackRoutes)
+app.use('/api/shared', sharedRoutes)
 
 // Health check
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
-// Dev-only: manually trigger weekly digest for the requesting user
+// Dev-only: manually trigger weekly digest / health alerts for the requesting user
 if (process.env.NODE_ENV === 'development') {
   app.post('/api/dev/trigger-reminders', requireAuth, async (req: Request, res: Response) => {
     await runWeeklyDigest(req.user!._id)
     res.json({ message: 'Digest triggered for your account' })
+  })
+  app.post('/api/dev/trigger-health-alert', requireAuth, async (req: Request, res: Response) => {
+    await runHealthAlerts(req.user!._id)
+    res.json({ message: 'Health alert check triggered for your account' })
   })
 }
 

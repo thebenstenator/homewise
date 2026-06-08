@@ -10,6 +10,8 @@ interface IUser {
   resetToken?: string
   resetTokenExpiry?: Date
   unsubscribeToken?: string
+  lastHealthAlertSentAt?: Date
+  shareToken?: string
 }
 
 const UserSchema = new Schema<IUser>(
@@ -22,6 +24,8 @@ const UserSchema = new Schema<IUser>(
     resetToken: { type: String },
     resetTokenExpiry: { type: Date },
     unsubscribeToken: { type: String, index: true },
+    lastHealthAlertSentAt: { type: Date },
+    shareToken: { type: String, index: true, sparse: true },
   },
   { timestamps: { createdAt: true, updatedAt: false } }
 )

@@ -66,3 +66,21 @@ export async function deleteSchedulesForAppliance(applianceId: string) {
   await ReminderSchedule.deleteMany({ applianceId })
   await MaintenanceLog.deleteMany({ applianceId })
 }
+
+export async function enrichSchedules(schedules: any[]) {
+  if (schedules.length === 0) return []
+  const applianceIds = [...new Set(schedules.map((s) => s.applianceId.toString()))]
+  const appliances = await Appliance.find({ _id: { $in: applianceIds } }).lean()
+  const typeIds = [...new Set(appliances.map((a) => a.typeId))]
+  const types = await ApplianceType.find({ _id: { $in: typeIds } }).lean()
+
+  const applianceMap = Object.fromEntries(appliances.map((a) => [a._id.toString(), a]))
+  const typeMap = Object.fromEntries(types.map((t) => [t._id.toString(), t]))
+
+  return schedules.map((s) => {
+    const appliance = applianceMap[s.applianceId.toString()]
+    const type = appliance ? typeMap[appliance.typeId] : null
+    const task = type?.tasks.find((t: any) => t.taskId === s.taskId) ?? null
+    return { ...s, appliance: appliance ?? null, task }
+  })
+}

@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Thermometer, Wind, Flame, Zap, Refrigerator, Droplets, Waves,
-  AlertTriangle, ShieldAlert, Home, GitBranch, Droplet, CircleSlash, Filter, ChevronLeft, Download,
+  AlertTriangle, ShieldAlert, Home, GitBranch, Droplet, CircleSlash, Filter, ChevronLeft, Download, DollarSign, ChevronDown, ChevronUp, Share2, Copy, Trash2, RefreshCw,
 } from 'lucide-react'
+import toast from 'react-hot-toast'
 import { AppLayout } from '../components/AppLayout'
 import { historyApi } from '../lib/history'
 import { appliancesApi } from '../lib/appliances'
-import type { MaintenanceLog, Appliance } from '../types/appliance'
+import { api } from '../lib/api'
+import type { MaintenanceLog, Appliance, SpendingStats } from '../types/appliance'
 import { useApplianceTypes } from '../hooks/useApplianceTypes'
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
@@ -67,11 +69,54 @@ export function HistoryPage() {
   const [appliances, setAppliances] = useState<Appliance[]>([])
   const [selectedAppliance, setSelectedAppliance] = useState('')
   const [loading, setLoading] = useState(true)
+  const [spending, setSpending] = useState<SpendingStats | null>(null)
+  const [showSpending, setShowSpending] = useState(false)
+  const [shareToken, setShareToken] = useState<string | null>(null)
+  const [showShare, setShowShare] = useState(false)
+  const [sharingBusy, setSharingBusy] = useState(false)
   const { types } = useApplianceTypes()
 
   useEffect(() => {
     appliancesApi.getAll().then(setAppliances)
+    historyApi.getSpending().then(setSpending).catch(() => {})
+    api.get<{ shareToken: string | null }>('/api/users/me/share-token')
+      .then((r) => setShareToken(r.shareToken))
+      .catch(() => {})
   }, [])
+
+  async function handleGenerateShareLink() {
+    setSharingBusy(true)
+    try {
+      const r = await api.post<{ shareToken: string }>('/api/users/share-token', {})
+      setShareToken(r.shareToken)
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Failed to create link')
+    } finally {
+      setSharingBusy(false)
+    }
+  }
+
+  async function handleRevokeShareLink() {
+    setSharingBusy(true)
+    try {
+      await api.del('/api/users/share-token')
+      setShareToken(null)
+      toast.success('Share link revoked')
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Failed to revoke link')
+    } finally {
+      setSharingBusy(false)
+    }
+  }
+
+  function shareUrl(token: string) {
+    return `${window.location.origin}/shared/${token}`
+  }
+
+  async function copyShareLink(token: string) {
+    await navigator.clipboard.writeText(shareUrl(token))
+    toast.success('Link copied to clipboard')
+  }
 
   useEffect(() => {
     setLoading(true)
@@ -113,8 +158,121 @@ export function HistoryPage() {
               Export CSV
             </button>
           )}
+          <button
+            onClick={() => setShowShare((v) => !v)}
+            className={`flex items-center gap-1.5 border px-3 py-1.5 rounded-lg text-sm font-medium transition-colors shrink-0 ${
+              shareToken
+                ? 'border-green-300 text-green-700 bg-green-50 dark:bg-green-900/20 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900/40'
+                : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+            }`}
+          >
+            <Share2 size={15} />
+            {shareToken ? 'Sharing on' : 'Share'}
+          </button>
         </div>
       </div>
+
+      {/* Spending summary */}
+      {spending && spending.total > 0 && (
+        <div className="mb-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl dark:shadow-none overflow-hidden">
+          <button
+            onClick={() => setShowSpending((v) => !v)}
+            className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <DollarSign size={16} className="text-green-600" />
+              <span className="text-sm font-medium text-slate-800 dark:text-slate-100">Maintenance Spending</span>
+              <span className="text-sm font-bold text-green-600">${spending.total.toLocaleString()}</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500">total tracked</span>
+            </div>
+            {showSpending ? <ChevronUp size={16} className="text-slate-400" /> : <ChevronDown size={16} className="text-slate-400" />}
+          </button>
+          {showSpending && (
+            <div className="px-4 pb-4 border-t border-slate-100 dark:border-slate-700">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
+                <div>
+                  <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">By Appliance</p>
+                  <div className="flex flex-col gap-1.5">
+                    {spending.byAppliance.map((row) => (
+                      <div key={row.applianceId} className="flex items-center justify-between text-sm">
+                        <span className="text-slate-700 dark:text-slate-200 truncate mr-2">{row.applianceName}</span>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-xs text-slate-400 dark:text-slate-500">{row.count}×</span>
+                          <span className="font-medium text-slate-800 dark:text-slate-100">${row.total.toLocaleString()}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">By Year</p>
+                  <div className="flex flex-col gap-1.5">
+                    {spending.byYear.map((row) => (
+                      <div key={row.year} className="flex items-center justify-between text-sm">
+                        <span className="text-slate-700 dark:text-slate-200">{row.year}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-slate-400 dark:text-slate-500">{row.count} task{row.count !== 1 ? 's' : ''}</span>
+                          <span className="font-medium text-slate-800 dark:text-slate-100">${row.total.toLocaleString()}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Share panel */}
+      {showShare && (
+        <div className="mb-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-4 dark:shadow-none">
+          <div className="flex items-center gap-2 mb-3">
+            <Share2 size={15} className="text-slate-500" />
+            <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-100">Share Maintenance History</h2>
+          </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+            Generate a read-only link you can share with contractors, landlords, or inspectors. Costs are not included.
+          </p>
+          {shareToken ? (
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2">
+                <span className="text-xs text-slate-600 dark:text-slate-300 flex-1 truncate font-mono">{shareUrl(shareToken)}</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => copyShareLink(shareToken)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  <Copy size={12} /> Copy link
+                </button>
+                <button
+                  onClick={handleGenerateShareLink}
+                  disabled={sharingBusy}
+                  className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
+                >
+                  <RefreshCw size={12} /> Regenerate
+                </button>
+                <button
+                  onClick={handleRevokeShareLink}
+                  disabled={sharingBusy}
+                  className="flex items-center gap-1.5 px-3 py-1.5 border border-red-200 dark:border-red-800 text-red-600 text-xs font-medium rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors disabled:opacity-50"
+                >
+                  <Trash2 size={12} /> Revoke
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={handleGenerateShareLink}
+              disabled={sharingBusy}
+              className="flex items-center gap-1.5 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+            >
+              <Share2 size={14} /> {sharingBusy ? 'Generating…' : 'Create share link'}
+            </button>
+          )}
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-16">

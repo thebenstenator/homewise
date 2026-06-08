@@ -10,6 +10,7 @@ interface IReminderSchedule {
   snoozedUntil: Date | null
   isActive: boolean
   remindersEnabled: boolean
+  customNotes?: string
 }
 
 const ReminderScheduleSchema = new Schema<IReminderSchedule>(
@@ -23,8 +24,11 @@ const ReminderScheduleSchema = new Schema<IReminderSchedule>(
     snoozedUntil: { type: Date, default: null },
     isActive: { type: Boolean, default: true },
     remindersEnabled: { type: Boolean, default: true },
+    customNotes: { type: String, trim: true },
   },
   { timestamps: false }
 )
+
+ReminderScheduleSchema.index({ userId: 1, isActive: 1, nextDueAt: 1 })
 
 export const ReminderSchedule = model<IReminderSchedule>('ReminderSchedule', ReminderScheduleSchema)
