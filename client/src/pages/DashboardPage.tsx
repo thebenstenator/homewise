@@ -184,6 +184,7 @@ export function DashboardPage() {
                   key={schedule._id}
                   schedule={schedule}
                   onUpdated={handleScheduleUpdated}
+                  showInterval
                 />
               ))}
             </div>
