@@ -8,12 +8,13 @@ import { QuickAddModal } from '../components/QuickAddModal'
 import { TaskCard } from '../components/TaskCard'
 import { HomeHealthScore } from '../components/HomeHealthScore'
 import { SeasonalChecklist } from '../components/SeasonalChecklist'
+import { AllTasksTab } from '../components/AllTasksTab'
 import type { Appliance, Schedule, HomeHealthStats } from '../types/appliance'
 import { appliancesApi } from '../lib/appliances'
 import { schedulesApi } from '../lib/schedules'
 import { historyApi } from '../lib/history'
 
-type Tab = 'due' | 'appliances'
+type Tab = 'due' | 'appliances' | 'tasks'
 
 export function DashboardPage() {
   const location = useLocation()
@@ -23,6 +24,7 @@ export function DashboardPage() {
   const [stats, setStats] = useState<HomeHealthStats | null>(null)
   const [loadingAppliances, setLoadingAppliances] = useState(true)
   const [loadingSchedules, setLoadingSchedules] = useState(true)
+  const [loadingAllSchedules, setLoadingAllSchedules] = useState(true)
   const [loadingStats, setLoadingStats] = useState(true)
   const [tab, setTab] = useState<Tab>((location.state as { tab?: Tab })?.tab ?? 'due')
   const [showAdd, setShowAdd] = useState(false)
@@ -36,7 +38,7 @@ export function DashboardPage() {
   useEffect(() => {
     appliancesApi.getAll().then(setAppliances).finally(() => setLoadingAppliances(false))
     schedulesApi.getDue().then(setSchedules).finally(() => setLoadingSchedules(false))
-    schedulesApi.getAll().then(setAllSchedules)
+    schedulesApi.getAll().then(setAllSchedules).finally(() => setLoadingAllSchedules(false))
     historyApi.getStats().then(setStats).finally(() => setLoadingStats(false))
   }, [])
 
@@ -146,6 +148,14 @@ export function DashboardPage() {
           >
             My Appliances
           </button>
+          <button
+            onClick={() => setTab('tasks')}
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+              tab === 'tasks' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm dark:shadow-none' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+            }`}
+          >
+            All Tasks
+          </button>
         </div>
 
         <div className="flex items-center gap-2">
@@ -226,6 +236,11 @@ export function DashboardPage() {
             </div>
           )}
         </>
+      )}
+
+      {/* All Tasks tab */}
+      {tab === 'tasks' && (
+        <AllTasksTab schedules={allSchedules} loading={loadingAllSchedules} />
       )}
 
       {showAdd && <AddApplianceModal onClose={() => setShowAdd(false)} onCreated={handleCreated} />}
