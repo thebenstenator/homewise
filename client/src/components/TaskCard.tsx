@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Clock, CheckCircle, ChevronDown, X, CalendarClock, BookOpen, Bell, BellOff, SkipForward, Settings } from 'lucide-react'
 import toast from 'react-hot-toast'
 import type { Schedule } from '../types/appliance'
-import { schedulesApi, daysUntilDue } from '../lib/schedules'
+import { schedulesApi, daysUntilDue, formatInterval } from '../lib/schedules'
 import { thumbtackUrl, angiUrl, openAffiliate } from '../lib/affiliateLinks'
 import { useAuth } from '../context/AuthContext'
 import { LogTaskModal } from './LogTaskModal'
@@ -276,9 +276,9 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
 
           {showInterval && (
             <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-500 dark:text-slate-400">Every</span>
             {editingInterval ? (
               <>
+                <span className="text-xs text-slate-500 dark:text-slate-400">Every</span>
                 <input
                   type="text"
                   inputMode="numeric"
@@ -292,7 +292,7 @@ export function TaskCard({ schedule, onUpdated, showInterval = false, autoOpenDi
               </>
             ) : (
               <>
-                <span className="text-xs font-medium text-slate-700 dark:text-slate-200">{schedule.intervalDays} days</span>
+                <span className="text-xs font-medium text-slate-700 dark:text-slate-200">{formatInterval(schedule.intervalDays)}</span>
                 <button
                   onClick={() => setEditingInterval(true)}
                   className="text-xs text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"

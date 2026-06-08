@@ -28,3 +28,17 @@ export function daysUntilDue(nextDueAt: string): number {
   const due = new Date(nextDueAt)
   return Math.round((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 }
+
+export function formatInterval(days: number): string {
+  if (days === 1) return 'Daily'
+  if (days === 7) return 'Weekly'
+  if (days === 14) return 'Every 2 weeks'
+  if (days === 30) return 'Monthly'
+  if (days === 60) return 'Every 2 months'
+  if (days === 90) return 'Every 3 months'
+  if (days === 120) return 'Every 4 months'
+  if (days === 180) return 'Every 6 months'
+  if (days === 365) return 'Yearly'
+  if (days % 365 === 0) return `Every ${days / 365} years`
+  return `Every ${days} days`
+}

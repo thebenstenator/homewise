@@ -2,22 +2,10 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { LayoutList, Layers } from 'lucide-react'
 import type { Schedule } from '../types/appliance'
-import { daysUntilDue } from '../lib/schedules'
+import { daysUntilDue, formatInterval } from '../lib/schedules'
 
 type StatusFilter = 'all' | 'overdue' | 'soon' | 'upcoming'
 type GroupMode = 'date' | 'appliance'
-
-function formatInterval(days: number): string {
-  if (days === 7) return 'Weekly'
-  if (days === 14) return 'Every 2 weeks'
-  if (days === 30) return 'Monthly'
-  if (days === 60) return 'Every 2 months'
-  if (days === 90) return 'Every 3 months'
-  if (days === 120) return 'Every 4 months'
-  if (days === 180) return 'Every 6 months'
-  if (days === 365) return 'Yearly'
-  return `Every ${days} days`
-}
 
 function dueBadge(days: number): { label: string; className: string } {
   if (days < 0) return { label: `Overdue ${Math.abs(days)}d`, className: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' }
