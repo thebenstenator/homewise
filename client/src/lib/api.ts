@@ -18,10 +18,10 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   }
 
   if (!res.ok) {
-    throw new Error(data?.error || 'Something went wrong')
+    throw new Error((data as { error?: string })?.error || 'Something went wrong')
   }
 
-  return data
+  return data as T
 }
 
 export const api = {
@@ -40,7 +40,7 @@ export const api = {
     })
     let data: unknown
     try { data = await res.json() } catch { throw new Error('Something went wrong') }
-    if (!res.ok) throw new Error(data?.error || 'Something went wrong')
-    return data
+    if (!res.ok) throw new Error((data as { error?: string })?.error || 'Something went wrong')
+    return data as T
   },
 }

@@ -1,24 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { Home, Thermometer, Wind, Flame, Zap, Refrigerator, Droplets, Waves, AlertTriangle, ShieldAlert, GitBranch, Droplet, CircleSlash, Filter } from 'lucide-react'
+import { Home } from 'lucide-react'
 import { api } from '../lib/api'
-
-const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
-  thermometer: Thermometer,
-  wind: Wind,
-  flame: Flame,
-  zap: Zap,
-  refrigerator: Refrigerator,
-  droplets: Droplets,
-  waves: Waves,
-  'alert-triangle': AlertTriangle,
-  'shield-alert': ShieldAlert,
-  home: Home,
-  'git-branch': GitBranch,
-  droplet: Droplet,
-  'circle-slash': CircleSlash,
-  filter: Filter,
-}
 
 interface SharedLog {
   _id: string
